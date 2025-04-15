@@ -1,12 +1,26 @@
 button{
     background-color: rgb(60, 104, 226);
     color:whitesmoke;
-    font-weight: 500;
-    
-    width:50px;
-    height:15px;
+    font-weight: 200;
     border-radius: 5px;
-    box-shadow: 0.5;
-    backg
+    box-shadow: 1.1;
 
 }
+
+/* tr > td > button {
+    padding:25px;
+    height: 2px;
+    width:2em;
+  } */
+
+button.book-row {
+    /* padding:25px; */
+    height:1em;
+    width:3em;
+    background-color: aquamarine;
+  }
+  /* dialog + button {
+    width:25%;
+    justify-content: center;
+    height:2em
+  } */
