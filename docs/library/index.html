@@ -8,17 +8,31 @@
 
 </head>
     <body>
-        <div class = "main">
-            <form action="">
-                <div>
-                    <label for=""></label>
-                    <input type="text">
-                    <label for=""></label>
-                    <input type="text">
-                    <label for=""></label>
-                    </label><input type="text"></div>
-                    <button class = "form button" type = "submit"></button>
-            </form>
+        <div class = "main"> 
+<!-- A modal dialog containing a form -->
+            <dialog id="favDialog" >
+                        <form>
+                            <div>
+                                <label for="book_title">Title:</label>
+                                <input id = "book_title" type="text" required>
+                                <label for="author">Author:</label>
+                                <input type="text" id = "author" required>
+                                <label for="pages">Pages:</label>
+                                <input type="number" id = "pages" required>
+                            </div>
+                            <div>
+                                <label for="read-flag">Read (True/False):</label>
+                                <input type="checkbox" id = "read-flag" name = "read-flag">            
+                            </div>
+                        <div>
+                            <button id = "cancelBtn" formmethod = "dialog">Cancel</button>
+                            <button id = "createBtn" type = "submit">Create</button>
+                        </div>
+                        </form>
+            </dialog>
+        <button id="showDialog">Add a book</button>
+        <output></output>
+    
             <table>
                 <thead>
                     <tr>
@@ -58,8 +72,6 @@
                 
             </table>
         </div>
-
-        <div class="first">hello</div>
         <script src = "src/library.js"></script>
     </body>
 </html>
