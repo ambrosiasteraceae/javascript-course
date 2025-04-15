@@ -7,14 +7,10 @@ button{
 
 }
 
-/* tr > td > button {
-    padding:25px;
-    height: 2px;
-    width:2em;
-  } */
 
-button.book-row {
-    /* padding:25px; */
+.read-toggle,
+.remove-toggle{
+
     height:1em;
     width:3em;
     background-color: aquamarine;

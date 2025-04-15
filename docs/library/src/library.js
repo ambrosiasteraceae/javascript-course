@@ -15,6 +15,9 @@ const author = document.getElementById("author");
 const pages = document.getElementById("pages");
 const isRead = document.getElementById("read-flag");
 
+const btnNames = ["read-toggle", "remove-toggle"];
+const eventListeners = [btnToggleReadStatus, btnToggleDeleteRow]
+
 
 function createBook(event) {
     // console.log(_title, _author, _pages);
@@ -86,22 +89,22 @@ addBook("The Lord of The Rings", "J.R.R. Tolkien", 929);
 addBook("The Hitchhiker's Guide to the Galaxy", "Douglas Adams", 876)
 
 
-function removeBook(obj)
+function btnToggleDeleteRow(event)
 {
+    let element = event.target;
+    node = element.parentNode;
+    index = getChildIndex(node);
+    lib.splice(index, 1);
+    node.parentNode.remove();
 
 }
 
-
-function updateBookRow(obj, e)
-{
-}
 
 
 function populateBooks () 
 {
         for (let book of lib)
         {
-            // console.log(book);
             addBookRow(book);
         }
 
@@ -116,20 +119,23 @@ function addBookRow(book)
         cell.appendChild(element);
         row.appendChild(cell);
     }
-    const cell = document.createElement("td");
-    const element = document.createElement("button");
-    element.classList.add("book-row");
-    element.addEventListener("click", btnToggleReadStatus);
-    row.appendChild(cell);
-    cell.appendChild(element);
+
+    for (let i = 0; i<2; i++)
+    
+    {
+        const cell = document.createElement("td");
+        const element = document.createElement("button");
+        element.classList.add(btnNames[i]);
+        element.addEventListener("click", eventListeners[i]);
+        row.appendChild(cell);
+        cell.appendChild(element);
+    }
     tbody.appendChild(row);
 
 }
 
 populateBooks ();
 
-// let btnsArray = document.querySelectorAll(".book-row");
-// btnsArray.forEach(function(elem) {elem.addEventListener("click", btnToggleReadStatus)});
 
 
 function getChildIndex(node) {
@@ -141,56 +147,12 @@ function btnToggleReadStatus(event)
         let element = event.target;
         node = element.parentNode;
         index = getChildIndex(node);
-
-
         let bookObject = lib[index];
         bookObject.read = bookObject.read? false : true;
 
         node.previousSibling.textContent = bookObject.read.toString();
-        
+
         console.log(bookObject.read);
-        console.log();
         console.log(lib[index]);
 
-
-
-
-
-
-    //need to update lib, if not already updated;
-    //need to update the html
-    
-
-
-
-
 }
-
-// function updateReadStatus(book, element)
-// {
-//     element.
-// }
-
-// for (let i = 0; i<btns.length; i++)
-// {
-//         btns[i].addEventListener("click", function(e) {
-//         trows = document.querySelectorAll("tr");
-//         // let element = e.target;
-//         // let cell = element.parentNode;
-//         // let row = cell.parentNode;
-//         // let body = 
-//         // console.log(element);
-//         // console.log(element.parentNode);
-//         // console.log(element.parentNode.parentNode);
-//         // console.log(Array.prototype.indexOf.call(nodes, document.body););
-//         // console.log(element.parentNode.parentNode.indexOf(element));
-//         // var index = btns.indexOf(e.target);
-//         // var element = trows[index];
-//         // lib.splice(index,1);
-//         // element.remove();
-//         // console.log(lib);
-//         // console.log(element);
-//         // console.log(index);
-//         // console.log(trows[index]);
-//     });
-// }
