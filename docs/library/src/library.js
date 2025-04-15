@@ -39,22 +39,6 @@ showButton.addEventListener("click", () => {
   });
 
 
-
-
-
-  
-//   // "Cancel" button closes the dialog without submitting because of [formmethod="dialog"], triggering a close event.
-//   favDialog.addEventListener("close", (e) => {
-//     outputBox.value = favDialog.returnValue === "default" ? "No return value." : `ReturnValue: ${favDialog.returnValue}.`; // Have to check for "default" rather than empty string
-//   });
-  
-//   // Prevent the "confirm" button from the default behavior of submitting the form, and close the dialog with the `close()` method, which triggers the "close" event.
-//   confirmBtn.addEventListener("click", (event) => {
-//     event.preventDefault(); // We don't want to submit this fake form
-//     favDialog.close(selectEl.value); // Have to send the select box value here.
-//   });
-
-
 NodeList.prototype.indexOf = Array.prototype.indexOf;
 
 function Book (title, author, pages){
@@ -82,8 +66,6 @@ function addBook(title, author, pages){
 }
 
 
-
-
 addBook("The Hobbit", "J.R.R. Tolkien", 356);
 addBook("The Lord of The Rings", "J.R.R. Tolkien", 929);
 addBook("The Hitchhiker's Guide to the Galaxy", "Douglas Adams", 876)
@@ -99,16 +81,14 @@ function btnToggleDeleteRow(event)
 
 }
 
-
-
 function populateBooks () 
 {
         for (let book of lib)
         {
             addBookRow(book);
         }
-
 }
+
 function addBookRow(book)
 {
     const row = document.createElement("tr");
@@ -136,8 +116,6 @@ function addBookRow(book)
 
 populateBooks ();
 
-
-
 function getChildIndex(node) {
     return Array.prototype.indexOf.call(tbody.children, node.parentNode);
 }
@@ -151,7 +129,6 @@ function btnToggleReadStatus(event)
         bookObject.read = bookObject.read? false : true;
 
         node.previousSibling.textContent = bookObject.read.toString();
-
         console.log(bookObject.read);
         console.log(lib[index]);
 
