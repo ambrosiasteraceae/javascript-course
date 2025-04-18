@@ -11,38 +11,79 @@ function GameBoard ( )
     }
 
     const getBoard = ( ) => {return board};
-    // const getState = ( ) => { return board.forEach((item) => item.forEach((cell) => cell.getValue))}
-    const getState = ( ) => { return board.map((cells) => cells.map((cell) => cell.getValue()))};
+    
+    const getState = ( ) => { return board.map((cells) => console.log(cells.map((cell) => cell.getValue())))};
 
-
-    const addToken = (cell,i,j) => {
+    const addToken = (player,i,j) => {
         if (isValidMove(i,j))
-        {
-            console.log("move valid")
-            board[i][j] = cell;
-        }
-
+            board[i][j] = player.cell;
     };
-
 
 
     function isValidMove(i,j) {
         //I do not check for index values less than 0 or higher than 3 because they will be part of dom manipulation
         //check to see if the value returned is != 0; if it is, then its occupied and is nnot valid
-        console.log("enntering", board[i][j])
         if(board[i][j].getValue() != 0)
+        {
+            console.log(`Row:${i} Column${j} is already taken. Please choose one of the available grid spaces.` )
             return false;
-        console.log("exiting")
+        }
         return true;
-    } ;
-    return {getBoard, getState, addToken, isValidMove};
+    };
+
+    function check() {
+        let _win = 0;
+
+
+
+        // arr = [arr[cell{getValue}, cell{getvalue}, cell{getvalue}],
+        //        arr[cell{getValue}, cell{getvalue}, cell{getvalue}],
+        //         arr[cell{getValue}, cell{getvalue}, cell{getvalue}]];
+
+        
+        //check rows
+        // for(let i = 0; i<3; i++)
+        //     for (let j =0; j<3; j++)
+        // const result = board.filter((cells) => cells.filter((cell) => cell.getValue()!=0));
+        const result = board.map((row) => row.filter((cell) => cell.getValue()==0));
+
+        console.log("Result is", result);
+
+        //check columns
+
+        //check diagonals
+        
+        // return _win == 0?
+    }
+
+
+    // function checkWinner(){
+    //     let p1 = 0;
+    //     let p2 = 0;
+
+    //     //iterate through rows: ->
+
+    //     winner = 0;
+
+    //     for (let i = 0; i<gridSize; i++)
+    //         for(let j = 0; j<gridSize; j++)
+    //         {
+    //             var val = board[i,j].getValue();
+    //             var check = val == 0? 0 : val == "x"? ; [... I want to avoid checkinng for x's and zero's]
+
+    //         }
+
+    // }
+
+
+    return {getBoard, getState, addToken, isValidMove, check};
 }
 
 function Cell ()
 {
     let value = 0;
 
-    const addValue = (player) => {value = player};
+    const addValue = (token) => {value = token};
 
     const getValue = ( ) => {return value};
 
@@ -55,10 +96,12 @@ function Player (_name, _token)
     let name = _name;
     // let token = _token;
 
+    let tokenizer = { "x":-1, "y":1}
+
     // let cell = Cell().addValue(_token); // CURIOS WHY THIUS DOESNT WORK
     // console.log(cell.getValue())
     let cell = Cell();
-    cell.addValue(_token);
+    cell.addValue(tokenizer[_token]);
     // console.log(cell, cell.getCell());
     
     // let name  = "";
@@ -81,9 +124,26 @@ function GameLogic ( )
 game = GameBoard();
 p1 = Player("onne", "x");
 p2 = Player("twop", "y");
-game.addToken(p1.cell,0,1);
+
+
+game.addToken(p1,0,1);
+console.log("\n***********");
 game.getState();
-console.log(game.getState())
+game.addToken(p1,1,1);
+console.log("\n***********");
+game.getState();
+game.addToken(p1,2,1);
+console.log("\n***********");
+game.getState();
+game.addToken(p2,1,2);
+console.log("\n***********");
+game.getState();
+game.addToken(p2,2,2);
+console.log("\n***********");
+game.getState();
+
+game.check();
+
 
 // console.log(game.getState());
 // p1 = Player("baba", "x");
