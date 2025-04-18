@@ -1,6 +1,6 @@
 function GameBoard ( )
 {
-    const gridSize = 3;
+    const gridSize = 4;
     const board = [ ];
 
     for (let i = 0; i < gridSize ; i++)
@@ -18,8 +18,6 @@ function GameBoard ( )
         if (isValidMove(i,j))
             board[i][j] = player.cell;
     };
-
-
     function isValidMove(i,j) {
         //I do not check for index values less than 0 or higher than 3 because they will be part of dom manipulation
         //check to see if the value returned is != 0; if it is, then its occupied and is nnot valid
@@ -31,52 +29,42 @@ function GameBoard ( )
         return true;
     };
 
-    function check() {
-        let _win = 0;
+    function check(p1, p2) {
 
-
-
-        // arr = [arr[cell{getValue}, cell{getvalue}, cell{getvalue}],
-        //        arr[cell{getValue}, cell{getvalue}, cell{getvalue}],
-        //         arr[cell{getValue}, cell{getvalue}, cell{getvalue}]];
-
-        
+        //TODO this should return as soon as a win is registered, not cojntinue playing.
         //check rows
-        // for(let i = 0; i<3; i++)
-        //     for (let j =0; j<3; j++)
-        // const result = board.filter((cells) => cells.filter((cell) => cell.getValue()!=0));
-        const result = board.map((row) => row.filter((cell) => cell.getValue()==0));
-
-        console.log("Result is", result);
-
-        //check columns
-
-        //check diagonals
+        const rows = board.map((row) => row.reduce((acc, curr) => acc + curr.getValue(), 0));
         
-        // return _win == 0?
+        console.log("Row  is", rows);
+        //check columns
+        const columns = transpose().map((row) => row.reduce((acc, curr) => acc + curr.getValue(), 0))
+        // const colresult = board[0].map((col, i) => board.map(row => row[i]).reduce((acc, curr) => acc + curr.getValue(), 0))
+        console.log("Column is", columns);
+
+        //check main diag
+        const major = board.map((row,i)=> row.filter((col, j) => i == j).reduce((acc, curr) => acc + curr.getValue(), 0));
+        console.log("Main diag are:", major);
+        
+        //check main diag
+        const minor = board.reverse().map((row,i)=> row.filter((col, j) => i == j).reduce((acc, curr) => acc + curr.getValue(), 0));
+        console.log("Secondary diag is", minor)
+
+        let scores = [...rows, ...columns, ...major, ...minor];
+        console.log(scores);
+
+    //    let winner = scores.includes(-3)? p1.getName() : scores.includes(3)? p2.getName() : 0
+        // return winner
+
+        return scores.includes(-gridSize)? `Winner is Player ${p1.getName().toUpperCase()}` : scores.includes(gridSize)? `Winner is: ${p2.getName()}`: "We have no winners";
+  
     }
 
-
-    // function checkWinner(){
-    //     let p1 = 0;
-    //     let p2 = 0;
-
-    //     //iterate through rows: ->
-
-    //     winner = 0;
-
-    //     for (let i = 0; i<gridSize; i++)
-    //         for(let j = 0; j<gridSize; j++)
-    //         {
-    //             var val = board[i,j].getValue();
-    //             var check = val == 0? 0 : val == "x"? ; [... I want to avoid checkinng for x's and zero's]
-
-    //         }
-
-    // }
-
-
     return {getBoard, getState, addToken, isValidMove, check};
+
+    function  transpose( ) {
+        return board[0].map((col, i) => board.map(row => row[i]));
+    }
+
 }
 
 function Cell ()
@@ -84,7 +72,6 @@ function Cell ()
     let value = 0;
 
     const addValue = (token) => {value = token};
-
     const getValue = ( ) => {return value};
 
     return {addValue, getValue};
@@ -94,26 +81,17 @@ function Player (_name, _token)
 {
     let score = 0;
     let name = _name;
-    // let token = _token;
-
+    // we map x and y's to -1 & 1
     let tokenizer = { "x":-1, "y":1}
 
-    // let cell = Cell().addValue(_token); // CURIOS WHY THIUS DOESNT WORK
-    // console.log(cell.getValue())
     let cell = Cell();
     cell.addValue(tokenizer[_token]);
-    // console.log(cell, cell.getCell());
     
-    // let name  = "";
-    // const addToken = (_token) => {token = _token}; //Players might want to choose what they should pick
-    // const getToken = () => token;
     const getName = () => name;
     const addScore =  () => score++;
     const getScore = () => score;
-    // const getCell = () => cell.getValue();
-    // return {addToken, addScore, getToken, getScore};
-    // return {getName, getToken, addScore, getScore}
-    return {getName, cell, addScore, getScore} // When should we add and when should we 
+
+    return {getName, cell, addScore, getScore} 
 }
 
 function GameLogic ( )
@@ -121,28 +99,30 @@ function GameLogic ( )
     return { }
 }
 
-game = GameBoard();
-p1 = Player("onne", "x");
-p2 = Player("twop", "y");
+game = GameBoard( );
+p1 = Player("one", "x");
+p2 = Player("two", "y");
 
 
+// game.addToken(p1,0,0);
+game.addToken(p1,1,0);
+game.addToken(p1,2,0);
 game.addToken(p1,0,1);
-console.log("\n***********");
-game.getState();
-game.addToken(p1,1,1);
-console.log("\n***********");
-game.getState();
-game.addToken(p1,2,1);
-console.log("\n***********");
-game.getState();
-game.addToken(p2,1,2);
-console.log("\n***********");
-game.getState();
+game.addToken(p1,1,2);
+game.addToken(p2,1,1);
+game.addToken(p2,2,1);
+game.addToken(p2,2,1);
 game.addToken(p2,2,2);
+
+game.addToken(p2,3,0);
+game.addToken(p2,3,1);
+game.addToken(p2,3,2);
+// game.addToken(p2,3,3);
+
 console.log("\n***********");
 game.getState();
 
-game.check();
+console.log(game.check(p1,p2));
 
 
 // console.log(game.getState());
