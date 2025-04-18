@@ -1,6 +1,8 @@
 function GameBoard ( )
 {
-    const gridSize = 4;
+    /// Overall two cents, I think I overcomplicated this by a factor of 2, with the cell functions not returning a bloody property.
+
+    const gridSize = 3;
     const board = [ ];
 
     for (let i = 0; i < gridSize ; i++)
@@ -18,6 +20,14 @@ function GameBoard ( )
         if (isValidMove(i,j))
             board[i][j] = player.cell;
     };
+
+    function noRemainingMoves() {
+        return board.map((row, i)=> { 
+            return row.filter((col, j) => col.getValue() == 0)
+        }).flat().length == 0;
+        
+    }
+
     function isValidMove(i,j) {
         //I do not check for index values less than 0 or higher than 3 because they will be part of dom manipulation
         //check to see if the value returned is != 0; if it is, then its occupied and is nnot valid
@@ -31,16 +41,17 @@ function GameBoard ( )
 
     function check(p1, p2) {
 
-        //TODO this should return as soon as a win is registered, not continue playing.
+        //TODO this should return as soon as a win is registered, not continue playing.\
+        //Questionn, when do you know a game is finished?
 
         //check rows
         const rows = board.map((row) => row.reduce((acc, curr) => acc + curr.getValue(), 0));
-        
-        console.log("Row  is", rows);
+
+        // console.log("Row  is", rows);
         //check columns
         const columns = transpose().map((row) => row.reduce((acc, curr) => acc + curr.getValue(), 0))
         // const colresult = board[0].map((col, i) => board.map(row => row[i]).reduce((acc, curr) => acc + curr.getValue(), 0))
-        console.log("Column is", columns);
+        // console.log("Column is", columns);
 
         //check main diag -> the resulting diagonnal only has one gridSize elements, not 4 gridSize arrays!!
         const major = board
@@ -52,7 +63,7 @@ function GameBoard ( )
                             return acc + cell[0].getValue()}, 0);
                     
                             
-        console.log("Main diag are:", major);
+        // console.log("Main diag are:", major);
 
         //check minor diag 
         const minor = board
@@ -63,27 +74,23 @@ function GameBoard ( )
                         )})
                     .reduce((acc, val) => 
                          acc + val[0].getValue(), 0)
-        console.log("Secondary diag is", minor)
-        /*
-        // const majorVal = major.reduce((acc,cell) => acc + cell[0].getValue(), 0);
-        // console.log("Major val is", majorVal)
-        
-    
-        // const minorVal = minor.reduce((acc, val) => acc + val[0].getValue(), 0);
-        // console.log("Minor val is:", minorVal);
+        // console.log("Secondary diag is", minor)
 
-        */
         let scores = [...rows, ...columns, major, minor];
-        console.log(scores);
+        // console.log(scores);
 
-    //    let winner = scores.includes(-3)? p1.getName() : scores.includes(3)? p2.getName() : 0
-        // return winner
+        // return scores.includes(-gridSize)? `Winner is Player ${p1.getName().toUpperCase()}`
+        //  : scores.includes(gridSize)? `Winner is Player: ${p2.getName().toUpperCase()}`
+        //  : "We have no winners";
+        // console.log(p1.getName(), p2.getName())
+        // console.table(getState());
+        return scores.includes(-gridSize)? p1.getName(): scores.includes(gridSize)? p2.getName(): noRemainingMoves? 0 : "There are no winners";
+        //  : scores.includes(gridSize)? `Winner is Player: ${p2.getName().toUpperCase()}`
+        //  : "We have no winners";
 
-        return scores.includes(-gridSize)? `Winner is Player ${p1.getName().toUpperCase()}` : scores.includes(gridSize)? `Winner is Player: ${p2.getName().toUpperCase()}`: "We have no winners";
-  
     }
 
-    return {getBoard, getState, addToken, isValidMove, check};
+    return {getBoard, getState, addToken, isValidMove, check, noRemainingMoves};
 
     function  transpose( ) {
         return board[0].map((col, i) => board.map(row => row[i]));
@@ -96,9 +103,12 @@ function Cell ()
     let value = 0;
 
     const addValue = (token) => {value = token};
-    const getValue = ( ) => {return value};
-
-    return {addValue, getValue};
+    const getValue = ( ) => {return value}; 
+    
+    return {
+        addValue, 
+        getValue
+    };
 }
 
 function Player (_name, _token)
@@ -111,21 +121,81 @@ function Player (_name, _token)
     let cell = Cell();
     cell.addValue(tokenizer[_token]);
     
-    const getName = () => name;
+    const getName = () => `Player:${name.toUpperCase()}`;
     const addScore =  () => score++;
     const getScore = () => score;
 
     return {getName, cell, addScore, getScore} 
 }
 
-function GameLogic ( )
+function GameLogic (p1, p2)
 {
-    return { }
-}
+    // let players = [p1, p2];
+    let turn = true;
+    // let firstPlayer = flip? p2: p1
+    // let turn = true;
+    //Assume for now that player 1 goes first
+    game = GameBoard();
+    // const validMoves =
+    const print =  () => console.table(board);
+    
+    function playRound (i,j)
+    {
+        // while (noRemainingMoves)
 
-game = GameBoard( );
+        let activePlayer = turn? p1 : p2
+        turn =!turn;
+        game.addToken(activePlayer, i, j);
+        // board = game.getState();
+        // console.log(game.getState());
+        return game.check(p1,p2);
+    }
+
+    function playGame(i,j)
+    {
+        while(game.check()==0)
+            playRound(i,j)
+        return game.check();
+    }
+   
+    // console.log()
+    return {playRound, print, game}
+    // let nextPlayer = !
+    // lets us choose who goes first?
+    //handles player creation
+    //gives us the board state?
+    // lets us play the next round
+    // assignns player turnn
+    // return { }
+}
 p1 = Player("one", "x");
 p2 = Player("two", "y");
+tictac = GameLogic(p1, p2);
+
+// tictac
+console.log(tictac.playRound(0, 0));
+console.log(tictac.playRound(1, 1));
+console.log(tictac.playRound(1, 0));
+console.log(tictac.playRound(2, 2));
+console.log(tictac.playRound(2, 0));
+// tictac.playRound(1, 0);
+
+console.log(tictac.game.getState())
+// console.table(tictac.game.getState())
+// tictac.playRound(2,0);
+// tictac.playRound(1,1);
+// tictac.playRound(1,2);
+// // tictac.playRound(1,2);
+// tictac.playRound(2,2);
+// tictac.game.getState();
+// tictac.game.getBoard();
+// tictac.playRound(1,1);
+// tictac.game.check(p1,p2);
+// console.log(tictac.game.check(p1,p2))
+// tictac.playRound(3, 0);
+// tictac.print();
+// console.log("RemainingMoves")
+// console.log(tictac.game.noRemainingMoves());
 
 
 // game.addToken(p1,0,0);
@@ -138,29 +208,29 @@ p2 = Player("two", "y");
 // game.addToken(p2,2,1);
 // game.addToken(p2,2,2);
 
-game.addToken(p2,0,0);
-game.addToken(p2,1,1);
-game.addToken(p2,2,2);
-// game.addToken(p2,3,3);
+// game.addToken(p2,0,0);
+// game.addToken(p2,1,1);
+// game.addToken(p2,2,2);
+// // game.addToken(p2,3,3);
 
+// // game.addToken(p1,3,0);
+// // game.addToken(p1,2,1);
+// game.addToken(p1,1,2);
+// game.addToken(p1,0,3);
+
+// game.addToken(p1,3,3);
+// game.addToken(p1,3,2);
 // game.addToken(p1,3,0);
-// game.addToken(p1,2,1);
-game.addToken(p1,1,2);
-game.addToken(p1,0,3);
-
-game.addToken(p1,3,3);
-game.addToken(p1,3,2);
-game.addToken(p1,3,0);
-game.addToken(p1,3,1);
+// game.addToken(p1,3,1);
 
 
 
 
-console.log("\n***********");
-// game.getState();
+// console.log("\n***********");
+// // game.getState();
 
-console.table(game.getState())
-console.log(game.check(p1,p2));
+// console.table(game.getState())
+// console.log(game.check(p1,p2));
 
 // console.log(game.getState());
 // p1 = Player("baba", "x");
