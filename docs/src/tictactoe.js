@@ -12,7 +12,7 @@ function GameBoard ( )
 
     const getBoard = ( ) => {return board};
     
-    const getState = ( ) => { return board.map((cells) => console.log(cells.map((cell) => cell.getValue())))};
+    const getState = ( ) => { return board.map((cells) => cells.map((cell) => cell.getValue()))};
 
     const addToken = (player,i,j) => {
         if (isValidMove(i,j))
@@ -31,7 +31,8 @@ function GameBoard ( )
 
     function check(p1, p2) {
 
-        //TODO this should return as soon as a win is registered, not cojntinue playing.
+        //TODO this should return as soon as a win is registered, not continue playing.
+
         //check rows
         const rows = board.map((row) => row.reduce((acc, curr) => acc + curr.getValue(), 0));
         
@@ -41,21 +42,44 @@ function GameBoard ( )
         // const colresult = board[0].map((col, i) => board.map(row => row[i]).reduce((acc, curr) => acc + curr.getValue(), 0))
         console.log("Column is", columns);
 
-        //check main diag
-        const major = board.map((row,i)=> row.filter((col, j) => i == j).reduce((acc, curr) => acc + curr.getValue(), 0));
+        //check main diag -> the resulting diagonnal only has one gridSize elements, not 4 gridSize arrays!!
+        const major = board
+                        .map((row,i)=> { 
+                            return row.filter((col, j) =>{
+                                return i == j});
+                        })
+                        .reduce((acc,cell) => {
+                            return acc + cell[0].getValue()}, 0);
+                    
+                            
         console.log("Main diag are:", major);
-        
-        //check main diag
-        const minor = board.reverse().map((row,i)=> row.filter((col, j) => i == j).reduce((acc, curr) => acc + curr.getValue(), 0));
-        console.log("Secondary diag is", minor)
 
-        let scores = [...rows, ...columns, ...major, ...minor];
+        //check minor diag 
+        const minor = board
+                    .reverse()
+                    .map((row,i)=>{
+                        return row.filter((col, j) => {
+                            return i == j}
+                        )})
+                    .reduce((acc, val) => 
+                         acc + val[0].getValue(), 0)
+        console.log("Secondary diag is", minor)
+        /*
+        // const majorVal = major.reduce((acc,cell) => acc + cell[0].getValue(), 0);
+        // console.log("Major val is", majorVal)
+        
+    
+        // const minorVal = minor.reduce((acc, val) => acc + val[0].getValue(), 0);
+        // console.log("Minor val is:", minorVal);
+
+        */
+        let scores = [...rows, ...columns, major, minor];
         console.log(scores);
 
     //    let winner = scores.includes(-3)? p1.getName() : scores.includes(3)? p2.getName() : 0
         // return winner
 
-        return scores.includes(-gridSize)? `Winner is Player ${p1.getName().toUpperCase()}` : scores.includes(gridSize)? `Winner is: ${p2.getName()}`: "We have no winners";
+        return scores.includes(-gridSize)? `Winner is Player ${p1.getName().toUpperCase()}` : scores.includes(gridSize)? `Winner is Player: ${p2.getName().toUpperCase()}`: "We have no winners";
   
     }
 
@@ -105,25 +129,38 @@ p2 = Player("two", "y");
 
 
 // game.addToken(p1,0,0);
-game.addToken(p1,1,0);
-game.addToken(p1,2,0);
-game.addToken(p1,0,1);
-game.addToken(p1,1,2);
-game.addToken(p2,1,1);
-game.addToken(p2,2,1);
-game.addToken(p2,2,1);
-game.addToken(p2,2,2);
+// game.addToken(p1,1,0);
+// game.addToken(p1,2,0);
+// game.addToken(p1,0,1);
+// game.addToken(p1,1,2);
+// // game.addToken(p2,1,1);
+// game.addToken(p2,2,1);
+// game.addToken(p2,2,1);
+// game.addToken(p2,2,2);
 
-game.addToken(p2,3,0);
-game.addToken(p2,3,1);
-game.addToken(p2,3,2);
+game.addToken(p2,0,0);
+game.addToken(p2,1,1);
+game.addToken(p2,2,2);
 // game.addToken(p2,3,3);
 
+// game.addToken(p1,3,0);
+// game.addToken(p1,2,1);
+game.addToken(p1,1,2);
+game.addToken(p1,0,3);
+
+game.addToken(p1,3,3);
+game.addToken(p1,3,2);
+game.addToken(p1,3,0);
+game.addToken(p1,3,1);
+
+
+
+
 console.log("\n***********");
-game.getState();
+// game.getState();
 
+console.table(game.getState())
 console.log(game.check(p1,p2));
-
 
 // console.log(game.getState());
 // p1 = Player("baba", "x");
