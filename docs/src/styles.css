@@ -4,3 +4,23 @@ body
 {
   font-family: Mulish;
 }
+
+
+.main {
+  display:grid;
+  /* grid-auto-rows:  */
+  /* grid-auto-columns:auto; */
+  /* background-color: aqua; */
+  grid-template-columns: repeat(3,1fr);
+  grid-template-rows: repeat(3,1fr);
+  width:400px;
+  height:400px;
+  align-content: center;
+  justify-content: center;
+  justify-self: center;
+  align-self: center;
+}
+
+div{
+  border: 1px solid red;
+}

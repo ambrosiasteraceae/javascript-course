@@ -168,6 +168,25 @@ function GameLogic (p1, p2)
     // assignns player turnn
     // return { }
 }
+
+function gameState()
+{
+    const main = document.querySelector(".main");
+    let gridSize = 3;
+    for (let i = 0; i<gridSize; i++)
+        for(let j = 0; j<gridSize; j++)
+        {
+            const ele = document.createElement("div");
+            ele.classList = `row-${i}`
+            main.appendChild(ele);
+        }
+}
+
+gameState();
+
+
+
+
 p1 = Player("one", "x");
 p2 = Player("two", "y");
 tictac = GameLogic(p1, p2);
