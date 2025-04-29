@@ -120,12 +120,12 @@ function Player (_name, _token)
 
     let cell = Cell();
     cell.addValue(tokenizer[_token]);
-    
+    const getToken = () => _token;
     const getName = () => `Player:${name.toUpperCase()}`;
     const addScore =  () => score++;
     const getScore = () => score;
 
-    return {getName, cell, addScore, getScore} 
+    return {getName, cell, addScore, getScore, getToken} 
 }
 
 function GameLogic (p1, p2)
@@ -139,27 +139,31 @@ function GameLogic (p1, p2)
     // const validMoves =
     const print =  () => console.table(board);
     
+    const getActivePlayer = () => {return turn? p1 : p2}
+
     function playRound (i,j)
     {
         // while (noRemainingMoves)
 
-        let activePlayer = turn? p1 : p2
+        
+        
+        game.addToken( getActivePlayer(), i, j);
         turn =!turn;
-        game.addToken(activePlayer, i, j);
         // board = game.getState();
         // console.log(game.getState());
         return game.check(p1,p2);
     }
 
-    function playGame(i,j)
-    {
-        while(game.check()==0)
-            playRound(i,j)
-        return game.check();
-    }
+    // function playGame(i,j)
+    // {
+    //     // while(game.check()==0)
+    //     //     playRound(i,j)
+    //     // return game.check();
+    // }
    
     // console.log()
-    return {playRound, print, game}
+    return {playRound, print, game, getActivePlayer}
+    
     // let nextPlayer = !
     // lets us choose who goes first?
     //handles player creation
@@ -169,20 +173,32 @@ function GameLogic (p1, p2)
     // return { }
 }
 
-function gameState()
-{
+function gameState(tictac) {
     const main = document.querySelector(".main");
     let gridSize = 3;
     for (let i = 0; i<gridSize; i++)
         for(let j = 0; j<gridSize; j++)
         {
             const ele = document.createElement("div");
-            ele.classList = `row-${i}`
-            main.appendChild(ele);
-        }
-}
+            ele.classList = "cell"; 
+            ele.datakey = [i,j];
 
-gameState();
+            main.appendChild(ele);      
+        }
+    cellNodes = document.querySelectorAll(".cell");
+    cellNodes.forEach((cell)=>{
+    cell.addEventListener("click", (e) => {
+        let data = cell.datakey;
+        console.log(data); 
+        cell.textContent = tictac.getActivePlayer().getToken();
+        console.log("Pl-ayer:",tictac.getActivePlayer().getName());
+
+        console.log(tictac.playRound(data[0],data[1]));
+        console.table(tictac.game.getState())
+        })
+    })
+    }
+    
 
 
 
@@ -190,17 +206,17 @@ gameState();
 p1 = Player("one", "x");
 p2 = Player("two", "y");
 tictac = GameLogic(p1, p2);
-
+gameState(tictac);
 // tictac
-console.log(tictac.playRound(0, 0));
-console.log(tictac.playRound(1, 1));
-console.log(tictac.playRound(1, 0));
-console.log(tictac.playRound(2, 2));
-console.log(tictac.playRound(2, 0));
-// tictac.playRound(1, 0);
+// console.log(tictac.playRound(0, 0));
+// console.log(tictac.playRound(1, 1));
+// console.log(tictac.playRound(1, 0));
+// console.log(tictac.playRound(2, 2));
+// console.log(tictac.playRound(2, 0));
+// // tictac.playRound(1, 0);
 
-console.log(tictac.game.getState())
-// console.table(tictac.game.getState())
+// console.log(tictac.game.getState())
+// // console.table(tictac.game.getState())
 // tictac.playRound(2,0);
 // tictac.playRound(1,1);
 // tictac.playRound(1,2);
