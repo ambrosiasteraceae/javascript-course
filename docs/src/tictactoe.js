@@ -1,20 +1,20 @@
-function GameBoard ( )
+function Board ( )
 {
     /// Overall two cents, I think I overcomplicated this by a factor of 2, with the cell functions not returning a bloody property.
 
     const gridSize = 3;
-    const board = [ ];
+    const board = [];
 
     for (let i = 0; i < gridSize ; i++)
     {
-        board[i] = [ ];
+        board[i] = [];
         for (let j = 0; j<gridSize; j++)
             board[i].push(Cell( ));
     }
 
-    const getBoard = ( ) => {return board};
+    const getBoard = ( ) => board;
     
-    const getState = ( ) => { return board.map((cells) => cells.map((cell) => cell.getValue()))};
+    const getState = ( ) => board.map((cells) => cells.map((cell) => cell.getValue()));
 
     const addToken = (player,i,j) => {
         if (isValidMove(i,j))
@@ -67,7 +67,7 @@ function GameBoard ( )
 
         //check minor diag 
         const minor = board
-                    .reverse()
+                    .toReversed()
                     .map((row,i)=>{
                         return row.filter((col, j) => {
                             return i == j}
@@ -93,7 +93,7 @@ function GameBoard ( )
     return {getBoard, getState, addToken, isValidMove, check, noRemainingMoves};
 
     function  transpose( ) {
-        return board[0].map((col, i) => board.map(row => row[i]));
+        return board[0].map((col, i) => getBoard().map(row => row[i]));
     }
 
 }
@@ -135,45 +135,28 @@ function GameLogic (p1, p2)
     // let firstPlayer = flip? p2: p1
     // let turn = true;
     //Assume for now that player 1 goes first
-    game = GameBoard();
-    // const validMoves =
+    board = Board();
+
     const print =  () => console.table(board);
     
     const getActivePlayer = () => {return turn? p1 : p2}
 
     function playRound (i,j)
     {
-        // while (noRemainingMoves)
 
-        
-        
-        game.addToken( getActivePlayer(), i, j);
+        board.addToken( getActivePlayer(), i, j);
         turn =!turn;
-        // board = game.getState();
-        // console.log(game.getState());
-        return game.check(p1,p2);
+   
+        return board.check(p1,p2);
     }
 
-    // function playGame(i,j)
-    // {
-    //     // while(game.check()==0)
-    //     //     playRound(i,j)
-    //     // return game.check();
-    // }
-   
-    // console.log()
-    return {playRound, print, game, getActivePlayer}
     
-    // let nextPlayer = !
-    // lets us choose who goes first?
-    //handles player creation
-    //gives us the board state?
-    // lets us play the next round
-    // assignns player turnn
-    // return { }
+    return {playRound, print, board, getActivePlayer}
+    
+
 }
 
-function gameState(tictac) {
+function gameState(game) {
     const main = document.querySelector(".main");
     let gridSize = 3;
     for (let i = 0; i<gridSize; i++)
@@ -189,22 +172,42 @@ function gameState(tictac) {
     cellNodes.forEach((cell)=>{
     cell.addEventListener("click", (e) => {
         let data = cell.datakey;
-        console.log(data); 
-        cell.textContent = tictac.getActivePlayer().getToken();
-        console.log("Pl-ayer:",tictac.getActivePlayer().getName());
 
-        console.log(tictac.playRound(data[0],data[1]));
-        console.table(tictac.game.getState())
+        if(game.board.check(p1,p2)==0)
+        {
+            if(game.board.isValidMove(data[0], data[1]))
+                {
+                   cell.textContent = game.getActivePlayer().getToken();
+                
+                   result = game.playRound(data[0],data[1]);
+           
+                   console.log(result)
+                   
+                }
+        }
+        else
+            console.log(game.playRound(data[0],data[1]));
+           
+        // console.log(result)
+
+        
+         
+        // console.log("Pl-ayer:",tictac.getActivePlayer().getName());
+        // console.log();
+        // console.table(tictac.board.getState());
+
         })
-    })
+    }) 
     }
     
+    
+//22                 
 
 
 
 
-p1 = Player("one", "x");
-p2 = Player("two", "y");
+p1 = Player("Vasile", "X");
+p2 = Player("Ambrozie", "O");
 tictac = GameLogic(p1, p2);
 gameState(tictac);
 // tictac

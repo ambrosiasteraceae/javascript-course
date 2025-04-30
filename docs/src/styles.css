@@ -23,4 +23,25 @@ body
 
 div{
   border: 1px solid red;
+  vertical-align: center;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 1.3em;
+  /* display: grid; */
+/* place-items: center; */
+  /* display: flex; */
+  /* margin:0 auto; */
+  /* flex-direction: column; */
+  /* justify-content: center;
+  text-align: center; */
+  /* align-content: center; */
+  /* align-items: center; */
 }
+
+.cell:hover{
+  background-color: aqua;
+}
+  
