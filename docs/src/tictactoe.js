@@ -1,4 +1,4 @@
-function Board ( )
+function Board ()
 {
     /// Overall two cents, I think I overcomplicated this by a factor of 2, with the cell functions not returning a bloody property.
 
@@ -9,20 +9,21 @@ function Board ( )
     {
         board[i] = [];
         for (let j = 0; j<gridSize; j++)
-            board[i].push(Cell( ));
+            board[i].push(Cell());
     }
 
-    const getBoard = ( ) => board;
+    const getBoard = () => board;
     
-    const getState = ( ) => board.map((cells) => cells.map((cell) => cell.getValue()));
+    const getState = () => board.map((cells) => cells.map((cell) => cell.getValue()));
 
     const addToken = (player,i,j) => {
+        // console.log(player.getName(),  player.cell.getValue())
         if (isValidMove(i,j))
             board[i][j] = player.cell;
     };
 
     function noRemainingMoves() {
-        return board.map((row, i)=> { 
+        return board.map((row, i) => { 
             return row.filter((col, j) => col.getValue() == 0)
         }).flat().length == 0;
         
@@ -77,22 +78,22 @@ function Board ( )
         // console.log("Secondary diag is", minor)
 
         let scores = [...rows, ...columns, major, minor];
-        // console.log(scores);
+        console.log(scores);
 
         // return scores.includes(-gridSize)? `Winner is Player ${p1.getName().toUpperCase()}`
         //  : scores.includes(gridSize)? `Winner is Player: ${p2.getName().toUpperCase()}`
         //  : "We have no winners";
         // console.log(p1.getName(), p2.getName())
         // console.table(getState());
-        return scores.includes(-gridSize)? p1.getName(): scores.includes(gridSize)? p2.getName(): noRemainingMoves? 0 : "There are no winners";
         //  : scores.includes(gridSize)? `Winner is Player: ${p2.getName().toUpperCase()}`
         //  : "We have no winners";
-
+        // return scores.includes(-gridSize)? -1: scores.includes(gridSize)? 1 : noRemainingMoves? 0 : 2;
+        return scores.includes(-gridSize)? -1: scores.includes(gridSize)? 1 : scores.includes(0)? 0 : 2;
     }
 
     return {getBoard, getState, addToken, isValidMove, check, noRemainingMoves};
 
-    function  transpose( ) {
+    function  transpose() {
         return board[0].map((col, i) => getBoard().map(row => row[i]));
     }
 
@@ -103,7 +104,7 @@ function Cell ()
     let value = 0;
 
     const addValue = (token) => {value = token};
-    const getValue = ( ) => {return value}; 
+    const getValue = () => {return value}; 
     
     return {
         addValue, 
@@ -116,7 +117,7 @@ function Player (_name, _token)
     let score = 0;
     let name = _name;
     // we map x and y's to -1 & 1
-    let tokenizer = { "x":-1, "y":1}
+    let tokenizer = { "X":-1, "O":1}
 
     let cell = Cell();
     cell.addValue(tokenizer[_token]);
@@ -135,7 +136,7 @@ function GameLogic (p1, p2)
     // let firstPlayer = flip? p2: p1
     // let turn = true;
     //Assume for now that player 1 goes first
-    board = Board();
+    const board = Board();
 
     const print =  () => console.table(board);
     
@@ -143,161 +144,89 @@ function GameLogic (p1, p2)
 
     function playRound (i,j)
     {
-
         board.addToken( getActivePlayer(), i, j);
         turn =!turn;
-   
         return board.check(p1,p2);
     }
-
     
     return {playRound, print, board, getActivePlayer}
     
-
 }
 
-function gameState(game) {
+function GameController() {
+
+    //Why should we choose to rerender the whole scene instead of just updating the board UI on each turn?
+    //Since we are now rerendering we need to add the event handlrs either to the main or to the .cell divs everytime
     const main = document.querySelector(".main");
-    let gridSize = 3;
-    for (let i = 0; i<gridSize; i++)
-        for(let j = 0; j<gridSize; j++)
-        {
-            const ele = document.createElement("div");
-            ele.classList = "cell"; 
-            ele.datakey = [i,j];
+    const btn = document.querySelector(".reset"); 
+    const ann = document.querySelector(".announcement"); 
+    let result = 0;
+    p1 = Player("Vasile", "X");
+    p2 = Player("Ambrozie", "O");
+    game = GameLogic(p1, p2);
 
-            main.appendChild(ele);      
-        }
-    cellNodes = document.querySelectorAll(".cell");
-    cellNodes.forEach((cell)=>{
-    cell.addEventListener("click", (e) => {
-        let data = cell.datakey;
+    renderScene();
 
-        if(game.board.check(p1,p2)==0)
-        {
-            if(game.board.isValidMove(data[0], data[1]))
-                {
-                   cell.textContent = game.getActivePlayer().getToken();
-                
-                   result = game.playRound(data[0],data[1]);
-           
-                   console.log(result)
-                   
-                }
-        }
-        else
-            console.log(game.playRound(data[0],data[1]));
-           
-        // console.log(result)
-
+    function renderScene(){
         
-         
-        // console.log("Pl-ayer:",tictac.getActivePlayer().getName());
-        // console.log();
-        // console.table(tictac.board.getState());
+        main.textContent = "";    
+        let gridSize = 3;
+        for (let i = 0; i<gridSize; i++)
+            for(let j = 0; j<gridSize; j++)
+            {
+                const ele = document.createElement("div");
+                const value = game.board.getBoard()[i][j].getValue();
+                // console.log("Value is:;", value);
+                ele.classList = "cell"; 
+                ele.datakey = [i,j]; 
+                if (value == -1)
+                    ele.textContent = p1.getToken();
+                else if (value == 1)
+                    ele.textContent = p2.getToken();
+                else
+                    ele.textContent = "";
+                main.appendChild(ele);      
+            }  
+            // ann.textContent = game.getActivePlayer().getName()         
+    }
 
-        })
-    }) 
+    function checkWinner(result) {
+    
+        if (result == -1)
+            return(`${p1.getName()} wins`)
+        else if(result == 1)
+            return(`${p2.getName()} wins`)
+        else if(result == 2)
+            return("Draw")
     }
     
+    function clickHandler(e) {
+
+        const data = e.target.datakey;
+        // ann.textContent = game.getActivePlayer().getName()
+        console.log(game.getActivePlayer().getName())
     
-//22                 
+        if (result == 0)
+        {
+            
+            result = game.playRound(data[0],data[1]);
+            ann.textContent = checkWinner(result);
+            
+        }
+        renderScene();
+  
+    }
 
-
-
-
-p1 = Player("Vasile", "X");
-p2 = Player("Ambrozie", "O");
-tictac = GameLogic(p1, p2);
-gameState(tictac);
-// tictac
-// console.log(tictac.playRound(0, 0));
-// console.log(tictac.playRound(1, 1));
-// console.log(tictac.playRound(1, 0));
-// console.log(tictac.playRound(2, 2));
-// console.log(tictac.playRound(2, 0));
-// // tictac.playRound(1, 0);
-
-// console.log(tictac.game.getState())
-// // console.table(tictac.game.getState())
-// tictac.playRound(2,0);
-// tictac.playRound(1,1);
-// tictac.playRound(1,2);
-// // tictac.playRound(1,2);
-// tictac.playRound(2,2);
-// tictac.game.getState();
-// tictac.game.getBoard();
-// tictac.playRound(1,1);
-// tictac.game.check(p1,p2);
-// console.log(tictac.game.check(p1,p2))
-// tictac.playRound(3, 0);
-// tictac.print();
-// console.log("RemainingMoves")
-// console.log(tictac.game.noRemainingMoves());
-
-
-// game.addToken(p1,0,0);
-// game.addToken(p1,1,0);
-// game.addToken(p1,2,0);
-// game.addToken(p1,0,1);
-// game.addToken(p1,1,2);
-// // game.addToken(p2,1,1);
-// game.addToken(p2,2,1);
-// game.addToken(p2,2,1);
-// game.addToken(p2,2,2);
-
-// game.addToken(p2,0,0);
-// game.addToken(p2,1,1);
-// game.addToken(p2,2,2);
-// // game.addToken(p2,3,3);
-
-// // game.addToken(p1,3,0);
-// // game.addToken(p1,2,1);
-// game.addToken(p1,1,2);
-// game.addToken(p1,0,3);
-
-// game.addToken(p1,3,3);
-// game.addToken(p1,3,2);
-// game.addToken(p1,3,0);
-// game.addToken(p1,3,1);
-
-
-
-
-// console.log("\n***********");
-// // game.getState();
-
-// console.table(game.getState())
-// console.log(game.check(p1,p2));
-
-// console.log(game.getState());
-// p1 = Player("baba", "x");
-// console.log(p1.getName(), p1.getToken(), p1.getScore())
-// p1.addToken("x");
-// p1.addScore();
-// p1.addScore();
-// p1.addScore();
-// p1.addScore();
-// // p1.getToken();
-
-// console.log(p1);
-// // p1 = Player("baba", "x");
-// p1.addScore();
-// p1.name = "";
-// console.log(p1);
-
-// // console.log(p1.getToken());
-// console.log(p1.getScore());
-
-// // p1.score = 110;
-// p1.token = "x";
-// console.log(p1)
-// p1.token = "y";
-// console.log(p1);
-// p1.addScore();
-// p1.addScore();
-// p1.addScore();
-// p1.addScore();
-// console.log(p1.score);
-// p1.addToken("foo");
-// console.log(p1.score);
+    function resetGame()
+    {
+        result = 0;
+        game = GameLogic(p1, p2);
+    }
+    
+    main.addEventListener("click", clickHandler);
+    btn.addEventListener("click", resetGame);
+ 
+    renderScene()
+  
+    }
+GameController();
