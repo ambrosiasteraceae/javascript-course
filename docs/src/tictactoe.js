@@ -1,8 +1,8 @@
-function Board ()
+function Board (gridSize)
 {
     /// Overall two cents, I think I overcomplicated this by a factor of 2, with the cell functions not returning a bloody property.
 
-    const gridSize = 3;
+    // const gridSize = 3;
     const board = [];
 
     for (let i = 0; i < gridSize ; i++)
@@ -121,17 +121,18 @@ function Player (_name, _token)
     return {getName, cell, addScore, getScore, getToken} 
 }
 
-function GameLogic (p1, p2)
+function GameLogic (gridSize, p1, p2)
 {
     let turn = true;
-    const board = Board();
+    const board = Board(gridSize);
     const print =  () => console.table(board);
     const getActivePlayer = () => {return turn? p1 : p2}
 
     function playRound (i,j)
     {
-        board.addToken( getActivePlayer(), i, j);
-        turn =!turn;
+        insert = board.addToken( getActivePlayer(), i, j);
+        if (insert==1)
+            turn =!turn;
         return board.check(p1,p2);
     }
     return {playRound, print, board, getActivePlayer}    
@@ -149,14 +150,15 @@ function GameController() {
     let result = 0;
     p1 = Player("Vasile", "X");
     p2 = Player("Ambrozie", "O");
-    game = GameLogic(p1, p2);
+    game = GameLogic(select.value, p1, p2);
 
     renderScene();
   
     function renderScene()
     {
         main.textContent = "";    
-        let gridSize = 3;
+        let gridSize = select.value;
+        console.log
         for (let i = 0; i<gridSize; i++)
             for(let j = 0; j<gridSize; j++)
             {
@@ -173,7 +175,11 @@ function GameController() {
                     ele.textContent = "";
                 ele.style.color= ele.textContent == "X" ? "#135e99" : ele.textContent == "O" ? "#ed1a6a" : "";
             
-                main.appendChild(ele);      
+                main.appendChild(ele);
+                main.style.gridTemplateColumns = `repeat(${gridSize},1fr)`;
+                main.style.gridTemplateRows = `repeat(${gridSize},1fr)`;
+                // grid-template-columns: repeat(3,1fr);
+                // grid-template-rows: repeat(3,1fr);      
             }           
     }
 
@@ -200,7 +206,7 @@ function GameController() {
     function resetGame()
     {
         result = 0;
-        game = GameLogic(p1, p2);
+        game = GameLogic(select.value, p1, p2);
         renderScene();
     }
 
