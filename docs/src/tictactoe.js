@@ -20,6 +20,9 @@ function Board ()
         // console.log(player.getName(),  player.cell.getValue())
         if (isValidMove(i,j))
             board[i][j] = player.cell;
+        else //We need to return in order for not to switch player turn  in case we do not add to the board
+            return 0
+        return 1
     };
 
     function noRemainingMoves() {
@@ -63,9 +66,6 @@ function Board ()
                         .reduce((acc,cell) => {
                             return acc + cell[0].getValue()}, 0);
                     
-                            
-        // console.log("Main diag are:", major);
-
         //check minor diag 
         const minor = board
                     .toReversed()
@@ -78,16 +78,8 @@ function Board ()
         // console.log("Secondary diag is", minor)
 
         let scores = [...rows, ...columns, major, minor];
-        console.log(scores);
-
-        // return scores.includes(-gridSize)? `Winner is Player ${p1.getName().toUpperCase()}`
-        //  : scores.includes(gridSize)? `Winner is Player: ${p2.getName().toUpperCase()}`
-        //  : "We have no winners";
-        // console.log(p1.getName(), p2.getName())
-        // console.table(getState());
-        //  : scores.includes(gridSize)? `Winner is Player: ${p2.getName().toUpperCase()}`
-        //  : "We have no winners";
-        // return scores.includes(-gridSize)? -1: scores.includes(gridSize)? 1 : noRemainingMoves? 0 : 2;
+        // console.log(scores);
+        
         return scores.includes(-gridSize)? -1: scores.includes(gridSize)? 1 : scores.includes(0)? 0 : 2;
     }
 
@@ -117,7 +109,7 @@ function Player (_name, _token)
     let score = 0;
     let name = _name;
     // we map x and y's to -1 & 1
-    let tokenizer = { "X":-1, "O":1}
+    let tokenizer = { "X":-1, "O":1};
 
     let cell = Cell();
     cell.addValue(tokenizer[_token]);
@@ -131,15 +123,9 @@ function Player (_name, _token)
 
 function GameLogic (p1, p2)
 {
-    // let players = [p1, p2];
     let turn = true;
-    // let firstPlayer = flip? p2: p1
-    // let turn = true;
-    //Assume for now that player 1 goes first
     const board = Board();
-
     const print =  () => console.table(board);
-    
     const getActivePlayer = () => {return turn? p1 : p2}
 
     function playRound (i,j)
@@ -148,9 +134,7 @@ function GameLogic (p1, p2)
         turn =!turn;
         return board.check(p1,p2);
     }
-    
-    return {playRound, print, board, getActivePlayer}
-    
+    return {playRound, print, board, getActivePlayer}    
 }
 
 function GameController() {
@@ -160,15 +144,17 @@ function GameController() {
     const main = document.querySelector(".main");
     const btn = document.querySelector(".reset"); 
     const ann = document.querySelector(".announcement"); 
+    const select = document.querySelector("select");
+
     let result = 0;
     p1 = Player("Vasile", "X");
     p2 = Player("Ambrozie", "O");
     game = GameLogic(p1, p2);
 
     renderScene();
-
-    function renderScene(){
-        
+  
+    function renderScene()
+    {
         main.textContent = "";    
         let gridSize = 3;
         for (let i = 0; i<gridSize; i++)
@@ -185,9 +171,10 @@ function GameController() {
                     ele.textContent = p2.getToken();
                 else
                     ele.textContent = "";
+                ele.style.color= ele.textContent == "X" ? "#135e99" : ele.textContent == "O" ? "#ed1a6a" : "";
+            
                 main.appendChild(ele);      
-            }  
-            // ann.textContent = game.getActivePlayer().getName()         
+            }           
     }
 
     function checkWinner(result) {
@@ -200,33 +187,37 @@ function GameController() {
             return("Draw")
     }
     
-    function clickHandler(e) {
-
+    function clickHandler(e) 
+    {
         const data = e.target.datakey;
-        // ann.textContent = game.getActivePlayer().getName()
-        console.log(game.getActivePlayer().getName())
-    
         if (result == 0)
         {
-            
             result = game.playRound(data[0],data[1]);
-            ann.textContent = checkWinner(result);
-            
-        }
+            ann.textContent = checkWinner(result);}
         renderScene();
-  
     }
 
     function resetGame()
     {
         result = 0;
         game = GameLogic(p1, p2);
+        renderScene();
     }
-    
+
+    function onDivPlayerHover(){}
+    function displayScore(){}
+    function onSelectValueChanged()
+    {
+   
+        console.log(select.value);
+        resetGame();
+    }
+
     main.addEventListener("click", clickHandler);
     btn.addEventListener("click", resetGame);
+    select.addEventListener("change", onSelectValueChanged)
  
-    renderScene()
-  
+    renderScene();
+
     }
 GameController();
