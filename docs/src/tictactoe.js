@@ -1,7 +1,7 @@
 function Board (gridSize)
 {
     /// Overall two cents, I think I overcomplicated this by a factor of 2, with the cell functions not returning a bloody property.
-
+    // Convert to number all that you capture from the web
     // const gridSize = 3;
     const board = [];
 
@@ -78,7 +78,11 @@ function Board (gridSize)
         // console.log("Secondary diag is", minor)
 
         let scores = [...rows, ...columns, major, minor];
-        // console.log(scores);
+        console.log(scores);
+        console.log(gridSize);
+        console.log(Number.isInteger(gridSize));
+        console.log(scores.includes(gridSize));
+        console.log(scores.includes(-gridSize));
         
         return scores.includes(-gridSize)? -1: scores.includes(gridSize)? 1 : scores.includes(0)? 0 : 2;
     }
@@ -133,6 +137,7 @@ function GameLogic (gridSize, p1, p2)
         insert = board.addToken( getActivePlayer(), i, j);
         if (insert==1)
             turn =!turn;
+        console.log(board.check(p1,p2), "check imn rorsss");
         return board.check(p1,p2);
     }
     return {playRound, print, board, getActivePlayer}    
@@ -152,7 +157,7 @@ function GameController() {
     p2 = Player("Ambrozie", "O");
     game = GameLogic(select.value, p1, p2);
 
-    renderScene();
+    // renderScene();
   
     function renderScene()
     {
@@ -206,7 +211,8 @@ function GameController() {
     function resetGame()
     {
         result = 0;
-        game = GameLogic(select.value, p1, p2);
+        const gridSize = Number(select.value);
+        game = GameLogic(gridSize, p1, p2);
         renderScene();
     }
 
