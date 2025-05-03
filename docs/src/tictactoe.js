@@ -4,6 +4,7 @@ function Board (gridSize)
     // Convert to number all that you capture from the web
     // const gridSize = 3;
     const board = [];
+    let scores = [];
 
     for (let i = 0; i < gridSize ; i++)
     {
@@ -77,21 +78,28 @@ function Board (gridSize)
                          acc + val[0].getValue(), 0)
         // console.log("Secondary diag is", minor)
 
-        let scores = [...rows, ...columns, major, minor];
-        console.log(scores);
-        console.log(gridSize);
-        console.log(Number.isInteger(gridSize));
-        console.log(scores.includes(gridSize));
-        console.log(scores.includes(-gridSize));
-        
-        return scores.includes(-gridSize)? -1: scores.includes(gridSize)? 1 : scores.includes(0)? 0 : 2;
-    }
+        scores = [...rows, ...columns, major, minor];
+        // console.log(scores);
+        // console.log(gridSize);
+        // console.log(Number.isInteger(gridSize));
+        // console.log(scores.includes(gridSize));
+        // console.log(scores.includes(-gridSize));
 
-    return {getBoard, getState, addToken, isValidMove, check, noRemainingMoves};
+        // console.log(board.map((row, i) => { 
+        //     return row.filter((col, j) => col.getValue() == 0)
+        // }).flat())
+        
+        return scores.includes(-gridSize)? -1: scores.includes(gridSize)? 1 : noRemainingMoves()? 2 : 0;
+        
+    }
+    const getScore = () => scores;
+
+    return {getBoard, getState, addToken, isValidMove, check, noRemainingMoves, getScore};
 
     function  transpose() {
         return board[0].map((col, i) => getBoard().map(row => row[i]));
     }
+
 
 }
 
@@ -127,6 +135,7 @@ function Player (_name, _token)
 
 function GameLogic (gridSize, p1, p2)
 {
+    
     let turn = true;
     const board = Board(gridSize);
     const print =  () => console.table(board);
@@ -137,7 +146,7 @@ function GameLogic (gridSize, p1, p2)
         insert = board.addToken( getActivePlayer(), i, j);
         if (insert==1)
             turn =!turn;
-        console.log(board.check(p1,p2), "check imn rorsss");
+        // console.log(board.check(p1,p2), "check imn rorsss");
         return board.check(p1,p2);
     }
     return {playRound, print, board, getActivePlayer}    
@@ -151,12 +160,13 @@ function GameController() {
     const btn = document.querySelector(".reset"); 
     const ann = document.querySelector(".announcement"); 
     const select = document.querySelector("select");
-
-    let result = 0;
+    
+    let win = false;
+    let gridSize = Number(select.value);
+    
     p1 = Player("Vasile", "X");
     p2 = Player("Ambrozie", "O");
-    game = GameLogic(select.value, p1, p2);
-
+    game = GameLogic(gridSize, p1, p2);
     // renderScene();
   
     function renderScene()
@@ -188,46 +198,105 @@ function GameController() {
             }           
     }
 
-    function checkWinner(result) {
-    
-        if (result == -1)
-            return(`${p1.getName()} wins`)
-        else if(result == 1)
-            return(`${p2.getName()} wins`)
-        else if(result == 2)
-            return("Draw")
+function checkWinner(result){
+    switch (result)
+    {    
+        case 1:
+            ann.textContent = `${p1.getName()} wins`;
+            return true
+        case -1: 
+            ann.textContent = `${p2.getName()} wins`;
+            return true;
+        case 2:
+            ann.textContent = "Its a Draw!";
+            return true;
+        default:
+            return false;
     }
-    
+ }
+
+
+  
     function clickHandler(e) 
     {
         const data = e.target.datakey;
-        if (result == 0)
+        if (!win)
         {
+
             result = game.playRound(data[0],data[1]);
-            ann.textContent = checkWinner(result);}
+            generateWincondition();
+            // console.log(result)
+            win = checkWinner(result);
+        }
         renderScene();
     }
 
     function resetGame()
     {
-        result = 0;
-        const gridSize = Number(select.value);
+        win = false;
+        ann.textContent = "";
+        gridSize = Number(select.value);
         game = GameLogic(gridSize, p1, p2);
         renderScene();
     }
 
-    function onDivPlayerHover(){}
-    function displayScore(){}
+    function onDivPlayerHover(){};
+    function displayScore(){};
+    function onPlayerTokenChange(){};
+    function onPlayerTurnChange(){};
+
+
+    function generateWincondition()
+    {
+        scores = game.board.getScore();
+        console.log(scores);
+        index = scores.findIndex((x) => x ==-gridSize);
+        let cellIndexes = [];
+        // if(index==-1)
+            console.log("Index is", index)
+        
+        if(index < gridSize)
+            {
+                console.log("rows")
+                for (let ri = 0; ri < gridSize; ri++)
+                    cellIndexes.push(ri+gridSize*index);
+            }
+        else if (index < gridSize*2)
+            {
+                console.log("cols")
+                for (let ci = 0; ci < gridSize ; ci++)
+                    cellIndexes.push(index%gridSize +gridSize*ci);  
+            }
+        else if (index == scores.length -2)
+            {
+                console.log("majmor")
+                for(let mai = 0; mai< gridSize; mai++)
+                    cellIndexes.push(mai + mai * gridSize);
+            }
+        else if (index == scores.length -1)
+            {
+                console.log("minor")
+                for(let mni = 0; mni< gridSize; mni++)
+                    cellIndexes.push((1 + mni)* (gridSize-1));
+            }
+        console.log(cellIndexes);
+    }
+
+    // }
+    // function onPlayerWinHighlight(){
+    //     result = game.checkWinner();
+    // };
+
+
+
     function onSelectValueChanged()
     {
-   
-        console.log(select.value);
         resetGame();
     }
 
     main.addEventListener("click", clickHandler);
     btn.addEventListener("click", resetGame);
-    select.addEventListener("change", onSelectValueChanged)
+    select.addEventListener("change", resetGame)
  
     renderScene();
 
