@@ -152,8 +152,8 @@ function GameLogic (gridSize, p1, p2)
     return {playRound, print, board, getActivePlayer}    
 }
 
-function GameController() {
-
+function GameController() 
+{
     //Why should we choose to rerender the whole scene instead of just updating the board UI on each turn?
     //Since we are now rerendering we need to add the event handlrs either to the main or to the .cell divs everytime
     const main = document.querySelector(".main");
@@ -203,9 +203,13 @@ function checkWinner(result){
     {    
         case 1:
             ann.textContent = `${p1.getName()} wins`;
+            // cellIndeces = generateWincondition(result);
+            // console.log(cellIndeces);
             return true
         case -1: 
             ann.textContent = `${p2.getName()} wins`;
+            // cellIndeces = generateWincondition(result);
+            // console.log(cellIndeces);
             return true;
         case 2:
             ann.textContent = "Its a Draw!";
@@ -215,18 +219,21 @@ function checkWinner(result){
     }
  }
 
-
-  
     function clickHandler(e) 
     {
         const data = e.target.datakey;
         if (!win)
         {
-
             result = game.playRound(data[0],data[1]);
-            generateWincondition();
-            // console.log(result)
             win = checkWinner(result);
+            if (win == true && result!=2)
+            {
+                renderScene();
+                cellIndeces = generateWincondition(result);
+                console.log(cellIndeces);
+                onPlayerWinHighlight(cellIndeces)
+                return
+            }     
         }
         renderScene();
     }
@@ -234,10 +241,12 @@ function checkWinner(result){
     function resetGame()
     {
         win = false;
+        
         ann.textContent = "";
         gridSize = Number(select.value);
         game = GameLogic(gridSize, p1, p2);
         renderScene();
+        
     }
 
     function onDivPlayerHover(){};
@@ -245,60 +254,69 @@ function checkWinner(result){
     function onPlayerTokenChange(){};
     function onPlayerTurnChange(){};
 
-
-    function generateWincondition()
+    function generateWincondition(sign)
     {
         scores = game.board.getScore();
-        console.log(scores);
-        index = scores.findIndex((x) => x ==-gridSize);
+        // console.log(scores);
+        index = scores.findIndex((x) => x == sign * gridSize);
         let cellIndexes = [];
-        // if(index==-1)
-            console.log("Index is", index)
-        
-        if(index < gridSize)
-            {
+    
+        if (index == -1)
+            return
+
+        switch(true)
+        {
+            case (index < gridSize):
                 console.log("rows")
                 for (let ri = 0; ri < gridSize; ri++)
                     cellIndexes.push(ri+gridSize*index);
-            }
-        else if (index < gridSize*2)
-            {
+                break;
+            case (index < gridSize*2):
                 console.log("cols")
                 for (let ci = 0; ci < gridSize ; ci++)
                     cellIndexes.push(index%gridSize +gridSize*ci);  
-            }
-        else if (index == scores.length -2)
-            {
+                break;
+           case (index == scores.length -2):
                 console.log("majmor")
                 for(let mai = 0; mai< gridSize; mai++)
                     cellIndexes.push(mai + mai * gridSize);
-            }
-        else if (index == scores.length -1)
-            {
+                break;
+            case (index == scores.length -1):
                 console.log("minor")
                 for(let mni = 0; mni< gridSize; mni++)
                     cellIndexes.push((1 + mni)* (gridSize-1));
-            }
-        console.log(cellIndexes);
+                break;
+            // default:
+            //     console.log("Index -1")
+        }
+        return cellIndexes;
+        
     }
 
-    // }
-    // function onPlayerWinHighlight(){
-    //     result = game.checkWinner();
-    // };
-
-
-
-    function onSelectValueChanged()
+ 
+    function onPlayerWinHighlight(indeces)
     {
-        resetGame();
-    }
+        //Clicking the handler after displayimg the view would rerender the scene and all progress will be lost
+        const cells = document.querySelectorAll(".cell");
+
+        for(let i=0; i<cells.length; i++)
+        {
+            if(indeces.includes (i))
+                cells[i].style.fontWeight = "bolder"
+            else
+                cells[i].style.color = "gray"
+    
+            console.log( cells[indeces[i]])
+        }
+     
+    };
+
 
     main.addEventListener("click", clickHandler);
     btn.addEventListener("click", resetGame);
     select.addEventListener("change", resetGame)
  
     renderScene();
-
-    }
+}
+    
 GameController();
