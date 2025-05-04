@@ -171,6 +171,7 @@ function GameController()
   
     function renderScene()
     {
+
         main.textContent = "";    
         let gridSize = select.value;
         console.log
@@ -226,16 +227,19 @@ function checkWinner(result){
         {
             result = game.playRound(data[0],data[1]);
             win = checkWinner(result);
-            if (win == true && result!=2)
+            renderScene();
+  
+        }
+        if (win == true && result!=2)
             {
                 renderScene();
                 cellIndeces = generateWincondition(result);
                 console.log(cellIndeces);
                 onPlayerWinHighlight(cellIndeces)
+                // e.stopPropagation();
                 return
             }     
-        }
-        renderScene();
+       
     }
 
     function resetGame()
@@ -260,7 +264,6 @@ function checkWinner(result){
         // console.log(scores);
         index = scores.findIndex((x) => x == sign * gridSize);
         let cellIndexes = [];
-    
         if (index == -1)
             return
 
