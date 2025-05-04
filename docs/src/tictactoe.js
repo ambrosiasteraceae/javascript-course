@@ -113,7 +113,7 @@ function Player (_name, _token)
 
     const getValue = () => tokens[_token]
     const getToken = () => _token;
-    const getName = () => `Player:${name.toUpperCase()}`;
+    const getName = () => `${name.toUpperCase()}`;
     const addScore =  () => score++;
     const getScore = () => score;
 
@@ -156,6 +156,7 @@ function GameController()
     p2 = Player("Ambrozie", "O");
     game = GameLogic(gridSize, p1, p2);
     ann.textContent = `${game.getActivePlayer().getToken()} turn`
+    var prev = {};
     // renderScene();
    
   
@@ -164,6 +165,8 @@ function GameController()
 
         main.textContent = "";    
         let gridSize = select.value;
+        main.style.gridTemplateColumns = `repeat(${gridSize},1fr)`;
+        main.style.gridTemplateRows = `repeat(${gridSize},1fr)`;
         for (let i = 0; i<gridSize; i++)
             for(let j = 0; j<gridSize; j++)
             {
@@ -181,33 +184,32 @@ function GameController()
                 ele.style.color= ele.textContent == "X" ? "#135e99" : ele.textContent == "O" ? "#ed1a6a" : "";
             
                 main.appendChild(ele);
-                main.style.gridTemplateColumns = `repeat(${gridSize},1fr)`;
-                main.style.gridTemplateRows = `repeat(${gridSize},1fr)`;
+  
                 // grid-template-columns: repeat(3,1fr);
                 // grid-template-rows: repeat(3,1fr);      
             }           
     }
 
-function checkWinner(result){
-    switch (result)
-    {    
-        case 1:
-            ann.textContent = `${p1.getName()} wins`;
-            // cellIndeces = generateWincondition(result);
-            // console.log(cellIndeces);
-            return true
-        case -1: 
-            ann.textContent = `${p2.getName()} wins`;
-            // cellIndeces = generateWincondition(result);
-            // console.log(cellIndeces);
-            return true;
-        case 2:
-            ann.textContent = "Its a Draw!";
-            return true;
-        default:
-            return false;
+    function checkWinner(result){
+        switch (result)
+        {    
+            case 1:
+                ann.textContent = `${p1.getName()} wins`;
+                // cellIndeces = generateWincondition(result);
+                // console.log(cellIndeces);
+                return true
+            case -1: 
+                ann.textContent = `${p2.getName()} wins`;
+                // cellIndeces = generateWincondition(result);
+                // console.log(cellIndeces);
+                return true;
+            case 2:
+                ann.textContent = "Its a Draw!";
+                return true;
+            default:
+                return false;
+        }
     }
- }
 
     function clickHandler(e) 
     {              
@@ -220,6 +222,8 @@ function checkWinner(result){
             win = checkWinner(result);
             if(win)
                 {
+                    game.getActivePlayer().addScore()
+                    displayScore();
                     renderScene();
                     cellIndeces = generateWincondition(result);
                     console.log(cellIndeces);
@@ -228,7 +232,7 @@ function checkWinner(result){
                     return
                 }     
             renderScene();
-                   ann.textContent = `${game.getActivePlayer().getToken()} turn`
+            ann.textContent = `${game.getActivePlayer().getToken()} turn`
         }
 
        
@@ -238,18 +242,39 @@ function checkWinner(result){
     {
         win = false;
 
-        ann.textContent = "";
+        ann.textContent = `${game.getActivePlayer().getToken()} turn`
         gridSize = Number(select.value);
         game = GameLogic(gridSize, p1, p2);
+
         renderScene();
         
     }
 
-    function onDivPlayerHover()
-    {
-
+    function onDivPlayerHover(e)
+    {   
+        data = e.target.datakey;
+        if (game.board.isValidMove(data[0], data[1]))
+        {
+            e.target.textContent = game.getActivePlayer().getToken();
+            e.target.style.color = "gray";
+            e.target.style.fontWeight = "light";
+        }
     };
-    function displayScore(){};
+
+    function onMouseOut(e)
+    {   
+        data = e.target.datakey;
+        if (game.board.isValidMove(data[0], data[1]))
+            e.target.textContent = "";
+    }
+    function displayScore(){
+        
+        const player1 = document.querySelector(".player-one");
+        const player2 = document.querySelector(".player-two");
+    
+        player1.textContent = `${p1.getName()}: ${p1.getScore()}`;
+        player2.textContent = `${p2.getName()}: ${p2.getScore()}`;
+    };
     function onPlayerTokenChange(){};
     function onPlayerTurnChange(){};
 
@@ -299,18 +324,20 @@ function checkWinner(result){
 
         for(let i=0; i<cells.length; i++)
         {
-            if(indeces.includes (i))
+            if(indeces?.includes (i))
                 cells[i].style.fontWeight = "bolder"
             else
                 cells[i].style.color = "gray"
     
-            console.log( cells[indeces[i]])
+            // console.log( cells[indeces[i]])
         }
      
     };
 
 
     main.addEventListener("click", clickHandler);
+    main.addEventListener("mouseover", onDivPlayerHover)
+    main.addEventListener("mouseout", onMouseOut)
     btn.addEventListener("click", resetGame);
     select.addEventListener("change", resetGame)
  
