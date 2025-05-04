@@ -6,21 +6,22 @@ function Board (gridSize)
     const board = [];
     let scores = [];
 
+    //Initialize board
     for (let i = 0; i < gridSize ; i++)
     {
         board[i] = [];
         for (let j = 0; j<gridSize; j++)
-            board[i].push(Cell());
+            board[i].push(0);
     }
 
     const getBoard = () => board;
     
-    const getState = () => board.map((cells) => cells.map((cell) => cell.getValue()));
+    const getState = () => board.map((cells) => cells.map((cell) => cell));
 
     const addToken = (player,i,j) => {
         // console.log(player.getName(),  player.cell.getValue())
         if (isValidMove(i,j))
-            board[i][j] = player.cell;
+            board[i][j] = player.getValue();
         else //We need to return in order for not to switch player turn  in case we do not add to the board
             return 0
         return 1
@@ -28,7 +29,7 @@ function Board (gridSize)
 
     function noRemainingMoves() {
         return board.map((row, i) => { 
-            return row.filter((col, j) => col.getValue() == 0)
+            return row.filter((col, j) => col == 0)
         }).flat().length == 0;
         
     }
@@ -36,7 +37,7 @@ function Board (gridSize)
     function isValidMove(i,j) {
         //I do not check for index values less than 0 or higher than 3 because they will be part of dom manipulation
         //check to see if the value returned is != 0; if it is, then its occupied and is nnot valid
-        if(board[i][j].getValue() != 0)
+        if(board[i][j] != 0)
         {
             console.log(`Row:${i} Column${j} is already taken. Please choose one of the available grid spaces.` )
             return false;
@@ -50,11 +51,11 @@ function Board (gridSize)
         //Questionn, when do you know a game is finished?
 
         //check rows
-        const rows = board.map((row) => row.reduce((acc, curr) => acc + curr.getValue(), 0));
+        const rows = board.map((row) => row.reduce((acc, curr) => acc + curr, 0));
 
         // console.log("Row  is", rows);
         //check columns
-        const columns = transpose().map((row) => row.reduce((acc, curr) => acc + curr.getValue(), 0))
+        const columns = transpose().map((row) => row.reduce((acc, curr) => acc + curr, 0))
         // const colresult = board[0].map((col, i) => board.map(row => row[i]).reduce((acc, curr) => acc + curr.getValue(), 0))
         // console.log("Column is", columns);
 
@@ -65,7 +66,7 @@ function Board (gridSize)
                                 return i == j});
                         })
                         .reduce((acc,cell) => {
-                            return acc + cell[0].getValue()}, 0);
+                            return acc + cell[0]}, 0);
                     
         //check minor diag 
         const minor = board
@@ -75,15 +76,15 @@ function Board (gridSize)
                             return i == j}
                         )})
                     .reduce((acc, val) => 
-                         acc + val[0].getValue(), 0)
+                         acc + val[0], 0)
         // console.log("Secondary diag is", minor)
 
         scores = [...rows, ...columns, major, minor];
-        // console.log(scores);
-        // console.log(gridSize);
-        // console.log(Number.isInteger(gridSize));
-        // console.log(scores.includes(gridSize));
-        // console.log(scores.includes(-gridSize));
+        console.log(scores);
+        console.log(gridSize);
+        console.log(Number.isInteger(gridSize));
+        console.log(scores.includes(gridSize));
+        console.log(scores.includes(-gridSize));
 
         // console.log(board.map((row, i) => { 
         //     return row.filter((col, j) => col.getValue() == 0)
@@ -103,34 +104,20 @@ function Board (gridSize)
 
 }
 
-function Cell ()
-{
-    let value = 0;
-
-    const addValue = (token) => {value = token};
-    const getValue = () => {return value}; 
-    
-    return {
-        addValue, 
-        getValue
-    };
-}
-
 function Player (_name, _token)
 {
     let score = 0;
     let name = _name;
     // we map x and y's to -1 & 1
-    let tokenizer = { "X":-1, "O":1};
+    let tokens = { "X":-1, "O":1};
 
-    let cell = Cell();
-    cell.addValue(tokenizer[_token]);
+    const getValue = () => tokens[_token]
     const getToken = () => _token;
     const getName = () => `Player:${name.toUpperCase()}`;
     const addScore =  () => score++;
     const getScore = () => score;
 
-    return {getName, cell, addScore, getScore, getToken} 
+    return {getName, getValue, addScore, getScore, getToken} 
 }
 
 function GameLogic (gridSize, p1, p2)
@@ -143,6 +130,7 @@ function GameLogic (gridSize, p1, p2)
 
     function playRound (i,j)
     {
+         
         insert = board.addToken( getActivePlayer(), i, j);
         if (insert==1)
             turn =!turn;
@@ -167,19 +155,20 @@ function GameController()
     p1 = Player("Vasile", "X");
     p2 = Player("Ambrozie", "O");
     game = GameLogic(gridSize, p1, p2);
+    ann.textContent = `${game.getActivePlayer().getToken()} turn`
     // renderScene();
+   
   
     function renderScene()
     {
 
         main.textContent = "";    
         let gridSize = select.value;
-        console.log
         for (let i = 0; i<gridSize; i++)
             for(let j = 0; j<gridSize; j++)
             {
                 const ele = document.createElement("div");
-                const value = game.board.getBoard()[i][j].getValue();
+                const value = game.board.getBoard()[i][j];
                 // console.log("Value is:;", value);
                 ele.classList = "cell"; 
                 ele.datakey = [i,j]; 
@@ -221,31 +210,34 @@ function checkWinner(result){
  }
 
     function clickHandler(e) 
-    {
+    {              
+ 
         const data = e.target.datakey;
         if (!win)
         {
+
             result = game.playRound(data[0],data[1]);
             win = checkWinner(result);
+            if(win)
+                {
+                    renderScene();
+                    cellIndeces = generateWincondition(result);
+                    console.log(cellIndeces);
+                    onPlayerWinHighlight(cellIndeces)
+                    // e.stopPropagation();
+                    return
+                }     
             renderScene();
-  
+                   ann.textContent = `${game.getActivePlayer().getToken()} turn`
         }
-        if (win == true && result!=2)
-            {
-                renderScene();
-                cellIndeces = generateWincondition(result);
-                console.log(cellIndeces);
-                onPlayerWinHighlight(cellIndeces)
-                // e.stopPropagation();
-                return
-            }     
+
        
     }
 
     function resetGame()
     {
         win = false;
-        
+
         ann.textContent = "";
         gridSize = Number(select.value);
         game = GameLogic(gridSize, p1, p2);
@@ -253,7 +245,10 @@ function checkWinner(result){
         
     }
 
-    function onDivPlayerHover(){};
+    function onDivPlayerHover()
+    {
+
+    };
     function displayScore(){};
     function onPlayerTokenChange(){};
     function onPlayerTurnChange(){};
