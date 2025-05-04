@@ -39,16 +39,91 @@ function Board (gridSize)
         //check to see if the value returned is != 0; if it is, then its occupied and is nnot valid
         if(board[i][j] != 0)
         {
-            console.log(`Row:${i} Column${j} is already taken. Please choose one of the available grid spaces.` )
+            // console.log(`Row:${i} Column${j} is already taken. Please choose one of the available grid spaces.` )
             return false;
         }
         return true;
     };
 
+    function isStreak(arr, gridCondition = 3)
+    {
+        // Whgat areyou goimng to do aginst zero rows & cols?
+        // streak = false;
+        count = 1;
+        val = arr[0];
+        for (let i=1; i<arr.length; i++)
+        {
+            if (val == arr[i])
+                count +=1;
+            else
+            {
+                count = 1;
+                val = arr[i]
+            }
+            if(count == gridCondition)
+                return true
+        }
+        return false
+    }
+
+    function checkV2(p1, p2) {
+
+        /*
+       Revision 2
+            - can have multiple wins but cannot have multiple wins on same array
+            - isStreak is called where?
+        */
+
+        //check rows
+        const rows = board.map((row) => isStreak(row));
+
+        // console.log("Row  is", rows);
+        //check columns
+        const columns = transpose().map((row) => isStreak(row));
+        // const colresult = board[0].map((col, i) => board.map(row => row[i]).reduce((acc, curr) => acc + curr.getValue(), 0))
+        // console.log("Column is", columns);
+
+        //check main diag -> the resulting diagonnal only has one gridSize elements, not 4 gridSize arrays!!
+        const major = isStreak(board
+                        .map((row,i)=> { 
+                            return row.filter((col, j) =>{
+                                return i == j})[0];
+                        }));
+                        // .map((x) => isStreak(x));
+                    
+        //check minor diag 
+        const minor = isStreak(board
+                    .toReversed()
+                    .map((row,i)=>{
+                        return row.filter((col, j) => {
+                            return i == j}
+                        )[0]}));
+                    // .map((row) => isStreak(row));
+        // console.log("Secondary diag is", minor)
+
+        states = [...rows, ...columns, major, minor];
+        console.log(states);
+        // console.log(gridSize);
+        // console.log(Number.isInteger(gridSize));
+        // console.log(scores.includes(gridSize));
+        // console.log(scores.includes(-gridSize));
+
+        // console.log(board.map((row, i) => { 
+        //     return row.filter((col, j) => col.getValue() == 0)
+        // }).flat())
+}
+        // return scores.includes(-gridSize)? -1: scores.includes(gridSize)? 1 : noRemainingMoves()? 2 : 0;
+
     function check(p1, p2) {
 
         //TODO this should return as soon as a win is registered, not continue playing.\
         //Questionn, when do you know a game is finished?
+
+        /*
+       Revision 2
+            - can have multiple wins but cannot have multiple wins on same array
+            - isStreak is called where?
+        */
 
         //check rows
         const rows = board.map((row) => row.reduce((acc, curr) => acc + curr, 0));
@@ -81,10 +156,10 @@ function Board (gridSize)
 
         scores = [...rows, ...columns, major, minor];
         console.log(scores);
-        console.log(gridSize);
-        console.log(Number.isInteger(gridSize));
-        console.log(scores.includes(gridSize));
-        console.log(scores.includes(-gridSize));
+        // console.log(gridSize);
+        // console.log(Number.isInteger(gridSize));
+        // console.log(scores.includes(gridSize));
+        // console.log(scores.includes(-gridSize));
 
         // console.log(board.map((row, i) => { 
         //     return row.filter((col, j) => col.getValue() == 0)
@@ -95,7 +170,7 @@ function Board (gridSize)
     }
     const getScore = () => scores;
 
-    return {getBoard, getState, addToken, isValidMove, check, noRemainingMoves, getScore};
+    return {getBoard, getState, addToken, isValidMove, check, noRemainingMoves, getScore, isStreak, checkV2};
 
     function  transpose() {
         return board[0].map((col, i) => getBoard().map(row => row[i]));
@@ -125,7 +200,7 @@ function GameLogic (gridSize, p1, p2)
     
     let turn = true;
     const board = Board(gridSize);
-    const print =  () => console.table(board);
+    const print =  () => console.table(board.getBoard());
     const getActivePlayer = () => {return turn? p1 : p2}
 
     function playRound (i,j)
@@ -135,6 +210,7 @@ function GameLogic (gridSize, p1, p2)
         if (insert==1)
             turn =!turn;
         // console.log(board.check(p1,p2), "check imn rorsss");
+        board.checkV2()
         return board.check(p1,p2);
     }
     return {playRound, print, board, getActivePlayer}    
@@ -156,7 +232,7 @@ function GameController()
     p2 = Player("Ambrozie", "O");
     game = GameLogic(gridSize, p1, p2);
     ann.textContent = `${game.getActivePlayer().getToken()} turn`
-    var prev = {};
+
     // renderScene();
    
   
@@ -213,29 +289,29 @@ function GameController()
 
     function clickHandler(e) 
     {              
- 
         const data = e.target.datakey;
         if (!win)
         {
-
             result = game.playRound(data[0],data[1]);
+            game.print();
+            console.log(game.board.getBoard()[0]);
+            console.log(game.board.isStreak(game.board.getBoard()[0]));
             win = checkWinner(result);
             if(win)
                 {
-                    game.getActivePlayer().addScore()
+                    game.getActivePlayer().addScore();
                     displayScore();
                     renderScene();
                     cellIndeces = generateWincondition(result);
                     console.log(cellIndeces);
-                    onPlayerWinHighlight(cellIndeces)
+                    onPlayerWinHighlight(cellIndeces);
+                    
                     // e.stopPropagation();
                     return
                 }     
             renderScene();
             ann.textContent = `${game.getActivePlayer().getToken()} turn`
         }
-
-       
     }
 
     function resetGame()
