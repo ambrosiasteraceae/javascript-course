@@ -1,6 +1,6 @@
 function Board (gridSize)
 {
-    /// Overall two cents, I think I overcomplicated this by a factor of 2, with the cell functions not returning a bloody property.
+    
     // Convert to number all that you capture from the web
     // const gridSize = 3;
     const board = [];
@@ -26,6 +26,49 @@ function Board (gridSize)
             return 0
         return 1
     };
+
+    function parseOffDiagonals()
+    {
+    /*
+    The algorithm will go trhough the first and the last column. 
+    On each column it will iterate twice, once from top and second time from bottom n times. On 
+    It will  parse right, up & down and then left, up & down
+    */
+        diagonals = [];
+        n = (gridSize-3); // number of diagonals per side
+
+        for(let d = 0; d<n; d++)
+        {   
+            let j = 0;
+            let k = gridSize -1;
+            let leftTop = [];
+            let leftBot = [];
+            let rightTop = [];
+            let rightBot = [];
+            
+            for(let i = d+1; i<gridSize; i++)
+            {
+                leftTop.push([i,j].join(""));
+                leftBot.push([gridSize-i-1,j].join(""));
+                rightTop.push([k-1,k].join(""));
+                rightBot.push([i,k].join(""));
+                j++;
+                k--;
+
+
+
+            }      
+            diagonals.push(leftTop);
+            diagonals.push(leftBot);
+            diagonals.push(rightTop);
+            diagonals.push(rightBot);
+        }
+        
+        return diagonals;
+
+
+        
+    }
 
     function noRemainingMoves() {
         return board.map((row, i) => { 
@@ -53,7 +96,7 @@ function Board (gridSize)
         val = arr[0];
         for (let i=1; i<arr.length; i++)
         {
-            if (val == arr[i])
+            if (val == arr[i] && arr[i] != 0)
                 count +=1;
             else
             {
@@ -66,7 +109,7 @@ function Board (gridSize)
         return false
     }
 
-    function checkV2(p1, p2) {
+    function checkStreak() {
 
         /*
        Revision 2
@@ -170,7 +213,7 @@ function Board (gridSize)
     }
     const getScore = () => scores;
 
-    return {getBoard, getState, addToken, isValidMove, check, noRemainingMoves, getScore, isStreak, checkV2};
+    return {getBoard, getState, addToken, isValidMove, check, noRemainingMoves, getScore, isStreak, checkStreak, parseOffDiagonals};
 
     function  transpose() {
         return board[0].map((col, i) => getBoard().map(row => row[i]));
@@ -210,7 +253,9 @@ function GameLogic (gridSize, p1, p2)
         if (insert==1)
             turn =!turn;
         // console.log(board.check(p1,p2), "check imn rorsss");
-        board.checkV2()
+        board.checkStreak();
+        console.log("Diagonals are");
+        console.log(board.parseOffDiagonals());
         return board.check(p1,p2);
     }
     return {playRound, print, board, getActivePlayer}    
