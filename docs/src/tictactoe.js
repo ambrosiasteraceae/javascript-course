@@ -50,32 +50,27 @@ function Board (gridSize)
             {
                 leftTop.push([i,j].join(""));
                 leftBot.push([gridSize-i-1,j].join(""));
-                rightTop.push([k-1,k].join(""));
+                rightTop.push([gridSize-1-i,k].join(""));
+
                 rightBot.push([i,k].join(""));
                 j++;
                 k--;
-
-
-
             }      
             diagonals.push(leftTop);
             diagonals.push(leftBot);
             diagonals.push(rightTop);
             diagonals.push(rightBot);
         }
-        
+
         return diagonals;
-
-
-        
     }
 
     function noRemainingMoves() {
         return board.map((row, i) => { 
             return row.filter((col, j) => col == 0)
         }).flat().length == 0;
-        
     }
+
 
     function isValidMove(i,j) {
         //I do not check for index values less than 0 or higher than 3 because they will be part of dom manipulation
