@@ -19,10 +19,12 @@
                     <label for="O">O</label>
                 </div>
             </fieldset>
-            <h4>Score:</h4>
-            <div class = "score">
-                <div class="player-one">VASILE: 0</div>
-                <div class="player-two">AMBROZIE: 0</div>
+            <div>
+                <h4>Score:</h4>
+                <div class = "score">
+                    <div class="player-one">VASILE: 0</div>
+                    <div class="player-two">AMBROZIE: 0</div>
+                </div>
             </div>
         </div>
         
@@ -44,17 +46,21 @@
             <button class ="reset">Resxet</button>
             <div class = "announcement"></div>
         </div>
-        <!-- <div class="third">
-            <legend>I wanna go:</legend>
+        <div class="third">
+            <legend> Win Streak Condition:</legend>
             <div>
-                <input type="radio" name = "turn" id ="first" value ="first" checked>
-                <label for="first">First</label>
+                <input type="radio" name = "grid-condition" id ="first" value ="3" checked>
+                <label for="first">3</label>
             </div>
             <div>
-                <input type="radio" name = "turn" id ="second" value ="second" >
-                <label for="second">Second</label>
+                <input type="radio" name = "grid-condition" id ="second" value ="4" >
+                <label for="second">4</label>
             </div>
-        </fieldset> -->
+            <div>
+                <input type="radio" name = "grid-condition" id ="third" value ="5" >
+                <label for="third">5</label>
+            </div>
+        </fieldset>
         </div>
 
         <script src = "src/tictactoe.js"></script>
