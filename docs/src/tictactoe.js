@@ -19,10 +19,11 @@ function Board (gridSize)
     const addToken = (player,i,j) => {
         // console.log(player.getName(),  player.cell.getValue())
         if (isValidMove(i,j))
+        {
             board[i][j] = player.getValue();
-        else //We need to return in order for not to switch player turn  in case we do not add to the board
-            return 0
-        return 1
+            return true
+        }
+        return false
     };
     
     function checkSecond()
@@ -259,29 +260,32 @@ function GameLogic (gridSize, p1, p2)
     let turn = true;
     const board = Board(gridSize);
     const positions = board.getPositions();
-
+    let state = [];
     // console.log("Game ihnitials")
-    console.log(positions)
+    // console.log(positions)
     // console.log(typeof(gridSize))
 
     const print =  () => console.table(board.getBoard());
-    const getActivePlayer = () => {return turn? p1 : p2}
+    const getActivePlayer = () => {return turn? p1 : p2};
+    const getState =  () =>  {return state}
 
     function playRound (i,j)
     { 
-        insert = board.addToken( getActivePlayer(), i, j);
-        if (insert==1)
+        let success = board.addToken( getActivePlayer(), i, j);
+        
+        if (success)
+        {
             turn =!turn;
-           
-        const main = board.checkMain();
-        const second = board.checkSecond();
-
-        const gamestate = [...main, ...second];
-        // console.log(gamestate)
-
-        return gamestate
+            const main = board.checkMain();
+            const second = board.checkSecond();
+            state = [...main, ...second];
+            console.log ("state is")
+        console.log(state)
+        // return gamestate
+        }
+        return success        
     }
-    return {playRound, print, board, getActivePlayer, positions}    
+    return {playRound, print, board, getActivePlayer, positions, getState}    
 }
 
 function GameController() 
@@ -293,6 +297,88 @@ function GameController()
     const ann = document.querySelector(".announcement"); 
     const select = document.querySelector("select");
     
+    let win = false;
+    let gridSize = Number(select.value);
+    
+    p1 = Player("Vasile", "X");
+    p2 = Player("Ambrozie", "O");
+    game = GameLogic(gridSize, p1, p2);
+    renderScene();
+    // console.log(getCellsFromCoords(game.positions[11]))
+    ann.textContent = `${game.getActivePlayer().getToken()} turn`
+    
+    function clickHandler(e) 
+    {              
+        [i, j] = e.target.getAttribute("data-coords").split(",")
+        // console.log(typeof(i), typeof())
+        // console.log(game.board.getState())
+        // console.log(game.board.isBoardFull())
+        if(!game.board.isBoardFull())
+        {
+            
+            success = game.playRound(Number(i), Number(j))
+
+            if(success)
+                assignToken(i,j)
+            else
+                return
+            state = game.getState();
+            console.log("hi")
+            console.log(state)
+            console.table(game.board.getBoard())
+            
+            // console.log(state)
+            for(let i = 0; i<state.length; i++)
+            {
+                if(state[i] == true)
+                {
+                    console.log("het")
+                    const arr = game.positions[i];
+                    // console.log("arr is", arr);
+
+                    cells = getCellsFromCoords(arr)
+                    val = getBoardValFromPos(arr);
+                    console.log(cells.map((cell)=>cell.textContent))
+                    // console.log(val)
+                    player =  assignPlayerWin(val)
+                    // console.log(player.getName())
+                    cells.forEach((cell)=> 
+                    {
+                        if(cell.textContent == player.getToken())
+                            cell.style.fontWeight = "bolder"
+                    })
+                    // updateScene();
+                    // return       
+                }
+            }
+            // updateScene();
+            // renderScene();
+           
+        }
+        return
+        
+        // if (!win)
+        // {
+        //     result = game.playRound(data[0],data[1]);
+        //     game.print();
+        //     console.log(game.board.getBoard()[0]);
+        //     console.log(game.board.isStreak(game.board.getBoard()[0]));
+        //     win = checkWinner(result);
+        //     if(win)
+        //         {
+        //             game.getActivePlayer().addScore();
+        //             displayScore();
+        //             renderScene();
+        //             cellIndeces = generateWincondition(result);
+        //             console.log(cellIndeces);
+        //             onPlayerWinHighlight(cellIndeces);
+                    
+        //             return
+        //         }     
+        // renderScene();
+
+        // }
+    }
     const assignPlayerWin = (cellRow) => {
         let result = cellRow.reduce((acc, curr) => acc + curr, 0)
         return result<0? p1 : p2
@@ -315,16 +401,25 @@ function GameController()
         return values;
     }
 
-    let win = false;
-    let gridSize = Number(select.value);
-    
-    p1 = Player("Vasile", "X");
-    p2 = Player("Ambrozie", "O");
-    game = GameLogic(gridSize, p1, p2);
-    renderScene();
-    console.log(getCellsFromCoords(game.positions[11]))
-    ann.textContent = `${game.getActivePlayer().getToken()} turn`
 
+
+    function assignToken(i,j){
+        let attr = `[data-coords="${i},${j}"]`;
+        let ele = document.querySelector(attr)
+        const value = game.board.getBoard()[i][j];
+        // console.log(value)
+        // console.log("Value is:;", value);
+        // ele.classList = "cell"; 
+        // ele.setAttribute("data-coords", [i,j])
+        // ele.datakey = [i,j]; 
+        if (value == -1)
+            ele.textContent = p1.getToken();
+        else if (value == 1)
+            ele.textContent = p2.getToken();
+        else
+            ele.textContent = "";
+        ele.style.color= ele.textContent == "X" ? "#135e99" : ele.textContent == "O" ? "#ed1a6a" : "";
+    }
 
     function updateScene(){
         // let gridSize = select.value;
@@ -403,66 +498,7 @@ function GameController()
         }
     }
 
-    function clickHandler(e) 
-    {              
-        [i, j] = e.target.getAttribute("data-coords").split(",")
-        // console.log(typeof(i), typeof(j))
-        // console.log(game.board.getState())
-        // console.log(game.board.isBoardFull())
-        if(!game.board.isBoardFull())
-        {
-            
-            state = game.playRound(Number(i), Number(j))
-            
-            // console.log(state)
-            for(let i = 0; i<state.length; i++)
-            {
-                if(state[i] == true)
-                {
-                    const arr = game.positions[i];
-                    console.log("arr is", arr);
-
-                    cells = getCellsFromCoords(arr)
-                    val = getBoardValFromPos(arr);
-                    console.log(val)
-                    player =  assignPlayerWin(val)
-                    console.log(player.getName())
-                    cells.forEach((cell)=>{
-                        if(cell.textContent == player.getToken())
-                            cell.style.fontWeight = "bolder"
-                    })
-                    updateScene();
-                    return       
-                }
-            }
-            updateScene();
-            // renderScene();
-           
-        }
-        return
-        
-        // if (!win)
-        // {
-        //     result = game.playRound(data[0],data[1]);
-        //     game.print();
-        //     console.log(game.board.getBoard()[0]);
-        //     console.log(game.board.isStreak(game.board.getBoard()[0]));
-        //     win = checkWinner(result);
-        //     if(win)
-        //         {
-        //             game.getActivePlayer().addScore();
-        //             displayScore();
-        //             renderScene();
-        //             cellIndeces = generateWincondition(result);
-        //             console.log(cellIndeces);
-        //             onPlayerWinHighlight(cellIndeces);
-                    
-        //             return
-        //         }     
-        // renderScene();
-
-        // }
-    }
+    
 
     function resetGame()
     {
@@ -482,18 +518,18 @@ function GameController()
         // console.log(Number(i), Number(j))   
         // data = e.target.datakey;
         // const coords
-        // if (game.board.isValidMove(data[0], data[1]))
-        // {
-        //     e.target.textContent = game.getActivePlayer().getToken();
-        //     e.target.style.color = "gray";
-        //     e.target.style.fontWeight = "light";
-        // }
+        if (game.board.isValidMove(i,j))
+        {
+            e.target.textContent = game.getActivePlayer().getToken();
+            e.target.style.color = "gray";
+            e.target.style.fontWeight = "light";
+        }
     };
 
     function onMouseOut(e)
     {   
-        data = e.target.datakey;
-        if (game.board.isValidMove(data[0], data[1]))
+        [i, j] = e.target.getAttribute("data-coords").split(",")
+        if (game.board.isValidMove(i,j))
             e.target.textContent = "";
     }
     function displayScore(){
