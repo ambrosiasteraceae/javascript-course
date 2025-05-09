@@ -6,6 +6,8 @@ function Board (gridSize, winCondition)
     const board = [];
     const gridCondition =winCondition;
 
+    const interPositions = getInterDiagonalPositions();
+    const mainPositions =getMainPositions();
     //Initialize board
     for (let i = 0; i < gridSize ; i++)
     {
@@ -27,51 +29,12 @@ function Board (gridSize, winCondition)
         }
         return false
     };
-    
-    function checkSecond()
-    {
-    /*
-    The algorithm will go trhough the first and the last column. 
-    On each column it will iterate twice, once from top and second time from bottom n times. On 
-    It will  parse right, up & down and then left, up & down
-    */
-        diagonals = [];
-        n = (gridSize-3); // number of diagonals per side
-
-        for(let d = 0; d<n; d++)
-        {   
-            let j = 0;
-            let k = gridSize -1;
-            let leftTop = [];
-            let leftBot = [];
-            let rightTop = [];
-            let rightBot = [];
-            
-            for(let i = d+1; i<gridSize; i++)
-            {
-
-                leftTop.push(board[i][j]);
-                leftBot.push(board[gridSize-i-1][j]);
-                rightTop.push(board[gridSize-1-i][k]);
-                rightBot.push(board[i][k]);
-                j++;
-                k--;
-            }      
-            diagonals.push(leftTop);
-            diagonals.push(leftBot);
-            diagonals.push(rightTop);
-            diagonals.push(rightBot);
-        }
-
-        return diagonals.map((arr) => isStreak(arr));
-    }
-
     function isBoardFull() {
         
         return board.flat().map(((cell) => cell == 0)).every((v)=> v ==false)
-
+ 
     }
-
+ 
     function isValidMove(i,j) {
       
         if(board[i][j] != 0)
@@ -81,7 +44,7 @@ function Board (gridSize, winCondition)
         }
         return true;
     };
-
+ 
     function isStreak(arr)
     {
         count = 1;
@@ -99,6 +62,48 @@ function Board (gridSize, winCondition)
                 return true
         }
         return false
+    }
+    
+    function getInterDiagonalPositions()
+    {
+        // repeating code but we need 
+        secondaryPositions = [];
+        n = (gridSize-3); // number of diagonals per side (left and right being first col and last col)
+ 
+        for(let d = 0; d<n; d++)
+        {   
+            let j = 0;
+            let k = gridSize -1;
+            let leftTop = [];
+            let leftBot = [];
+            let rightTop = [];
+            let rightBot = [];
+            
+            for(let i = d+1; i<gridSize; i++)
+            {
+                leftTop.push([i,j]);
+                leftBot.push([gridSize-i-1,j]);
+                rightTop.push([gridSize-1-i,k]);
+                rightBot.push([i,k]);
+                j++;
+                k--;
+            }      
+            secondaryPositions.push(leftBot);
+            secondaryPositions.push(leftTop);
+            secondaryPositions.push(rightBot);
+            secondaryPositions.push(rightTop);
+        }
+ 
+        console.log(secondaryPositions.map((arr) => arr.map((cell) => cell.join(""))))
+        console.log(secondaryPositions)
+ 
+        return secondaryPositions;
+    }
+
+    function checkInterDiagonals()
+    {
+        diagonals = interPositions.map((posArray) => posArray.map((pos) => board[pos[0]][pos[1]]));
+        return diagonals.map((arr) => isStreak(arr))
     }
 
     function checkMain() {
@@ -127,38 +132,6 @@ function Board (gridSize, winCondition)
 
         states = [...rows, ...columns, major, minor];
         return states
-    }
-    function getSecondaryPositions()
-    {
-        // repeating code but we need 
-        secondaryPositions = [];
-        n = (gridSize-3); // number of diagonals per side (left and right being first col and last col)
-
-        for(let d = 0; d<n; d++)
-        {   
-            let j = 0;
-            let k = gridSize -1;
-            let leftTop = [];
-            let leftBot = [];
-            let rightTop = [];
-            let rightBot = [];
-            
-            for(let i = d+1; i<gridSize; i++)
-            {
-                leftTop.push([i,j]);
-                leftBot.push([gridSize-i-1,j]);
-                rightTop.push([gridSize-1-i,k]);
-                rightBot.push([i,k]);
-                j++;
-                k--;
-            }      
-            secondaryPositions.push(leftTop);
-            secondaryPositions.push(leftBot);
-            secondaryPositions.push(rightTop);
-            secondaryPositions.push(rightBot);
-        }
-
-        return secondaryPositions;
     }
 
     function getMainPositions()
@@ -190,13 +163,10 @@ function Board (gridSize, winCondition)
     }
 
     const getPositions = () => {
-        const main = getMainPositions();
-        const second = getSecondaryPositions();
-        const positions = [...main, ...second]
-        return positions
+        return [...mainPositions, ...interPositions]
     }
 
-    return {getBoard, getState, addToken, isValidMove, isStreak, getPositions, checkMain, checkSecond,isBoardFull};
+    return {getBoard, getState, addToken, isValidMove, isStreak, getPositions, checkMain, isBoardFull, checkInterDiagonals};
 
     function  transpose() {
         return board[0].map((col, i) => getBoard().map(row => row[i]));
@@ -227,6 +197,8 @@ function GameLogic (gridSize,gridCondition, p1, p2)
     const board = Board(gridSize, gridCondition);
     const positions = board.getPositions();
 
+    console.log(positions.map((arr) => arr.map((cell) => cell.join(""))))
+
     const print =  () => console.table(board.getBoard());
     const getActivePlayer = () => {return turn? p1 : p2};
     const getState =  () =>  {return state}
@@ -240,8 +212,8 @@ function GameLogic (gridSize,gridCondition, p1, p2)
         {
             switchPlayer();
             const main = board.checkMain();
-            const second = board.checkSecond();
-            state = [...main, ...second];
+            const inter = board.checkInterDiagonals();
+            state = [...main, ...inter];
 
         }
         return success        
@@ -259,9 +231,8 @@ function GameController()
     const ann = document.querySelector(".announcement"); 
     const select = document.querySelector("select");
 
-   
     let winStreak = document.querySelector("input[name=grid-condition]:checked");
-    console.log(winStreak.value);
+ 
     
     let win = false;
     let gridSize = Number(select.value);
@@ -290,8 +261,8 @@ function GameController()
                 return
             state = game.getState();
             
-            console.log(state)
-            console.table(game.board.getBoard())
+            // console.log(state)
+            // console.table(game.board.getBoard())
             
             for(let i = 0; i<state.length; i++)
             {
@@ -299,13 +270,13 @@ function GameController()
                 {
                     
                     
-                    console.log("het")
+                    // console.log("het")
                     const arr = game.positions[i];
                     // console.log("arr is", arr);
 
                     cells = getCellsFromCoords(arr)
                     val = getBoardValFromPos(arr);
-                    console.log(cells.map((cell)=>cell.textContent))
+                    // console.log(cells.map((cell)=>cell.textContent))
                     // console.log(val)
                     player =  assignPlayerWin(val)
                     if(!highlights[i])
@@ -321,7 +292,9 @@ function GameController()
                             {
 
                                 cell.style.color= cell.textContent == "X" ? "#135e99" : cell.textContent == "O" ? "#ed1a6a" : "";
-                                cell.style.fontWeight = "bolder"
+                                cell.style.fontWeight = "bolder";
+                                
+                                asignCellClass(i, cell)
                             }
                     }})
                     highlights[i] = true;
@@ -329,8 +302,46 @@ function GameController()
                 }
             }
         }
-        
 
+    }
+
+    function addGradient(cell, path)
+     {
+        const gradient = `linear-gradient(${path}, transparent, transparent 49%, gray 49%, gray 51%, transparent 51%, transparent)`
+        const validBackgrounds = cell.style.background;
+
+        cell.style.background = [validBackgrounds, gradient].filter((g)=> g && g !=="none").join(", ");
+        // console.log(cell.style.background)
+
+    }
+
+
+    function asignCellClass(posIndex, cell)   
+      {
+        // n = positions.length;
+
+        // if (posIndex < gridSize)
+        //     // cell.classList += " win-row";
+        //     cell.style.background += "linear-gradient(to bottom , var(--color-surface), var(--color-surface) 50%,gray 50%, gray 52%, var(--color-surface)52%, var(--color-surface))"
+        // else if (posIndex < 2* gridSize)
+        //     cell.style.background += "linear-gradient(to right , var(--color-surface), var(--color-surface) 50%,gray 50%, gray 52%, var(--color-surface)52%, var(--color-surface))"
+        if (posIndex < gridSize)
+            addGradient(cell, "to bottom")
+        else if (posIndex < 2 * gridSize)
+            addGradient(cell, "to right")
+        else if (posIndex == 2 * gridSize)
+            addGradient(cell, "to bottom left")
+        else if (posIndex == 2 * gridSize + 1)
+            addGradient(cell, "to bottom right")
+        else
+        {
+
+            // if(i%2 != 0)
+                addGradient(cell, "to bottom left")
+            // else                 
+                // addGradient(cell, "to bottom right")        
+        }    
+        return    
     }
 
     const assignPlayerWin = (cellRow) => {
