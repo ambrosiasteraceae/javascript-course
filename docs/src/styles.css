@@ -44,7 +44,8 @@ body
 }
 
 .cell{
-  border: 1px solid rgb(113, 113, 113);
+  border: 1px dashed rgba(151, 150, 150, 0.414);
+  /* border: 1px dashed rgba(74, 126, 78, 0.9); */
   vertical-align: center;
   text-align: center;
   display: flex;
