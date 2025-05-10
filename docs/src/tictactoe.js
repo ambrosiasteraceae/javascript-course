@@ -66,19 +66,9 @@ function Board (gridSize, winCondition)
     
     function getInterDiagonalPositions()
     {
-        // repeating code but we need 
+        //Algorithm traverses the fist and last column of the board and gets all the intermediary diagonals. Scales with n boards.
         secondaryPositions = [];
         n = (gridSize-3); // number of diagonals per side (left and right being first col and last col)
- /*
-12: (4) ['30', '21', '12', '03'] ok
-13: (4) ['10', '21', '32', '43'] ok
-14: (4) ['14', '23', '32', '41'] rever
-15: (4) ['34', '23', '12', '01']
-16: (3) ['20', '11', '02']
-17: (3) ['20', '31', '42']
-18: (3) ['24', '33', '42']
-19:(3) ['24', '13', '02']
-*/
         for(let d = 0; d<n; d++)
         {   
             let j = 0;
@@ -103,7 +93,7 @@ function Board (gridSize, winCondition)
             secondaryPositions.push(rightTop);
         }
  
-        console.log(secondaryPositions.map((arr) => arr.map((cell) => cell.join(""))))
+        // console.log(secondaryPositions.map((arr) => arr.map((cell) => cell.join(""))))
         // console.log(secondaryPositions)
  
         return secondaryPositions;
@@ -206,13 +196,14 @@ function GameLogic (gridSize,gridCondition, p1, p2)
     const board = Board(gridSize, gridCondition);
     const positions = board.getPositions();
 
-    console.log(positions.map((arr) => arr.map((cell) => cell.join(""))))
+    // console.log(positions.map((arr) => arr.map((cell) => cell.join(""))))
 
     const print =  () => console.table(board.getBoard());
     const getActivePlayer = () => {return turn? p1 : p2};
     const getState =  () =>  {return state}
-    const switchPlayer =()=> {console.log("switcvh was triggred")
-        turn =! turn}
+    const switchPlayer =()=> {
+        console.log("switcvh was triggred")
+        turn =! turn};
 
     function playRound (i,j)
     { 
@@ -242,19 +233,17 @@ function GameController()
 
     let winStreak = document.querySelector("input[name=grid-condition]:checked");
  
-    
-    let win = false;
     let gridSize = Number(select.value);
     let gridConditionWin = Number(winStreak.value);
     
     p1 = Player("Vasile", "X");
     p2 = Player("Ambrozie", "O");
     game = GameLogic(gridSize,  gridConditionWin,  p1, p2);
-    const generateHighlights = () => game.positions.map((pos) => false);
+    const generateVisited = () => game.positions.map((pos) => false);
     renderScene();
 
-    let highlights =  generateHighlights()// keeps track of grids that have been 
-    ann.textContent = `${game.getActivePlayer().getToken()} turn`
+    let visited =  generateVisited()// keeps track of grids that have been visited and flagged
+    dislayTurn();
     
     
     function clickHandler(e) 
@@ -270,58 +259,98 @@ function GameController()
                 return
             state = game.getState();
             
-            // console.log(state)
-            // console.table(game.board.getBoard())
-            
             for(let i = 0; i<state.length; i++)
             {
                 if(state[i] == true)
-                {
-                    
-                    
-                    // console.log("het")
+                {            
                     const arr = game.positions[i];
-                    // console.log("arr is", arr);
-
                     cells = getCellsFromCoords(arr)
                     val = getBoardValFromPos(arr);
-                    // console.log(cells.map((cell)=>cell.textContent))
-                    // console.log(val)
                     player =  assignPlayerWin(val)
-                    if(!highlights[i])
+                    if(!visited[i])
+                    {
+                        console.log("\n")
+                        console.log(arr.map((cell) => cell.join("")))
+                        winningCells = filterWinningCells(cells);
                         player.addScore();
+                    }
                     displayScore();
-                
-                    cells.forEach((cell)=> 
+                   
+                    console.log("wiining cells is:",winningCells)
+                    cells.forEach((cell, index)=> 
                     {
                         if(cell.textContent == player.getToken())
+                        {
+                            //Instead of hnihglihgts we cvan also do with states but they need to get out of game logic
+                            if(!visited[i]) // we check to see if a win was registered prior as we do not want to highlight the same cells again    
                             {
-                                //Instead of hnihglihgts we cvan also do with states but they need to get out of game logic
-                            if(!highlights[i]) // we check to see if a win was registered prior as we do not want to highlight the same cells again    
-                            {
-
-                                cell.style.color= cell.textContent == "X" ? "#135e99" : cell.textContent == "O" ? "#ed1a6a" : "";
-                                cell.style.fontWeight = "bolder";
-                                
-                                asignCellClass(i, cell)
+                                // if(count == gridConditionWin) //Solves the case where extra cells are hihglighted even though they are not continuous    no it coesnt
+                                //     return;
+                                if (winningCells[index] == true)
+                                {   
+                                    cell.style.color= cell.textContent == "X" ? "#135e99" : cell.textContent == "O" ? "#ed1a6a" : "";
+                                    cell.style.fontWeight = "bolder";   
+                                    asignCellClass(i, cell)
+                                }
+                                    
                             }
-                    }})
-                    highlights[i] = true;
-                    
+                    }
+                })
+                    visited[i] = true;
                 }
             }
         }
+    }
 
+    function filterWinningCells(cells)
+    {
+        // return an array flag that checks each cell for streaks and returns false for
+        // if only the isStreak function from board returned a boolean array instead of just one value I would have used that
+        let winningCells = cells.map((cell) => false);
+        let currentToken = "";
+        let previousToken = cells[0].textContent;
+        winningCells[0] = true;
+        let streak = 1;
+        // let winStreak = document.querySelector("input[name=grid-condition]:checked");
+        // let winningStreak = Number(winStreak.value);
+        console.log("grid win cond" , gridConditionWin)
+        for(let i =1; i < cells.length; i++)
+        {
+            currentToken = cells[i].textContent;
+            console.log(i,currentToken,previousToken)
+                
+            if (previousToken == currentToken)
+            {
+                winningCells[i] = true;
+                streak++;
+            } 
+            else if (currentToken == "")
+            {
+                streak = 0;
+                winningCells = cells.map((cell) => false);
+            }
+            else
+            {
+                // we could optimize to only check the values up to ith index but meh
+                winningCells = cells.map((cell) => false);
+                winningCells[i] = true;
+                streak = 1;
+            }
+            
+            previousToken = currentToken;
+            console.log(winningCells, previousToken)
+            
+            console.log("strreak is", streak)
+            if(streak == gridConditionWin)
+                return winningCells
+        }
     }
 
     function addGradient(cell, path)
      {
         const gradient = `linear-gradient(${path}, transparent, transparent 49%, gray 49%, gray 51%, transparent 51%, transparent)`
         const validBackgrounds = cell.style.background;
-
         cell.style.background = [validBackgrounds, gradient].filter((g)=> g && g !=="none").join(", ");
-        // console.log(cell.style.background)
-
     }
 
     function handleInterDiagonals(posIndex, cell)
@@ -346,18 +375,10 @@ function GameController()
                 addGradient(cell, "to bottom right");
                 break;
         }   
-
     }
 
     function asignCellClass(posIndex, cell)   
       {
-        // n = positions.length;
-
-        // if (posIndex < gridSize)
-        //     // cell.classList += " win-row";
-        //     cell.style.background += "linear-gradient(to bottom , var(--color-surface), var(--color-surface) 50%,gray 50%, gray 52%, var(--color-surface)52%, var(--color-surface))"
-        // else if (posIndex < 2* gridSize)
-        //     cell.style.background += "linear-gradient(to right , var(--color-surface), var(--color-surface) 50%,gray 50%, gray 52%, var(--color-surface)52%, var(--color-surface))"
         if (posIndex < gridSize)
             addGradient(cell, "to bottom")
         else if (posIndex < 2 * gridSize)
@@ -381,10 +402,8 @@ function GameController()
             let attr = `[data-coords="${coord[0]},${coord[1]}"]`;
             let cell = document.querySelector(attr)
             cells.push(cell)
-
         })
         return cells
-        // 
     }
 
     const getBoardValFromPos = function(posArray){
@@ -409,9 +428,7 @@ function GameController()
     }
 
     function renderScene()
-    {
-        // console.log(positions)
-        
+    {   
         main.textContent = "";    
         let gridSize = select.value;
         main.style.gridTemplateColumns = `repeat(${gridSize},1fr)`;
@@ -457,18 +474,20 @@ function GameController()
 
     function resetGame()
     {
-        win = false;
-        highlights =  generateHighlights()
-        ann.textContent = `${game.getActivePlayer().getToken()} turn`
+        console.log("|reset")
+        visited =  generateVisited()
+        dislayTurn();
         gridSize = Number(select.value);
 
+
         winStreak = document.querySelector("input[name=grid-condition]:checked");
-        let gridConditionWin = Number(winStreak.value);
-        console.log(gridConditionWin)
+        gridConditionWin = Number(winStreak.value);
+        
+        console.log("Grid Win Condition", gridConditionWin);
         game = GameLogic(gridSize,gridConditionWin, p1, p2);
 
         renderScene();
-        GameController() 
+        // GameController() 
     }
 
     function onDivPlayerHover(e)
