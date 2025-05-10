@@ -1,8 +1,5 @@
 function Board (gridSize, winCondition)
 {
-
-    // console.log("GridWinCohnditiohn insidcwe boardd is ",winCondition)
-    // Convert to number all that you capture from the web
     const board = [];
     const gridCondition =winCondition;
 
@@ -20,8 +17,7 @@ function Board (gridSize, winCondition)
     
     const getState = () => board.map((cells) => cells.map((cell) => cell));
 
-    const addToken = (player,i,j) => {
-        
+    const addToken = (player,i,j) => {  
         if (isValidMove(i,j))
         {
             board[i][j] = player.getValue();
@@ -29,11 +25,10 @@ function Board (gridSize, winCondition)
         }
         return false
     };
+
     function isBoardFull() {
-        
         return board.flat().map(((cell) => cell == 0)).every((v)=> v ==false)
- 
-    }
+    };
  
     function isValidMove(i,j) {
       
@@ -67,6 +62,9 @@ function Board (gridSize, winCondition)
     function getInterDiagonalPositions()
     {
         //Algorithm traverses the fist and last column of the board and gets all the intermediary diagonals. Scales with n boards.
+        // on each d iteration it actually traverses both sides based on the diagonal length
+        // Whenever d is incremented, the length of the diagonals returned decreases by 1
+        // No diagonals with a length less than 3 are returned
         secondaryPositions = [];
         n = (gridSize-3); // number of diagonals per side (left and right being first col and last col)
         for(let d = 0; d<n; d++)
@@ -184,25 +182,25 @@ function Player (_name, _token)
     const getName = () => `${name.toUpperCase()}`;
     const addScore =  () => score++;
     const getScore = () => score;
+    const resetScore = () => score = 0;
 
-    return {getName, getValue, addScore, getScore, getToken} 
+    return {getName, getValue, addScore, getScore, getToken, resetScore} 
 }
 
-function GameLogic (gridSize,gridCondition, p1, p2)
+function GameLogic (gridSize,gridCondition, p1, p2, selectedPlayer)
 {
-    let turn = true;
+    let turn = selectedPlayer;
     let state = [];
 
     const board = Board(gridSize, gridCondition);
     const positions = board.getPositions();
 
-    // console.log(positions.map((arr) => arr.map((cell) => cell.join(""))))
 
     const print =  () => console.table(board.getBoard());
     const getActivePlayer = () => {return turn? p1 : p2};
     const getState =  () =>  {return state}
+
     const switchPlayer =()=> {
-        console.log("switcvh was triggred")
         turn =! turn};
 
     function playRound (i,j)
@@ -232,22 +230,28 @@ function GameController()
     const select = document.querySelector("select");
 
     let winStreak = document.querySelector("input[name=grid-condition]:checked");
- 
+    let selectedPlayer = document.querySelector("input[name=token]:checked");
+
+
     let gridSize = Number(select.value);
     let gridConditionWin = Number(winStreak.value);
     
+    let startPlayer = selectedPlayer.value == "X"? true : false; 
+    
     p1 = Player("Vasile", "X");
     p2 = Player("Ambrozie", "O");
-    game = GameLogic(gridSize,  gridConditionWin,  p1, p2);
+    
+    game = GameLogic(gridSize,  gridConditionWin,  p1, p2, startPlayer);
     const generateVisited = () => game.positions.map((pos) => false);
     renderScene();
 
-    let visited =  generateVisited()// keeps track of grids that have been visited and flagged
+    let visited =  generateVisited()// keeps track of grids that have been visited (where wins are registered) and flagged
     dislayTurn();
     
-    
     function clickHandler(e) 
-    {              
+    {
+        //This will require a rework as it does too much already and its hard to read.
+
         [i, j] = e.target.getAttribute("data-coords").split(",")
         if(!game.board.isBoardFull())
         {
@@ -258,7 +262,7 @@ function GameController()
             else
                 return
             state = game.getState();
-            
+            dislayTurn();
             for(let i = 0; i<state.length; i++)
             {
                 if(state[i] == true)
@@ -266,26 +270,23 @@ function GameController()
                     const arr = game.positions[i];
                     cells = getCellsFromCoords(arr)
                     val = getBoardValFromPos(arr);
-                    player =  assignPlayerWin(val)
+                    player =  assignPlayerWin(val);
                     if(!visited[i])
                     {
-                        console.log("\n")
-                        console.log(arr.map((cell) => cell.join("")))
+                        // console.log("\n")
+                        // console.log(arr.map((cell) => cell.join("")))
                         winningCells = filterWinningCells(cells);
                         player.addScore();
                     }
                     displayScore();
                    
-                    console.log("wiining cells is:",winningCells)
+                    // console.log("wiining cells is:",winningCells)
                     cells.forEach((cell, index)=> 
                     {
                         if(cell.textContent == player.getToken())
-                        {
-                            //Instead of hnihglihgts we cvan also do with states but they need to get out of game logic
+                        {                            
                             if(!visited[i]) // we check to see if a win was registered prior as we do not want to highlight the same cells again    
                             {
-                                // if(count == gridConditionWin) //Solves the case where extra cells are hihglighted even though they are not continuous    no it coesnt
-                                //     return;
                                 if (winningCells[index] == true)
                                 {   
                                     cell.style.color= cell.textContent == "X" ? "#135e99" : cell.textContent == "O" ? "#ed1a6a" : "";
@@ -300,20 +301,25 @@ function GameController()
                 }
             }
         }
+        
+        if(game.board.isBoardFull())
+            displayWinner()
+
     }
 
     function filterWinningCells(cells)
     {
-        // return an array flag that checks each cell for streaks and returns false for
+        // return an array flag that checks each cell for streaks and returns false for non continous cells
         // if only the isStreak function from board returned a boolean array instead of just one value I would have used that
+        // this is required so that if we have a row like:
+        //  x o x x x
+        // we do not highlight all xs in the row just the last three
         let winningCells = cells.map((cell) => false);
         let currentToken = "";
         let previousToken = cells[0].textContent;
         winningCells[0] = true;
         let streak = 1;
-        // let winStreak = document.querySelector("input[name=grid-condition]:checked");
-        // let winningStreak = Number(winStreak.value);
-        console.log("grid win cond" , gridConditionWin)
+
         for(let i =1; i < cells.length; i++)
         {
             currentToken = cells[i].textContent;
@@ -338,9 +344,8 @@ function GameController()
             }
             
             previousToken = currentToken;
-            console.log(winningCells, previousToken)
-            
-            console.log("strreak is", streak)
+            // console.log(winningCells, previousToken)            
+            // console.log("strreak is", streak)
             if(streak == gridConditionWin)
                 return winningCells
         }
@@ -438,38 +443,20 @@ function GameController()
             {
                 const ele = document.createElement("div");
                 const value = game.board.getBoard()[i][j];
-                // console.log(value)
-                // console.log("Value is:;", value);
                 ele.classList = "cell"; 
-                ele.setAttribute("data-coords", [i,j])
-                // ele.datakey = [i,j]; 
-                // if (value == -1)
-                //     ele.textContent = p1.getToken();
-                // else if (value == 1)
-                //     ele.textContent = p2.getToken();
-                // else
-                //     ele.textContent = "";
-                // ele.style.color= ele.textContent == "X" ? "#135e99" : ele.textContent == "O" ? "#ed1a6a" : "";
-            
+                ele.setAttribute("data-coords", [i,j])            
                 main.appendChild(ele);  
             }           
     }
 
-    function checkWinner(result){
-        switch (result)
-        {    
-            case 1:
-                ann.textContent = `${p1.getName()} wins`;
-                return true
-            case -1: 
-                ann.textContent = `${p2.getName()} wins`;
-                return true;
-            case 2:
-                ann.textContent = "Its a Draw!";
-                return true;
-            default:
-                return false;
-        }
+    function displayWinner()
+    {
+        if(p1.getScore()> p2.getScore())
+            ann.textContent = `${p1.getName()} wins`;
+        else if (p1.getScore() == p2.getScore())
+            ann.textContent = "Its a Draw!";
+        else
+            ann.textContent = `${p2.getName()} wins`;
     }
 
     function resetGame()
@@ -478,22 +465,23 @@ function GameController()
         visited =  generateVisited()
         dislayTurn();
         gridSize = Number(select.value);
-
-
+        let previous = game.getActivePlayer();
         winStreak = document.querySelector("input[name=grid-condition]:checked");
         gridConditionWin = Number(winStreak.value);
         
-        console.log("Grid Win Condition", gridConditionWin);
-        game = GameLogic(gridSize,gridConditionWin, p1, p2);
-
+        //TODO find out why the gameLogic works when I do not have a selected player as the last argument
+        game = GameLogic(gridSize,gridConditionWin, p1, p2); 
+        p1.resetScore();
+        p2.resetScore();
+        displayScore();
         renderScene();
-        // GameController() 
+        
     }
 
     function onDivPlayerHover(e)
     {
         [i, j] = e.target.getAttribute("data-coords").split(",")
-
+        console.log(game.getActivePlayer().getName())
         if (game.board.isValidMove(i,j))
         {
             e.target.textContent = game.getActivePlayer().getToken();
