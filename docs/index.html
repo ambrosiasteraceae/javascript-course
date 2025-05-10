@@ -9,33 +9,40 @@
     <body>
         <div class="first">
             <fieldset>
-                <legend>I wanna play with:</legend>
+                <legend>I wanna start with:</legend>
                 <div>
                     <input type="radio" name = "token" id ="X" value ="X" checked>
-                    <label for="X">X</label>
+                    <label for="X">X (Vasile)</label>
                 </div>
                 <div>
                     <input type="radio" name = "token" id ="O" value ="O" >
-                    <label for="O">O</label>
+                    <label for="O">O (Ambrozie)</label>
                 </div>
             </fieldset>
-            <h4>Score:</h4>
-            <div class = "score">
-                <div class="player-one">VASILE: 0</div>
-                <div class="player-two">AMBROZIE: 0</div>
+            <div>
+                <h4>Score:</h4>
+                <div class = "score">
+                    <div class="player-one">Vasile: 0</div>
+                    <div class="player-two">Ambrozie: 0</div>
+                </div>
             </div>
         </div>
         
         <div class="secondary">
-            <div>hello world</div>
+            <div>Welcome to Ambrozies` TicTacToe game. </div>
+            <div>In theory, this should work for any <b>N x N</b> grid. </div>
+            <div>You can change the <b>gridSize</b> & <b>win Streak condition</b>. </div>
+            <p>Enjoy</p>
             <div class="header">
                <form action="" method = "post">
                    <label for="gridSize">Enter a gridSize: </label>
                    <!-- <input id = "gridSize" type="value" name ="gridSize"> -->
                    <select name="grid-select" id="grid-select">
                     <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
+                    <option value="4" >4</option>
+                    <option value="5" selected>5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
                    </select>
                </form>
             </div>
@@ -43,18 +50,23 @@
             <button class ="reset">Resxet</button>
             <div class = "announcement"></div>
         </div>
-        <!-- <div class="third">
-            <legend>I wanna go:</legend>
+        <div class="third">
+            <legend> Win Streak Condition:</legend>
             <div>
-                <input type="radio" name = "turn" id ="first" value ="first" checked>
-                <label for="first">First</label>
+                <input type="radio" name = "grid-condition" id ="first" value ="3" checked>
+                <label for="first">3</label>
             </div>
             <div>
-                <input type="radio" name = "turn" id ="second" value ="second" >
-                <label for="second">Second</label>
+                <input type="radio" name = "grid-condition" id ="second" value ="4" >
+                <label for="second">4</label>
+            </div>
+            <div>
+                <input type="radio" name = "grid-condition" id ="third" value ="5" >
+                <label for="third">5</label>
             </div>
         </fieldset> -->
         </div>
+
 
         <script src = "src/tictactoe.js"></script>
     </body>
