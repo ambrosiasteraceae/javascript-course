@@ -91,32 +91,6 @@ button{
 
 .strike{
 width:100px;
-  height:100px;
+height:100px;
 }
- /* .win-col{
-  background: 
-  linear-gradient(to right, transparent, transparent 49%, gray 49%, gray 51%, transparent 51%, transparent),
-  linear-gradient(to bottom, transparent, transparent 49%, gray 49%, gray 51%, transparent 51%, transparent);
-  background-size: 100% 100%;
-  background-position: center;
-  background-repeat: no-repeat;
-  } 
-
-.win-row{
-  background: 
-    linear-gradient(to bottom, transparent, transparent 49%, gray 49%, gray 51%, transparent 51%, transparent);
-  background-size: 100% 100%;
-  background-position: center;
-  background-repeat: no-repeat;
  
-} */
-
-.win-major{
-  background: linear-gradient(to bottom left , var(--color-surface), var(--color-surface) 50%,
-gray 50%, gray 52%, var(--color-surface)52%, var(--color-surface));
-}
-
-.win-minor{
-  background: linear-gradient(to bottom right , var(--color-surface), var(--color-surface) 50%,
-gray 50%, gray 52%, var(--color-surface)52%, var(--color-surface));
-} */
