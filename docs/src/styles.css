@@ -44,16 +44,18 @@ body
 }
 
 .cell{
-  border: 1px solid rgb(113, 113, 113);
+  border: 1px dashed rgba(151, 150, 150, 0.414);
+  /* border: 1px dashed rgba(74, 126, 78, 0.9); */
   vertical-align: center;
   text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  font-size: 3.5em;
+  font-size: 2.5em;
   font-weight: lighter;
-  /* text-shadow: 1px 1px pink; */
-  /* box-shadow: inset 3px 3px rgb(69, 4, 148); */
+
+  /* text-shadow: 1px 1px pink;
+  box-shadow: inset 3px 3px rgb(69, 4, 148); */
   /* background-color: #ed1a6a; */
 
 
@@ -61,6 +63,7 @@ body
 
 .cell:hover{
   background-color: rgba(154, 163, 163, 0.281);
+
 }
 
 .select{
@@ -69,7 +72,10 @@ body
 }
 
 #X{
-accent-color: var(--color-secondary)
+accent-color: var(--color-secondary);
+
+  
+
 }
 #O{
   accent-color: var(--color-primary)
@@ -82,3 +88,9 @@ button{
   height:25px;
   width:100px;
 }
+
+.strike{
+width:100px;
+height:100px;
+}
+ 
