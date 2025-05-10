@@ -461,6 +461,7 @@ function GameController()
 
     function resetGame()
     {
+        selectedPlayer = document.querySelector("input[name=token]:checked");
         console.log("|reset")
         visited =  generateVisited()
         dislayTurn();
@@ -469,8 +470,9 @@ function GameController()
         winStreak = document.querySelector("input[name=grid-condition]:checked");
         gridConditionWin = Number(winStreak.value);
         
+        startPlayer = selectedPlayer.value == "X"? true : false; 
         //TODO find out why the gameLogic works when I do not have a selected player as the last argument
-        game = GameLogic(gridSize,gridConditionWin, p1, p2); 
+        game = GameLogic(gridSize,gridConditionWin, p1, p2, startPlayer); 
         p1.resetScore();
         p2.resetScore();
         displayScore();
@@ -527,7 +529,9 @@ function GameController()
         radio[i].onclick = resetGame;
 
     for(let j=0; j <tokens.length; j++)
-        tokens[j].onclick = game.switchPlayer;
+        tokens[j].onclick = () =>  {game.switchPlayer;
+                                        
+        resetGame()}
 
 }
     
