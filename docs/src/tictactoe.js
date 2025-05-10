@@ -1,7 +1,7 @@
 function Board (gridSize, winCondition)
 {
 
-    console.log("GridWinCohnditiohn insidcwe boardd is ",winCondition)
+    // console.log("GridWinCohnditiohn insidcwe boardd is ",winCondition)
     // Convert to number all that you capture from the web
     const board = [];
     const gridCondition =winCondition;
@@ -69,7 +69,16 @@ function Board (gridSize, winCondition)
         // repeating code but we need 
         secondaryPositions = [];
         n = (gridSize-3); // number of diagonals per side (left and right being first col and last col)
- 
+ /*
+12: (4) ['30', '21', '12', '03'] ok
+13: (4) ['10', '21', '32', '43'] ok
+14: (4) ['14', '23', '32', '41'] rever
+15: (4) ['34', '23', '12', '01']
+16: (3) ['20', '11', '02']
+17: (3) ['20', '31', '42']
+18: (3) ['24', '33', '42']
+19:(3) ['24', '13', '02']
+*/
         for(let d = 0; d<n; d++)
         {   
             let j = 0;
@@ -95,7 +104,7 @@ function Board (gridSize, winCondition)
         }
  
         console.log(secondaryPositions.map((arr) => arr.map((cell) => cell.join(""))))
-        console.log(secondaryPositions)
+        // console.log(secondaryPositions)
  
         return secondaryPositions;
     }
@@ -315,6 +324,30 @@ function GameController()
 
     }
 
+    function handleInterDiagonals(posIndex, cell)
+    {
+        //The diagonal cell gradient is given by the sign differences between first two cells on X and Y. I"ve found that
+        //if the differences are both positive or negative the cells have major diagonal \ strikethrough and / (minor) otherwise.
+        diagonalPositions = game.positions[posIndex];
+        
+        let [x0,y0] = diagonalPositions[0];
+        let [x1,y1] = diagonalPositions[1];
+
+        let deltaX = x1 - x0;
+        let deltaY = y1 - y0; 
+        
+        switch(true)
+        {
+            case (deltaX > 0 && deltaY >0):
+            case (deltaX < 0 && deltaY< 0):
+                addGradient(cell, "to bottom left");
+                break;
+            default:
+                addGradient(cell, "to bottom right");
+                break;
+        }   
+
+    }
 
     function asignCellClass(posIndex, cell)   
       {
@@ -334,13 +367,7 @@ function GameController()
         else if (posIndex == 2 * gridSize + 1)
             addGradient(cell, "to bottom right")
         else
-        {
-
-            // if(i%2 != 0)
-                addGradient(cell, "to bottom left")
-            // else                 
-                // addGradient(cell, "to bottom right")        
-        }    
+            handleInterDiagonals(posIndex,cell);    
         return    
     }
 
@@ -354,7 +381,7 @@ function GameController()
             let attr = `[data-coords="${coord[0]},${coord[1]}"]`;
             let cell = document.querySelector(attr)
             cells.push(cell)
-            // ele.setAttribute("data-coords", [i,j])
+
         })
         return cells
         // 
@@ -416,13 +443,9 @@ function GameController()
         {    
             case 1:
                 ann.textContent = `${p1.getName()} wins`;
-                // cellIndeces = generateWincondition(result);
-                // console.log(cellIndeces);
                 return true
             case -1: 
                 ann.textContent = `${p2.getName()} wins`;
-                // cellIndeces = generateWincondition(result);
-                // console.log(cellIndeces);
                 return true;
             case 2:
                 ann.textContent = "Its a Draw!";
@@ -451,9 +474,7 @@ function GameController()
     function onDivPlayerHover(e)
     {
         [i, j] = e.target.getAttribute("data-coords").split(",")
-        // console.log(Number(i), Number(j))   
-        // data = e.target.datakey;
-        // const coords
+
         if (game.board.isValidMove(i,j))
         {
             e.target.textContent = game.getActivePlayer().getToken();
