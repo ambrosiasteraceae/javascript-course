@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
+root{
+    --padding:15px;
+    /* --article-decoration-width:7px;
+    --svg-width-minor: 50px;
+    --svg-width-middle: 75px;
+    --svg-width-major: 100px;
+    --color-background: #121212;
+    --color-surface: #1e1e1e;
+    --color-primary: #b986fc;
+    --color-secondary: #08d6c9;
+    --color-on-background: #cbcbcb; */
+    --color-on-surface: #e3e3e3d6;
+    /* --color-on-primary: #200925;
+    --color-on-secondary: #000f10; */
+  
+  }
+
+body{
+    font-family:Mulish;
+    font-weight: 100;
+}
+
+header{
+    margin: 4px solid red;
+    /* width:500px; */
+    /* background: black; */
+    color: red;
+    display: flex;
+    justify-content: space-evenly;
+    /* justify-items: center; */
+    /* align-items: center; */
+    align-content: space-evenly;
+
+}
+
+nav{
+    display: flex;
+    gap:100px;
+}
+
+#content{
+    /* padding-left: 250px;
+    padding-right: 250px; */
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+    /* display: flex; */
+    /* height: 1000px; */
+    height: 100vh;
+    background-image: url(../assets/roman-feasting.jpg);
+    /* background-repeat:repeat-y;
+    background-size:aut */
+    /* height: 100px; */
+    /* display: flex; */
+}
+
+.description{
+    display:flex;
+    flex-direction: column;
+    width: 50%;
+    padding-top: 50px;
+    background: black;
+    opacity: .7;
+    align-items: center;
+    justify-items: center;
+    align-content: center;
+    justify-content: center;
+    color:rgba(248, 248, 255, 0.703);
+    /* width:50%; */
+    /* height:100%; */
+}
+
+.recipes{
+    color: var(--color-on-surface);
+    /* border: 5px solid rgb(111,41,97); */
+    display: grid;
+    /* grid-template-areas:
+      "1 2 3",
+      "4 5 6"; */
+    /* gap: 10px; */
+    /* grid-template-columns: repeat(3, 1fr); */
+    grid-template-rows: repeat(6, 1fr);
+    /* inline-size: 500px; */
+    background: black;
+    opacity: .7;
+    width:59%;
+}
+.recipe{
+    /* font-weight: 900; */
+    color: #e3e3e3d6;
+    border-bottom: 1px solid greenyellow;
+    border-left: 3px solid royalblue;
+}
