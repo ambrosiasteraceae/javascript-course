@@ -1,0 +1,38 @@
+body{
+    background-color: rgb(220, 195, 195);
+
+}
+
+.main{
+    display: flex;
+    flex-direction: column;    
+    width:500px;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.header{
+    border: 1px solid red;
+    display: flex;
+    height:75px;
+    width:100%;
+    align-items: center;
+    padding:0 10px;
+ 
+    justify-content: space-between;
+ 
+}
+
+.timer{
+    height:400px;
+    border: 1px solid orange;
+}
+
+.pomodoros{
+    display: flex;
+    align-content: center;
+    gap: 100px;
+}
+
