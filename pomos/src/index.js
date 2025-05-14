@@ -2,38 +2,56 @@
 import "./styles.css";
 import Task from "./task.js";
 import Project from "./project.js";
-import Timer from "./session.js";
+import Session from "./session.js";
 
-const t1 = new Timer(12000);
+const ts = new Session(12000);
+ts.start();
+setTimeout(() => ts.pause(),2000);
 
-let i = 0;
+setTimeout(() => ts.start( ),4000);
 
-function doSomething(){
-    t1.decrement();
-    console.log(t1.getTime());
-    console.log(t1.duration)
-    if (t1.duration == 0)
-        stopTimer()
-}
+// ts.start();
+// ts.pause();
+// ts.start();
+// setTimeout(() => ts.pause(),2000);
 
-let intervalId;
-
-
-function decrementTimer()
-{
-    if(!intervalId)
-        intervalId = setInterval(doSomething, 1000)
-}
+// // ts.start()
+// setTimeout(ts.start,4000);
 
 
 
-function stopTimer()
-{
-    clearInterval(intervalId);
-    intervalId = null;
-}
+// ts.decrement();
+// ts.decrement();
+// ts.decrement();
+// console.log(ts.getTime());
 
-decrementTimer();
+// let i = 0;
+
+// function doSomething(){
+//     t1.decrement();
+//     console.log(t1.getTime());
+//     console.log(t1.duration)
+//     if (t1.duration == 0)
+//         stopTimer()
+// }
+
+// let intervalId;
+
+
+// function decrementTimer()
+// {
+//     if(!intervalId)
+//         intervalId = setInterval(doSomething, 1000)
+// }
+
+
+// function stopTimer()
+// {
+//     clearInterval(intervalId);
+//     intervalId = null;
+// }
+
+// decrementTimer();
 
 
 
