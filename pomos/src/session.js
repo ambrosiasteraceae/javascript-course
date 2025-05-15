@@ -35,9 +35,9 @@ export default class Session{
     }
     
     decrement(){
-
-        if((this.duration - 1000) >= 0)
-            this.duration -= 1000
+        const result = this.duration - 1000;
+        if(result >= 0)
+            this.duration = result;
     }
 
    
