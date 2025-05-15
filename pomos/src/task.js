@@ -11,7 +11,7 @@
     constructor(name, pomodoros, notes = "")
     {
         this.#key = ++Task.lastKey;
-        this.#current = 1;
+        this.#current = 0;
         this.name = name;
         this.pomodoros = pomodoros;
         this.notes = notes;
@@ -27,23 +27,42 @@
     get current() { return this.#current}
 
     increment(){
-        if(this.#current+1 <= this.pomodoros)
-            ++this.#current;
-        
+
+        if(this.isFinished)
+            return
+         
+        ++this.#current;
+
+        if(this.#current >= this.pomodoros)
+            this.isFinished = true;
     }
 
     addPomodoros(val)
     {
-        if(this.pomodoros+val > 0)
-            this.pomodoros += val;
+        /*
+        There are two kinds of scenario that I want to allow
+        1. User adds more pomodoros after a task is finished say 5/5. When added, isFinished should be set to false
+        2. User estimated more pomodoros than actual. He should be able to remove pomodoros and set task to finished.  
+        */
+        const change = this.pomodoros + val;
+        
+        //you should not be able to substract below the current task number;
+        if (change >= this.#current) 
+        {
+            this.pomodoros = change;
+            
+            if (this.pomodoros == this.#current)
+                this.isFinished = true;
+            else
+                this.isFinished = false;    
+        }
+        else
+            console.log("Hey you want to substract more than current", val)
+        
     };   
 
     print(){
-        return `Name:${this.name} Pomodoros:${this.pomodoros} IsWorkedOn:${this.isWorkedOn} IsFinished:${this.isFinished} Notes:${this.notes}`        
+        console.log(`#${this.#key}:${this.name} ${this.#current}/${this.pomodoros} Active:${this.isWorkedOn} Finished:${this.isFinished}`)        
     }
 
 }
-
-
-// console.log("hi i, a task")
-
