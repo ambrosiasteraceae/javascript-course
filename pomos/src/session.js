@@ -1,5 +1,5 @@
 import {getUnixTime, format} from "date-fns";
-
+import  {adjustTime} from "./index.js"
 // const fns = require("date-fns");
 /*
 Rule of Thumb
@@ -13,6 +13,7 @@ export default class Session{
     //A timer is assigned to each task, but this does not mean the timer starts when it is instantiated
     constructor(timeInMiliseconds, task = null){
         // this.isPaused = false;
+        this.original = timeInMiliseconds;
         this.duration = timeInMiliseconds;
         this.task = task;
         // this.intervalId;
@@ -21,10 +22,14 @@ export default class Session{
     }
 
     refresh(){ 
-        this.duration = timeInMiliseconds;
+        console.log("Refresh was callled:", this.getTime())
+        this.duration = this.original;
+        adjustTime();
     }
 
     start(){
+        
+        console.log("Started at:", this.getTime())
         if(!this.intervalId)       
             this.intervalId = setInterval(this.parseTime, 1000);
     }
@@ -35,9 +40,11 @@ export default class Session{
             this.duration -= 1000
     }
 
+   
     parseTime(){
-
+        
     this.decrement();
+    adjustTime();
     console.log(this.getTime());
 
     if (this.duration == 0)
@@ -45,7 +52,7 @@ export default class Session{
     }
         
     pause(){
-        console.log("Paused at :", this.getTime());
+        console.log("Paused at:", this.getTime());
         clearInterval(this.intervalId);
         this.intervalId = null;
     }

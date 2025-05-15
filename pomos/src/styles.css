@@ -36,3 +36,8 @@ body{
     gap: 100px;
 }
 
+button{
+    width:100px;
+    
+    height:50px;
+}
