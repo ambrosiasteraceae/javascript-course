@@ -1,6 +1,6 @@
 import Task from "./task.js";
 import Project from "./project.js";
-import Session from "./session.js";
+import Session from "./timer.js";
 
 function TaskTestSuite1(){
     const tsk1 = new Task("Webpack", 2, "something");
