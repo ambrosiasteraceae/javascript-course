@@ -8,14 +8,14 @@ wrap it or bind it, because JavaScript
 doesn't automatically carry this along for the ride.
 */
 
-export default class Session{
+export default class Timer{
     
     //A timer is assigned to each task, but this does not mean the timer starts when it is instantiated
-    constructor(timeInMiliseconds, task = null){
+    constructor(timeInMiliseconds){
         // this.isPaused = false;
-        this.original = timeInMiliseconds;
-        this.duration = timeInMiliseconds;
-        this.task = task;
+        // this.original = timeInMiliseconds;
+        // this.duration = timeInMiliseconds;
+        // this.task = task;
         // this.intervalId;
         //I need to dig about this issue deeper to understand why it works
         this.parseTime = this.parseTime.bind(this);

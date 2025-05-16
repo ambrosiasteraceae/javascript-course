@@ -1,7 +1,7 @@
 import Task from "./task.js";
 
 export default class Project{
-    static lastID = 0;
+    static lastID = -1;
 
     // static getID(){
     //     console.log(lastID)

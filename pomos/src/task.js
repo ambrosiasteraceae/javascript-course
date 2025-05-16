@@ -1,5 +1,9 @@
+ 
+//@TODO: Check the task functionality as the lastkey has been updated to start at 0 
+//in order to index more naturally into the tasks array.
+ 
  export default class Task {
-    static lastKey = 0;
+    static lastKey = -1;
     
     static printKey(){
         return Task.lastKey;
@@ -8,17 +12,27 @@
     #current;
     #key;
 
-    constructor(name, pomodoros, notes = "")
+    constructor(name, pomodoros,session, 
+        // notes = ""
+    )
     {
         this.#key = ++Task.lastKey;
-        this.#current = 0;
+        this.#current = -1;
         this.name = name;
         this.pomodoros = pomodoros;
-        this.notes = notes;
+        // this.notes = notes;
         this.isWorkedOn = false;
         this.isFinished = false;
+        this.timer = session;
         
     };
+
+
+    isPomodoroFinished(){
+        if (this.timer.isFinished())
+            this.increment();
+    }
+
 
     get key(){
         return this.#key;
@@ -47,11 +61,11 @@
         const change = this.pomodoros + val;
         
         //you should not be able to substract below the current task number;
-        if (change >= this.#current) 
+        if (change >= this.#current + 1) 
         {
             this.pomodoros = change;
             
-            if (this.pomodoros == this.#current)
+            if (this.pomodoros == this.#current + 1)
                 this.isFinished = true;
             else
                 this.isFinished = false;    
