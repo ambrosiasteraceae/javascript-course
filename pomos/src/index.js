@@ -34,7 +34,8 @@ function updateTime(){
 
 
 function switchActiveTask(){
-
+    if(activeTask)
+        activeTask.isWorkedOn = false;
     activeTask = activeProject?.getActiveTask();
     updateTime();
 
@@ -105,42 +106,6 @@ project1.generateExamples(10);
 project1.tasks[3].isWorkedOn = true;
 switchActiveTask()
 console.log(activeTask)
-project1.tasks[0].timer.duration = 2000;
-// project1.listTasks()
-
-activeTask.timer.start();
-
-setTimeout(() => activeTask.timer.pause(), 2000); 
-
-function changeone(){
-project1.tasks[3].isWorkedOn = false;
-project1.tasks[5].isWorkedOn = true;
-
-}
-
-setTimeout(() => changeone(), 2000); 
-// 
-setTimeout(() => switchActiveTask(), 3000); 
-// console.log(activeTask)
-setTimeout(() => activeTask.timer.start(), 4000); 
-setTimeout(() => activeTask.timer.pause(), 12000); 
-
-setTimeout(() => console.log(project1.listTasks()), 14000); 
-// activeTask.timer.start()
-
-
-function changetwo(){
-    project1.tasks[5].isWorkedOn = false;
-project1.tasks[0].isWorkedOn = true;
-
-}
-
-setTimeout(() => changetwo(), 14000); 
-
-setTimeout(() => switchActiveTask(),14000); 
-// console.log(activeTask)
-setTimeout(() => activeTask.timer.start(), 14000); 
-setTimeout(() => activeTask.timer.pause(), 19000); 
-
-setTimeout(() => console.log(project1.listTasks()), 20000); 
-// setTimeout(() => activeTask.timer.pause(), 6000); 
+project1.tasks[4].isWorkedOn = true;
+switchActiveTask()
+console.log(activeTask)
