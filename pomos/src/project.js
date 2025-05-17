@@ -7,7 +7,7 @@ export default class Project{
     // static getID(){
     //     console.log(lastID)
     // }
-    
+    current;
     #id;
     constructor(name, taskList =[])
     {
@@ -15,6 +15,7 @@ export default class Project{
         this.name = name;
         this.tasks = taskList;
     }
+
 
     getID () {return this.#id;}
 
@@ -51,10 +52,10 @@ export default class Project{
         for(let i=0; i<num; i++)
         {
             const name = `(Task ${i+1})`;
-            const pomodoros = Math.round(10*Math.random());
-
+            // const pomodoros = Math.round(10*Math.random());
+            const pomodoros = i+1;
             const taskConfig = {name, pomodoros};
-            const timer = new Timer(HALFHOUR);
+            const timer = new Timer(180000);
             const task = new Task(taskConfig, timer);
 
             this.addTask(task);

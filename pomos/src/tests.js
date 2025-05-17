@@ -63,6 +63,44 @@ function ProjectTestSuite2(){
     console.log(trial.listTasks())
     console.log(trial.getID())
 }
+
+function ProjectTestSuite3(){
+    console.log(project1.getActiveTask());
+project1.tasks[1].isWorkedOn = true;
+console.log("Active task is:")
+console.log(project1.getActiveTask());
+console.log(project1.tasks)
+
+
+switchActiveTask();
+console.log("ActiveTask from, switch is:")
+console.log(activeTask); 
+activeTask.increment();
+console.log(activeTask); 
+activeTask.increment();
+console.log(activeTask); 
+activeTask.increment();
+
+project1.tasks[2].isWorkedOn = true;
+project1.tasks[1].isWorkedOn = false;
+console.log(project1.tasks)
+switchActiveTask();
+console.log("ActiveTask from, switch is:")
+console.log(activeTask); 
+activeTask.increment();
+activeTask.increment();
+activeTask.increment();
+console.log(activeTask); 
+
+
+project1.tasks[2].isWorkedOn = false;
+switchActiveTask();
+console.log(activeTask);
+project1.tasks[5].isWorkedOn = true;
+switchActiveTask();
+console.log(activeTask);
+console.log (project1.listTasks())
+}
 // TaskTestSuite1();
 // ProjectTestSuite1();
 // ProjectTestSuite2();
