@@ -1,5 +1,5 @@
 body{
-    background-color: rgb(220, 195, 195);
+    background-color: rgba(14, 13, 13, 0.121);
 
 }
 
@@ -36,6 +36,21 @@ body{
     gap: 100px;
 }
 
+.task{
+    display: flex;
+    gap:19px;
+    border:1px solid blue;
+    padding:19px;
+}
+.task > div{
+    display: flex;
+    border:1px solid red;
+}
+.projects{
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+}
 button{
     width:100px;
     

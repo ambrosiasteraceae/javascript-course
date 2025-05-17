@@ -23,6 +23,13 @@ export default class Project{
         this.tasks[index].isWorkedOn = true;
     }
 
+    getTaskbyID(taskID){
+        const found = this.tasks.find((task) => task.key == taskID);
+        if(found)
+            return found
+        console.log("Not found");
+    }
+
     getActiveTask(){
          const activeTask = this.tasks.filter((task) => task.isWorkedOn == true)[0];
          return activeTask;
@@ -55,7 +62,7 @@ export default class Project{
             // const pomodoros = Math.round(10*Math.random());
             const pomodoros = i+1;
             const taskConfig = {name, pomodoros};
-            const timer = new Timer(180000);
+            const timer = new Timer(5000*(i+1));
             const task = new Task(taskConfig, timer);
 
             this.addTask(task);
