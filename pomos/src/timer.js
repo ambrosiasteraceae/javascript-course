@@ -29,6 +29,7 @@ export default class Timer{
     }
 
     refresh(){ 
+        //How do we handle the this.duration since we do not want to reset it if it is finished
         this.duration = this.original;
         refreshTime();
         console.log("Refresh was callled:", this.getTime())
