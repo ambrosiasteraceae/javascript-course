@@ -12,24 +12,25 @@
     #current;
     #key;
 
-    constructor(name, pomodoros,session, 
-        // notes = ""
-    )
+    constructor({name, pomodoros}, timer)
     {
         this.#key = ++Task.lastKey;
-        this.#current = -1;
+        this.#current = 0;
+        
         this.name = name;
         this.pomodoros = pomodoros;
         // this.notes = notes;
+        
         this.isWorkedOn = false;
         this.isFinished = false;
-        this.timer = session;
+        
+        this.timer = timer;
         
     };
 
 
     isPomodoroFinished(){
-        if (this.timer.isFinished())
+        if (this.timer == 0)
             this.increment();
     }
 
@@ -42,9 +43,19 @@
 
     increment(){
 
-        if(this.isFinished)
+        if (this.isFinished)
+        {
+            console.log(`Cannot add more it is full, ${this.#current}:${this.pomodoros}`)
             return
-         
+        }
+        
+        if (this.timer.duration = 0)
+        {
+            console.log("Timer is not yet finished. cannot assign")
+            return
+        }
+        
+        console.log("Incrementing Task since time is finished")
         ++this.#current;
 
         if(this.#current >= this.pomodoros)
@@ -76,7 +87,7 @@
     };   
 
     print(){
-        console.log(`#${this.#key}:${this.name} ${this.#current}/${this.pomodoros} Active:${this.isWorkedOn} Finished:${this.isFinished}`)        
+        console.log(`#${this.#key}:${this.name} ${this.#current}/${this.pomodoros} Active:${this.isWorkedOn} Finished:${this.isFinished}, Time:${this.timer.getTime()}`)        
     }
 
 }

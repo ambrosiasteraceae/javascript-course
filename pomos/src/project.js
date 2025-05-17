@@ -1,4 +1,5 @@
 import Task from "./task.js";
+import Timer, {HALFHOUR, FIFTEEN} from "./timer.js"
 
 export default class Project{
     static lastID = -1;
@@ -19,6 +20,11 @@ export default class Project{
 
     setActiveTask(index){
         this.tasks[index].isWorkedOn = true;
+    }
+
+    getActiveTask(){
+         const activeTask = this.tasks.filter((task) => task.isWorkedOn == true)[0];
+         return activeTask;
     }
  
     addTask(task){
@@ -45,8 +51,12 @@ export default class Project{
         for(let i=0; i<num; i++)
         {
             const name = `(Task ${i+1})`;
-            const pomodoros = Math.round(10*Math.random())
-            const task = new Task(name, pomodoros);
+            const pomodoros = Math.round(10*Math.random());
+
+            const taskConfig = {name, pomodoros};
+            const timer = new Timer(HALFHOUR);
+            const task = new Task(taskConfig, timer);
+
             this.addTask(task);
         }
     }
