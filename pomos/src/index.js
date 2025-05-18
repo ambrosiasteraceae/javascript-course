@@ -26,7 +26,9 @@ import Task from "./task.js";
 import Project from "./project.js";
 import Timer, {HALFHOUR, FIFTEEN,FIVE} from "./timer.js"
 import "./tests.js";
-import DisplayManager from "./display.js";
+import DisplayManager, {BaseElement, NewDisplayManager, TaskElement} from "./display.js";
+
+
 
 export function adjustTime(){
     timeElement.dispatchEvent(event)
@@ -94,31 +96,51 @@ timeElement.addEventListener("onrefresh",  () => activeTask.isFinished? "00:00":
 startBtn.addEventListener("click", () =>  activeTask.timer.start());
 stopBtn.addEventListener("click", () => activeTask.timer.pause());
 resetBtn.addEventListener("click", () => activeTask.timer.refresh());
-logBtn.addEventListener("click",() => activeTask.print())
+logBtn.addEventListener("click",() => activeTask?.print())
 
-const options = {name: "Pomo App", pomodoros:12};
-const timer = new  Timer( FIVE);
-const task = new Task(options, timer);
+// const options = {name: "Pomo App", pomodoros:12};
+// const timer = new  Timer( FIVE);
+// const task = new Task(options, timer);
 
-//Init  Display
-// updateTime();
+// //Init  Display
+// // updateTime();
 
 const project1 = new Project("trial");
 activeProject = project1;
 
 project1.generateExamples(10);
 
-project1.tasks[3].isWorkedOn = true;
-switchActiveTask()
-console.log(activeTask)
-project1.tasks[4].isWorkedOn = true;
-switchActiveTask()
-console.log(activeTask)
 
-const manager = new DisplayManager();
+// project1.tasks[3].isWorkedOn = true;
+// switchActiveTask()
+// console.log(activeTask)
+// project1.tasks[4].isWorkedOn = true;
+// switchActiveTask()
+// console.log(activeTask)
+
+// ****** VERSION 1 ********
+
+// const manager = new DisplayManager();
+// manager.addProject(project1);
+// manager.populateProject();
+
+
+// ****** VERSION 2 ********
+const manager = new NewDisplayManager();
 manager.addProject(project1);
-manager.populateProject();
+manager.build();
 
+
+
+// const projElement = new BaseElement("projects");
+// console.log("Project is: ");
+// console.log(projElement);
+
+// activeTask = project1.tasks[3];
+// console.log("activbe[ask before task element", activeTask)
+// const ate = new TaskElement(activeTask);
+// console.log("Ate is");
+// console.log(ate);
 
 // const activeTaskElement = document.querySelector("input[name=task]:checked");
 const activeTaskElement = document.querySelectorAll(".radio");
@@ -128,6 +150,5 @@ activeTaskElement.forEach((radioElem) => {radioElem.addEventListener("change", (
     const taskID = taskDiv.dataset.key;
     const newTask = project1.getTaskbyID(taskID)
     switchActiveTask(newTask);
-    // console.log("Switched to: ")
-    // console.log(newTask);
+
 })});
