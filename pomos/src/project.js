@@ -17,7 +17,7 @@ export default class Project{
     }
 
 
-    getID () {return this.#id;}
+    get id () {return this.#id;}
 
     setActiveTask(index){
         this.tasks[index].isWorkedOn = true;

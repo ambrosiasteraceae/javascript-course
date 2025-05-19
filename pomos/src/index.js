@@ -26,7 +26,7 @@ import Task from "./task.js";
 import Project from "./project.js";
 import Timer, {HALFHOUR, FIFTEEN,FIVE} from "./timer.js"
 import "./tests.js";
-import DisplayManager, {BaseElement, NewDisplayManager, TaskElement} from "./display.js";
+import DisplayManager, {BaseElement,  TaskElement} from "./display.js";
 
 
 
@@ -126,16 +126,18 @@ project1.generateExamples(10);
 
 
 // ****** VERSION 2 ********
-const manager = new NewDisplayManager();
-manager.addProject(project1);
-manager.build();
+const manager = new DisplayManager();
+
+manager.display(project1);
 
 
 
-// const projElement = new BaseElement("projects");
+// const projElement = new BaseElement(".projects");
+
 // console.log("Project is: ");
 // console.log(projElement);
 
+// console.log(document.querySelector(".projects"));
 // activeTask = project1.tasks[3];
 // console.log("activbe[ask before task element", activeTask)
 // const ate = new TaskElement(activeTask);
