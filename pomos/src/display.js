@@ -1,45 +1,13 @@
 import Task from "./task.js";
 import Project from "./project.js";
 // import Timer, {HALFHOUR, FIFTEEN,FIVE} from "./timer.js"
-/*
-Notes:
-- How is this current task and base classing better than what I have before>?
-- I fail to see how its better. Maybe my class structure is wrong
-- I havent stopped and asked, what is the functionality that I need to have so I know what to class..
-- In task element, should this.el.dataset.key be set as task.key or this.task.key?
-- Is taskId necessary since we have dataset.key? Only for display, better to show
-- These subclasses should be somewhat generic and reusuable. Is that the case?
-- how can I better write my classes so that I can both construct and update, not repeating
-    element.setText() on all items when I have to update
-- I find it very hard and confusing to know with high certainity what is the best course for:
-    -> should display manager store the project classes as well?
-    -> should display manager be the one that assigns which active project we are looking at?
-    -> or should it be a different class>?
-    -> anohter way to frame it, does it just cater for dom dislayu and taskElements or also mingles in project class storage?
-
-- More generally, I have a problem with separation of concers. Any references I Could Read?
-
-- class NewDisplayManager{
-    constructor()
-     {
-        this.projects = [];
-     }
-    
-     addProject(project){
-        this.projects.push(project);
-        if (this.projects)
-            this.active = project;
-    } -> is it okay to create this.active on add project or should I have initialized with a null value in constructor?
-        
-    */
-
 
 export class BaseElement {
     constructor(htmlElement){
         if(htmlElement.startsWith("."))
         {
             const selection = document.querySelector(htmlElement);
-            console.log(selection)
+            // console.log(selection)
             if(selection)
                 this.el = selection;
         }
@@ -92,7 +60,6 @@ class RadioElement extends BaseElement{
     }
 
 }
-
 export class TaskElement extends BaseElement{
     
     constructor(task){
@@ -168,7 +135,6 @@ export class TaskElement extends BaseElement{
         }
 }
 
-
 export default class DisplayManager{
     constructor()
     {
@@ -180,23 +146,26 @@ export default class DisplayManager{
     createTaskElement(task){
         const taskElement = new TaskElement(task)
         this.taskElements.set(task.key, taskElement);
-        
-        return taskElement;
+        this.container.append(taskElement);
+        // return taskElement;
     }
 
-    addTask(t){
+    // addTask(t){
         
-        if (t instanceof TaskElement)
-            this.container.append(t);
-        else
-            this.container.append(this.createTaskElement(t));
+    //     if (t instanceof TaskElement)
+    //         this.container.append(t);
+    //     else
+    //         this.container.append(this.createTaskElement(t));
 
-    }
+    // }
 
     updateTask(id){
         const taskElement = this.taskElements.get(id);
         if(taskElement)
+        {
             taskElement.update();
+
+        }
     }
 
     updateAll(){
@@ -207,9 +176,10 @@ export default class DisplayManager{
         this.clear();
 
         // this.activeProject = project;
-        project.tasks.forEach((task) => this.addTask(task));
-        this.taskElements.values().forEach((taskElement) => this.container.append(taskElement));
+        project.tasks.forEach((task) => this.createTaskElement(task));
+        // this.taskElements.values().forEach((taskElement) => this.container.append(taskElement));
         // this.container.append(this.taskElements);
+    
     }
 
     clear(){
@@ -227,15 +197,21 @@ export  class ProjectManager{
     constructor(){
         this.activeKey = null;
         this.projects = new Map();
-
     }
 
-    addProject(name){
-        const project = new Project(name)
-        if(!this.activeKey)
+    addProject(project){
+ /*
+ Pretty little bug in the if clause due to 0 indexing of projectid:
+ On init:
+ - activeKey = null  !null (true)
+ - activeKey = 0     !0 (also true)
+ - activeKey is still true in the !0 if clause, assigning the 
+ */
+        
+        console.log("Active key inside call", this.activeKey)
+        if(this.activeKey === null)
             this.activeKey = project.id; 
-        this.projects.set(this.id, project);
-
+        this.projects.set(project.id, project);
     }
 
     getActiveProject(){
@@ -250,9 +226,7 @@ export  class ProjectManager{
     removeProject(key){
         this.projects.delete(key);
     }
-
 }
-
 
 export class AppController{
     constructor(){

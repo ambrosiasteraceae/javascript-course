@@ -47,7 +47,6 @@ export default class Project{
     listTasks(){
         for (let t of this.tasks)
             {t.print()}
-        // return this.tasks.map((task) => task)
     }
 
     print(){
