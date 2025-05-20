@@ -4,53 +4,61 @@ import Timer, {HALFHOUR, FIFTEEN} from "./timer.js"
 export default class Project{
     static lastID = -1;
 
-    // static getID(){
-    //     console.log(lastID)
-    // }
     current;
     #id;
-    constructor(name, taskList =[])
+    constructor(name)
     {
         this.#id = ++Project.lastID;
         this.name = name;
-        this.tasks = taskList;
+        this.tasks = new Map();
     }
 
 
     get id () {return this.#id;}
 
+    switchTask(index){
+        if (!index)
+        {
+            console.log("No Index Was Provided")
+            return 
+        }
+
+        const curr = this.getActiveTask();
+        
+        //on initialization there is no active task so current returns null
+        if(curr)
+            curr.isWorkedOn = false;
+        this.setActiveTask(index);
+    }
+
     setActiveTask(index){
-        this.tasks[index].isWorkedOn = true;
-    }
-
-    getTaskbyID(taskID){
-        const found = this.tasks.find((task) => task.key == taskID);
-        if(found)
-            return found
-        console.log("Not found");
-    }
-
-    getActiveTask(){
-         const activeTask = this.tasks.filter((task) => task.isWorkedOn == true)[0];
-         return activeTask;
-    }
- 
-    addTask(task){
-        this.tasks.push(task);
-    }
-
-    removeTask(taskIndex){
-        this.tasks.splice(taskIndex,1);
+        index = Number(index);
+         this.tasks.get(index).isWorkedOn = true;
     }
 
     
-    listTasks(){
-        for (let t of this.tasks)
-            {t.print()}
+    getActiveTask(){
+    
+        const taskIterator = this.tasks.values();
+        //Approach one
+        const activeTask = [...taskIterator].filter((task) => task.isWorkedOn == true)[0];
+        return activeTask
+
+        
+    }
+ 
+    addTask(task){
+        this.tasks.set(task.key, task);
     }
 
-    print(){
-        console.log(this.tasks.map((task) => task.print()))
+    removeTask(taskIndex){
+        this.tasks.delete(taskIndex)
+
+    }
+
+    listTasks(){
+        for (let t of this.tasks.values())
+            t.print()
     }
 
     generateExamples(num)
@@ -61,7 +69,7 @@ export default class Project{
             // const pomodoros = Math.round(10*Math.random());
             const pomodoros = i+1;
             const taskConfig = {name, pomodoros};
-            const timer = new Timer(5000*(i+1));
+            const timer = new Timer(HALFHOUR);
             const task = new Task(taskConfig, timer);
 
             this.addTask(task);
