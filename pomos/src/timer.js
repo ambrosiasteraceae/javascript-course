@@ -58,14 +58,14 @@ export default class Timer{
    
     parseTime(){
         
-    this.decrement();
-    adjustTime();
-    console.log(this.getTime());
-    if (this.duration == 0)
-    {
-        this.pause()
-        setTimeout(() => this.refresh(), 1000);
-    }
+        this.decrement();
+        adjustTime();
+        console.log(this.getTime());
+        if (this.duration == 0)
+        {
+            this.pause()
+            setTimeout(() => this.refresh(), 1000);
+        }
     }
         
     pause(){

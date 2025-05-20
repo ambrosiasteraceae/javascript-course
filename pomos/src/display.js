@@ -1,7 +1,7 @@
 import Task from "./task.js";
 import Project from "./project.js";
 // import Timer, {HALFHOUR, FIFTEEN,FIVE} from "./timer.js"
-
+import { updateTime, updateTask } from "./index.js";
 export class BaseElement {
     constructor(htmlElement){
         if(htmlElement.startsWith("."))
@@ -16,7 +16,8 @@ export class BaseElement {
     }
 
     append(child){
-        console.log("Child of:" , child, typeof child)
+        // console.log("Child of:" , child, typeof child)
+
         const childElement = child instanceof BaseElement? child.el : child;
         this.el.appendChild(childElement);
     }
@@ -40,6 +41,10 @@ export class BaseElement {
     getAttribute(attrName){
         return this.el.getAttribute(attrName);
     }
+
+    addEventListener(type, listener){
+        return this.el.addEventListener(type, listener)
+    }
     
 }
 
@@ -60,8 +65,8 @@ class RadioElement extends BaseElement{
     }
 
 }
-export class TaskElement extends BaseElement{
-    
+
+export class TaskElement extends BaseElement{  
     constructor(task){
         
         super("div");
@@ -114,8 +119,8 @@ export class TaskElement extends BaseElement{
     }
 
     update(){
-        this.elements.taskActive.activate(this.task.isWorkedOn || false);
-        this.elements.taskName.setText(task.name);
+        // this.elements.taskActive.activate(this.task.isWorkedOn || false);
+        this.elements.taskName.setText(this.task.name);
         this.elements.taskStatus.setText(`${this.task.current}/${this.task.pomodoros}`)
         this.elements.taskTime.setText(this.task.timer.getTime());
     }
@@ -140,7 +145,7 @@ export default class DisplayManager{
     {
         this.container = new BaseElement(".projects")
         this.taskElements = new Map();
-        // this.activeProject = null;
+        
     }
 
     createTaskElement(task){
@@ -162,10 +167,7 @@ export default class DisplayManager{
     updateTask(id){
         const taskElement = this.taskElements.get(id);
         if(taskElement)
-        {
             taskElement.update();
-
-        }
     }
 
     updateAll(){
@@ -177,23 +179,51 @@ export default class DisplayManager{
 
         // this.activeProject = project;
         project.tasks.forEach((task) => this.createTaskElement(task));
+        this.addRadioClickEvent(project);
         // this.taskElements.values().forEach((taskElement) => this.container.append(taskElement));
         // this.container.append(this.taskElements);
     
     }
 
+    addRadioClickEvent(project){
+        const iter = this.taskElements.values();
+        for(const item of iter)
+        {
+            // console.log(item.elements.taskActive)
+            item.elements.taskActive.addEventListener("change",(e) => {
+                const task = e.target.parentNode;
+                const id = task.dataset.key;                
+                // newTask = project.getActiveProject().getTaskbyID(id);
+                
+                project.switchTask(id);
+                console.log("Our New active task is:")
+                console.log(project.getActiveTask());
+                updateTime(); 
+                updateTask();   
+                // this.switchActiveTask(id, project)
+            })
+        }                
+    }
+
+    // switchActiveTask(id, project){
+
+    //     project.switchTask(id);
+
+    // }
     clear(){
-        // this.remove();
         this.taskElements.forEach((taskElement) => taskElement.destroy());
         this.taskElements.clear();
         this.activeProject = null;
         this.container.innerHTML = "";
     }
 
+    addRadioEventListener(){
+        this.taskElements
+    }
+
 }
 
 export  class ProjectManager{
-    //
     constructor(){
         this.activeKey = null;
         this.projects = new Map();
@@ -276,7 +306,6 @@ export class AppController{
 }
 
 // export default class DisplayManager{
-
 //     constructor()
 //     {
 //         this.projects = [];
