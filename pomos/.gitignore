@@ -1,3 +1,5 @@
 node_modules
 dist
 assets
+src/tests.js
+src/thoughts.md
