@@ -2,7 +2,7 @@
 //@TODO: Check the task functionality as the lastkey has been updated to start at 0 
 //in order to index more naturally into the tasks array.
  
- export default class Task {
+ export class Task {
     static lastKey = -1;
     
     static printKey(){
@@ -21,7 +21,7 @@
         this.pomodoros = pomodoros;
         // this.notes = notes;
         
-        this.isWorkedOn = false;
+        this.isActive = false;
         this.isFinished = false;
         
         this.timer = timer;
@@ -59,7 +59,10 @@
         ++this.#current;
 
         if(this.#current >= this.pomodoros)
-            this.isFinished = true;
+        {
+            this.isFinished = true; 
+            // this.tim
+        }
     }
 
     addPomodoros(val)
@@ -87,7 +90,7 @@
     };   
 
     print(){
-        console.log(`#${this.#key}:${this.name} ${this.#current}/${this.pomodoros} Active:${this.isWorkedOn} Finished:${this.isFinished}, Time:${this.timer.getTime()}`)        
+        console.log(`#${this.#key}:${this.name} ${this.#current}/${this.pomodoros} Active:${this.isActive} Finished:${this.isFinished}, Time:${this.timer.getTime()}`)        
     }
 
 }

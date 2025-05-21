@@ -1,7 +1,7 @@
-import Task from "./task.js";
+import {Task} from "./task.js";
 import Timer, {HALFHOUR, FIFTEEN} from "./timer.js"
 
-export default class Project{
+export class Project{
     static lastID = -1;
 
     current;
@@ -27,21 +27,22 @@ export default class Project{
         
         //on initialization there is no active task so current returns null
         if(curr)
-            curr.isWorkedOn = false;
+            curr.isActive = false;
         this.setActiveTask(index);
     }
 
     setActiveTask(index){
         index = Number(index);
-         this.tasks.get(index).isWorkedOn = true;
+         this.tasks.get(index).isActive = true;
     }
 
     
     getActiveTask(){
     
         const taskIterator = this.tasks.values();
+        // console.log("hahaha")
         //Approach one
-        const activeTask = [...taskIterator].filter((task) => task.isWorkedOn == true)[0];
+        const activeTask = [...taskIterator].filter((task) => task.isActive == true)[0];
         return activeTask
 
         
