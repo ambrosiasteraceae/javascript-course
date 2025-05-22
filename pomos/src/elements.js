@@ -87,8 +87,8 @@ export class TaskElement extends BaseElement{
         this.elements.taskActive.addClass("radio");
         this.elements.taskActive.setChecked(this.task.isActive);
 
-         console.log(this.task.isActive);
-         console.log(this.elements.taskActive);
+        //  console.log(this.task.isActive);
+        //  console.log(this.elements.taskActive);
         // console.log(this.taskActive);
         // console.log();
         

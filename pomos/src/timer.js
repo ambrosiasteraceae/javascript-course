@@ -1,10 +1,8 @@
 import {getUnixTime, format} from "date-fns";
-import  {adjustTime, refreshTime} from "./index.js";
+// import  {adjustTime, refreshTime} from "./index.js";
 // import  {adjustTime, refreshTime} from "./display.js";
+import {adjustTime, refreshTime}  from "./display.js";
 
-export const  HALFHOUR = 1800000;
-export const  FIFTEEN = 15000;
-export const  FIVE = 5000;
 
 // const fns = require("date-fns");
 
@@ -34,8 +32,6 @@ export default class Timer{
         this.duration = this.original;
         refreshTime();
         console.log("Refresh was callled:", this.getTime())
-        // this.pause()
-        // adjustTime();
     }
 
     start(){
@@ -82,3 +78,6 @@ export default class Timer{
 }
 
 
+export const  HALFHOUR = 1800000;
+export const  FIFTEEN = 15000;
+export const  FIVE = 5000;
