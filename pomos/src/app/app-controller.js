@@ -1,117 +1,12 @@
-import {BaseElement, TaskElement} from "./elements.js";
-import {Task} from "./task.js";
-import {Project} from "./project.js";
-import Timer, {HALFHOUR, FIFTEEN} from "./timer.js"
 
-
+import {Task, Timer} from "../models/index.js";
+import {DisplayManager} from "./display-manager.js";
+import {ProjectManager} from "./project-manager.js";
 
 const onSecondTick = new Event("timechange");
 const onRefreshUpdate = new Event("onrefresh");
 
-class ProjectManager{
-    constructor(){
-        this.activeKey = null;
-        this.projects = new Map();
-    }
-
-    addProject(project){
-        /*
-        Pretty little bug in the if clause due to 0 indexing of projectid:
-        On init:
-        - activeKey = null  !null (true)
-        - activeKey = 0     !0 (also true)
-        - activeKey is still true in the !0 if clause, assigning the 
-        */
-        if(this.activeKey === null)
-            this.activeKey = project.id; 
-        this.projects.set(project.id, project);
-    }
-
-    getActiveProject(){
-        const activeProject = this.projects.get(this.activeKey);
-        if (!activeProject) {
-            console.warn("No active project");
-            return;
-        }
-        return activeProject;
-    }
-
-    switchProject(newKey){
-        this.activeKey  = newKey;
-        return this.getActiveProject();
-    }
-
-    removeProject(key){
-        this.projects.delete(key);
-    }
-
-    addTask(task){
-        this.getActiveProject().addTask(task);
-    }
-
-    removeTask(index){
-        this.getActiveProject().removeTask(index);
-    }
-}
-
-class DisplayManager{
-    constructor()
-    {
-        this.container = new BaseElement(".projects")
-        this.taskElements = new Map();
-
-        this.displayBtn = document.querySelector(".display");
-        this.displayBtn.addEventListener("click",() =>{this.updateAll();})
- 
-    }
-
-    createTaskElement(task){
-        const taskElement = new TaskElement(task)
-        this.taskElements.set(task.key, taskElement);
-        this.container.append(taskElement);
-    }
-
-    removeTaskElement(index){
-        this.taskElements.get(index).remove();
-        this.taskElements.delete(index);
-        console.log(this.taskElements)
-        
-    }
-
-
-    updateTask(id){
-        const taskElement = this.taskElements.get(id);
-        if(taskElement)
-            taskElement.update();
-    }
-
-    updateAll(){
-        this.taskElements.keys().forEach((id) => this.updateTask(id));
-    }
-
-    renderTask(taskElement){
-        this.container.append(taskElement);
-    }
-    
-    render(project){
-        this.clear();
-        const iter = project.tasks.values();
-        for (const task of iter)
-            this.createTaskElement(task)    
-    }
-
-    
-    clear(){
-        this.taskElements.forEach((taskElement) => taskElement.destroy());
-        this.taskElements.clear();
-        this.activeProject = null;
-        this.container.innerHTML = "";
-    }
-
-
-}
-
-class AppController{
+export class AppController{
 
 
     static timeElement= document.querySelector(".timing");
@@ -277,12 +172,3 @@ class AppController{
         let t = this.getActiveTask();
         this.taskNameElement.textContent = `${t.name}${t.current}/${t.pomodoros}`;}
 }
-
-export  {ProjectManager, DisplayManager, AppController}
-
-
-
-
-
-
-

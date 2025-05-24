@@ -1,5 +1,5 @@
 import {Task} from "./task.js";
-import Timer, {HALFHOUR, FIFTEEN} from "./timer.js"
+import  {Timer,HALFHOUR, FIFTEEN} from "./timer.js"
 
 export class Project{
     static lastID = -1;
@@ -40,8 +40,6 @@ export class Project{
     getActiveTask(){
     
         const taskIterator = this.tasks.values();
-        // console.log("hahaha")
-        //Approach one
         const activeTask = [...taskIterator].filter((task) => task.isActive == true)[0];
         return activeTask
 
