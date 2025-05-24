@@ -1,5 +1,5 @@
 import {getUnixTime, format} from "date-fns";
-import { AppController} from "./display";
+import { AppController} from "../app/index.js";
 
 
 
@@ -11,7 +11,7 @@ import { AppController} from "./display";
     doesn't automatically carry this along for the ride.
 */
 
-export default class Timer{
+export class Timer{
     
     //A timer is assigned to each task, but this does not mean the timer starts when it is instantiated
     constructor(timeInMiliseconds){

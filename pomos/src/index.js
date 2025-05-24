@@ -1,14 +1,11 @@
 import "./styles.css";
-import "./tests.js";
-import {Task} from "./task.js";
-import {Project} from "./project.js";
-import Timer, {HALFHOUR, FIFTEEN,FIVE} from "./timer.js"
-import  {AppController, DisplayManager,  ProjectManager} from "./display.js";
+// import {Task} from "./models/task.js";
+// import {Project} from "./models/project.js";
+// import Timer, {HALFHOUR, FIFTEEN,FIVE} from "./timer.js"
+// import  {AppController, DisplayManager,  ProjectManager} from "./app/display.js";
 
-
-
-//Move the 
-
+import {Task, Project, Timer} from "./models/index.js";
+import {AppController} from "./app/index.js";
 
 const foo = new Project("foo");
 const bar = new Project("bar");
