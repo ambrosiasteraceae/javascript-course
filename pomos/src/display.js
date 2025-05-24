@@ -75,7 +75,7 @@ class DisplayManager{
         this.taskElements.get(index).remove();
         this.taskElements.delete(index);
         console.log(this.taskElements)
-        // this.container.
+        
     }
 
 
@@ -131,6 +131,7 @@ class AppController{
         this.switchBtn = document.querySelector(".switch"); 
         this.addBtn = document.querySelector(".add");
         this.removeBtn = document.querySelector(".remove");
+        this.title = document.querySelector("title");
 
     }
     attachEventListeners(){
@@ -147,46 +148,27 @@ class AppController{
         this.timeElement.addEventListener("onrefresh",  () => this.getActiveTask().isFinished? "00:00" : this.updateTime())
 
 
-        this.startBtn.addEventListener("click", () => 
-        {
+        this.startBtn.addEventListener("click", () => {
             const activeTask = this.getActiveTask();
-            if(activeTask == undefined)
-                return
-            activeTask.timer.start()  
-        });
+            if (!activeTask) return;
+            activeTask.timer.start();});
         this.stopBtn.addEventListener("click", () => {
             const activeTask = this.getActiveTask();
-            if(activeTask == undefined)
-                return
-            activeTask.timer.pause()  
-
-        })
-            // this.getActiveTask().timer.pause());
-        this.resetBtn.addEventListener("click", () => 
-         {
+            if (!activeTask) return;
+            activeTask.timer.pause();});
+        this.resetBtn.addEventListener("click", () => {
             const activeTask = this.getActiveTask();
-            if(activeTask == undefined)
-                return
-            activeTask.timer.refresh()
-            // this.getActiveTask().timer.refresh()
-         }
-    );
-        this.logBtn.addEventListener("click",() => 
-            {
+            if (!activeTask) return;
+            activeTask.timer.refresh();});
+        this.logBtn.addEventListener("click",() => {
             const activeTask = this.getActiveTask();
-            if(activeTask == undefined)
-                return
-            activeTask.print();
-            // this.getActiveTask().print()
-
-            })
+            if (!activeTask) return;
+            activeTask.print();});
         this.switchBtn.addEventListener("click",(event) =>  {
-        
         const project = this.getActiveProject();
         this.switch(project.id == 1? 0 : 1);
-
-        })
-        this.addBtn.addEventListener("click", (event)=>{
+        });
+        this.addBtn.addEventListener("click", (event)=> {
             const options = {name: "Pomo App", pomodoros:12};
             const timer = new Timer(5000);
             const task  = new Task(options, timer);
@@ -194,21 +176,12 @@ class AppController{
             this.addTask(task);
         })
 
-        this.removeBtn.addEventListener("click",(event)=>{
-            const task = this.getActiveTask();
-            if(task == undefined)
-                return
-
+        this.removeBtn.addEventListener("click",(event) => {
+            const activeTask = this.getActiveTask();
+            if(activeTask == undefined) return;
             const index = this.getActiveTask().key;
-
-            // if  (index == undefined)
-            //     {
-            //         console.warn("Your task log is empty.")
-            //         return
-            //     }
             console.log(`Removing task with id: ${index}`);
             this.deleteTask(index);
-            // this.displayManager.render(this.projectManager.getActiveProject());
         })
     }
 
@@ -222,7 +195,9 @@ class AppController{
         taskElement.addEventListener("change", (e) =>{
                 const task = e.target.parentNode;
                 const id = task.dataset.key;
-                        
+                const activeTask = this.getActiveTask();
+                if (activeTask)
+                    activeTask.timer.pause()       
                 this.getActiveProject().switchTask(id);            
                 console.log(this.getActiveProject().getActiveTask());
                 this.updateTime(); 
@@ -237,7 +212,9 @@ class AppController{
     }
 
     switch(key){
-        
+        const activeTask = this.getActiveTask();
+            if (activeTask)
+                activeTask.timer.pause()   
         this.projectManager.switchProject(key);
         console.log("New Project:", this.getActiveProject());
         this.render();
@@ -285,7 +262,16 @@ class AppController{
         this.addRadioClickEvents();
     }
     updateTime(){
-        this.timeElement.textContent = this.getActiveTask().timer.getTime();}
+        let time = this.getActiveTask().timer.getTime()
+        this.timeElement.textContent = time;
+        this.title.textContent = time;
+        // add update
+        console.log("Is this where its called?")
+        const activeTask = this.getActiveTask();
+        if (activeTask)            
+            this.displayManager.updateTask(activeTask.key);
+
+    }
 
     updateTask(){
         let t = this.getActiveTask();

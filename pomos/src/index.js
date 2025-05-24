@@ -23,6 +23,10 @@ app.projectManager.addProject(foo);
 app.projectManager.addProject(bar);
 
 
+const title = document.querySelector("title");
+console.log(title)
+console.log(title.textContent)
+title.textContent = "pula";
 
 app.render();
 
