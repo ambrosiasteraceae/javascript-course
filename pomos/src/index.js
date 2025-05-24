@@ -16,7 +16,7 @@ foo.generateExamples(10);
 bar.generateExamples(5);
 
 const app = new AppController();
-
+app.attachEventListeners();
 
 // const dm = new DisplayManager();
 // const pm = new ProjectManager();
@@ -24,9 +24,9 @@ const app = new AppController();
 app.projectManager.addProject(foo);
 app.projectManager.addProject(bar);
 
-const options = {name: "Pomo App", pomodoros:12};
-const timer = new Timer(FIVE);
-const task  = new Task(options, timer);
+// const options = {name: "Pomo App", pomodoros:12};
+// const timer = new Timer(FIVE);
+// const task  = new Task(options, timer);
 
 app.render();
 

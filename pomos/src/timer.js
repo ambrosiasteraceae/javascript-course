@@ -1,10 +1,8 @@
 import {getUnixTime, format} from "date-fns";
-// import  {adjustTime, refreshTime} from "./index.js";
-// import  {adjustTime, refreshTime} from "./display.js";
-import {adjustTime, refreshTime}  from "./display.js";
+import { AppController} from "./display";
 
 
-// const fns = require("date-fns");
+
 
 /*
     Rule of Thumb
@@ -17,20 +15,18 @@ export default class Timer{
     
     //A timer is assigned to each task, but this does not mean the timer starts when it is instantiated
     constructor(timeInMiliseconds){
-        // this.isPaused = false;
+        
         this.original = timeInMiliseconds;
         this.duration = timeInMiliseconds;
-        
-        // this.task = task;
-        // this.intervalId;
         //I need to dig about this issue deeper to understand why it works
         this.parseTime = this.parseTime.bind(this);
+        
     }
 
     refresh(){ 
-        //How do we handle the this.duration since we do not want to reset it if it is finished
+    
         this.duration = this.original;
-        refreshTime();
+        AppController.refreshTime();
         console.log("Refresh was callled:", this.getTime())
     }
 
@@ -51,12 +47,11 @@ export default class Timer{
         if(result >= 0)
             this.duration = result;
     }
-
    
     parseTime(){
         
         this.decrement();
-        adjustTime();
+        AppController.adjustTime();
         console.log(this.getTime());
         if (this.duration == 0)
         {
@@ -76,7 +71,6 @@ export default class Timer{
     }
 
 }
-
 
 export const  HALFHOUR = 1800000;
 export const  FIFTEEN = 15000;
