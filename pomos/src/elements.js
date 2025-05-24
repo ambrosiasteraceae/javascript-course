@@ -43,6 +43,10 @@ export class BaseElement {
     addEventListener(type, listener){
         return this.el.addEventListener(type, listener)
     }
+
+    remove(){
+        this.el.remove();
+    }
     
 }
 

@@ -12,21 +12,17 @@ import  {AppController, DisplayManager,  ProjectManager} from "./display.js";
 
 const foo = new Project("foo");
 const bar = new Project("bar");
-foo.generateExamples(10);
-bar.generateExamples(5);
+foo.generateExamples(3);
+bar.generateExamples(3);
 
 const app = new AppController();
 app.attachEventListeners();
 
-// const dm = new DisplayManager();
-// const pm = new ProjectManager();
 
 app.projectManager.addProject(foo);
 app.projectManager.addProject(bar);
 
-// const options = {name: "Pomo App", pomodoros:12};
-// const timer = new Timer(FIVE);
-// const task  = new Task(options, timer);
+
 
 app.render();
 
