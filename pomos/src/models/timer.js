@@ -20,7 +20,13 @@ export class Timer{
         this.duration = timeInMiliseconds;
         //I need to dig about this issue deeper to understand why it works
         this.parseTime = this.parseTime.bind(this);
+        this.running = false;
         
+    }
+
+    toggle(){
+        this.running ? this.pause() : this.start();
+        console.log(`Time status:${this.running? "on" : "off"}`)
     }
 
     refresh(){ 
@@ -31,6 +37,7 @@ export class Timer{
     }
 
     start(){
+        this.running = true;
         if (this.duration == 0)
             return
         console.log("Started at:", this.getTime())
@@ -61,6 +68,8 @@ export class Timer{
     }
         
     pause(){
+
+        this.running = false;
         console.log("Paused at:", this.getTime());
         clearInterval(this.intervalId);
         this.intervalId = null;
