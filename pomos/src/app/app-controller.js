@@ -90,17 +90,17 @@ export class AppController{
             this.addTask(task);
         })
 
-        this.removeBtn.addEventListener("click",(event) => {
+        this.removeBtn.addEventListener("click", (event) => {
             //Possible time for error if we will want to remove tasks while other task is running?
             const activeTask = this.getActiveTask();
             if(activeTask == undefined) return;
-            console.log("Hey ")
+            // console.log("Hey");
             // console.log(activeTask)
             if(activeTask.timer.running) this.toggleState(activeTask);
             const index = this.getActiveTask().key;
             console.log(`Removing task with id: ${index}`);
             this.deleteTask(index);
-        })
+        });
     }
 
     getTaskElement(key){
@@ -112,20 +112,20 @@ export class AppController{
         taskElement.addEventListener("change", (e) => {
     
             const task = e.target.parentNode;
-                const id = task.dataset.key;
-                const activeTask = this.getActiveTask();
-                if (activeTask)
-                {
-                    if (activeTask.timer.running)
-                        this.toggleState(activeTask);
-                }     
-                this.getActiveProject().switchTask(id);
-                console.log("right before")            
-                console.log(this.getActiveProject().getActiveTask());
-                console.log("after")
-                this.updateTime(); 
-                this.updateTask();   
-                this.updateNumber();
+            const id = task.dataset.key;
+            const activeTask = this.getActiveTask();
+            if (activeTask)
+            {
+                if (activeTask.timer.running)
+                    this.toggleState(activeTask);
+            }     
+            this.getActiveProject().switchTask(id);
+            // console.log("right before")            
+            console.log(this.getActiveProject().getActiveTask());
+            // console.log("after")
+            this.updateTime(); 
+            this.updateTask();   
+            this.updateNumber();
         });
     }
     
@@ -156,6 +156,7 @@ export class AppController{
             this.timeElement.textContent = "00:00";
             this.taskNameElement.textContent = "No Task Selected";
         }
+        // console.log(this.getActiveProject().ordering)
         console.log("New Project:", this.getActiveProject());
         this.render();
     }
@@ -164,7 +165,9 @@ export class AppController{
         this.projectManager.getActiveProject().addTask(task)
         this.displayManager.createTaskElement(task);
         const taskElement = this.getTaskElement(task.key);
-        console.log(taskElement)
+        // console.log(taskElement)
+        this.displayManager.renderTask(taskElement);
+        this.displayManager.attachDragEvents(taskElement);
         this.addRadioClickEvent(taskElement);        
     }
 
@@ -175,8 +178,8 @@ export class AppController{
     getActiveTask(){
         const task = this.projectManager.getActiveProject()?.getActiveTask();
         if (task == undefined){
-            console.warn("No activbe task");
-            return
+            console.warn("No active task");
+            return;
         }  
         return task;
     }
@@ -196,6 +199,7 @@ export class AppController{
     }
 
     render(){
+        // this.displayManager.removeDragOverListener();
         this.displayManager.render(this.projectManager.getActiveProject());
         this.addRadioClickEvents();
     }
@@ -212,7 +216,7 @@ export class AppController{
         let time = activeTask.timer.getTime();
         this.timeElement.textContent = time;
         this.title.textContent = time;
-        console.log("I was called")
+        // console.log("I was called")
         if (activeTask)            
             this.displayManager.updateTask(activeTask.key);
     }

@@ -13,7 +13,10 @@ export class BaseElement {
 
     append(child){
         // console.log("Child of:" , child, typeof child)
-
+        // console.log(child instanceof Node? true: false);
+        // console.log(child)
+        // if( typeof(child) == Node)
+        //     console.warn("Null created")
         const childElement = child instanceof BaseElement? child.el : child;
         this.el.appendChild(childElement);
     }
@@ -42,8 +45,16 @@ export class BaseElement {
         return this.el.addEventListener(type, listener)
     }
 
+    removeEventListener(type, listener){
+        return this.el.removeEventListener(type, listener)
+    }
+    
     remove(){
         this.el.remove();
+    }
+
+    insertBefore(newNode, referenceNode){
+        this.el.insertBefore(newNode, referenceNode)
     }
     
 }

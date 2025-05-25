@@ -53,6 +53,12 @@ body{
 }
 button{
     width:100px;
-    
+
     height:50px;
+}
+
+.draggable.dragging {
+    color: gray;
+    background-color: rgba(130, 130, 130, 0.355);
+    opacity: .04;
 }
