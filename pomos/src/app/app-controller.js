@@ -6,6 +6,7 @@ import {ProjectManager} from "./project-manager.js";
 const onSecondTick = new Event("timechange");
 const onRefreshUpdate = new Event("onrefresh");
 
+
 export class AppController{
 
 
@@ -19,8 +20,8 @@ export class AppController{
         
         this.timeElement = document.querySelector(".timing");
         this.taskNameElement = document.querySelector(".name");
+        this.taskNumberElement = document.querySelector(".number");
         this.startBtn = document.querySelector(".start");
-        this.stopBtn = document.querySelector(".stop");
         this.resetBtn = document.querySelector(".reset");
         this.logBtn = document.querySelector(".logtask");
         this.switchBtn = document.querySelector(".switch"); 
@@ -28,43 +29,61 @@ export class AppController{
         this.removeBtn = document.querySelector(".remove");
         this.title = document.querySelector("title");
 
+        this.start = false;
+
     }
     attachEventListeners(){
         this.timeElement.addEventListener("timechange", (e) => 
         {    
+            const activeTask = this.getActiveTask();
             this.updateTime();
-            if (this.getActiveTask().timer.duration == 0)
+            if (activeTask.timer.duration == 0)
             {
-                this.getActiveTask().increment(1);
+                activeTask.increment(1);
                 this.updateTask();
+                this.updateNumber();
+                this.toggleState(activeTask);
             }
-        }
-    )
-        this.timeElement.addEventListener("onrefresh",  () => this.getActiveTask().isFinished? "00:00" : this.updateTime())
-
+        });
+        // this.timeElement.addEventListener("onrefresh",  () => this.getActiveTask().isFinished? "00:00" : this.updateTime())
+        this.timeElement.addEventListener("onrefresh",  () => this.updateTime())
 
         this.startBtn.addEventListener("click", () => {
+
             const activeTask = this.getActiveTask();
+            if(activeTask.isFinished) {
+                console.warn("Cannot start a finished task. Increase the number of pomodoros");
+                return;
+            }
             if (!activeTask) return;
-            activeTask.timer.start();});
-        this.stopBtn.addEventListener("click", () => {
-            const activeTask = this.getActiveTask();
-            if (!activeTask) return;
-            activeTask.timer.pause();});
-        this.resetBtn.addEventListener("click", () => {
-            const activeTask = this.getActiveTask();
-            if (!activeTask) return;
-            activeTask.timer.refresh();});
-        this.logBtn.addEventListener("click",() => {
-            const activeTask = this.getActiveTask();
-            if (!activeTask) return;
-            activeTask.print();});
-        this.switchBtn.addEventListener("click",(event) =>  {
-        const project = this.getActiveProject();
-        this.switch(project.id == 1? 0 : 1);
+            this.toggleState(activeTask);
         });
-        this.addBtn.addEventListener("click", (event)=> {
-            const options = {name: "Pomo App", pomodoros:12};
+
+
+
+        this.resetBtn.addEventListener("click", () => {
+
+            const activeTask = this.getActiveTask();
+            if (!activeTask) return;
+            activeTask.timer.refresh();
+        });
+
+        this.logBtn.addEventListener("click", () => {
+
+            const activeTask = this.getActiveTask();
+            if (!activeTask) return;
+            activeTask.print();
+        });
+        
+        this.switchBtn.addEventListener("click", (event) =>  {
+
+            const project = this.getActiveProject();
+            this.switch(project.id == 1? 0 : 1);
+            });
+        
+        this.addBtn.addEventListener("click", (event) => {
+            
+            const options = {name: "Pomo App", pomodoros:2};
             const timer = new Timer(5000);
             const task  = new Task(options, timer);
             console.log("New task with click eventListener is being created")
@@ -72,8 +91,12 @@ export class AppController{
         })
 
         this.removeBtn.addEventListener("click",(event) => {
+            //Possible time for error if we will want to remove tasks while other task is running?
             const activeTask = this.getActiveTask();
             if(activeTask == undefined) return;
+            console.log("Hey ")
+            // console.log(activeTask)
+            if(activeTask.timer.running) this.toggleState(activeTask);
             const index = this.getActiveTask().key;
             console.log(`Removing task with id: ${index}`);
             this.deleteTask(index);
@@ -85,32 +108,54 @@ export class AppController{
     }
 
     addRadioClickEvent(taskElement){
-        //get taskElements
-        // const taskElement = this.displayManager.taskElements.get(task.key);
-        taskElement.addEventListener("change", (e) =>{
-                const task = e.target.parentNode;
+        
+        taskElement.addEventListener("change", (e) => {
+    
+            const task = e.target.parentNode;
                 const id = task.dataset.key;
                 const activeTask = this.getActiveTask();
                 if (activeTask)
-                    activeTask.timer.pause()       
-                this.getActiveProject().switchTask(id);            
+                {
+                    if (activeTask.timer.running)
+                        this.toggleState(activeTask);
+                }     
+                this.getActiveProject().switchTask(id);
+                console.log("right before")            
                 console.log(this.getActiveProject().getActiveTask());
+                console.log("after")
                 this.updateTime(); 
                 this.updateTask();   
-            })
+                this.updateNumber();
+        });
     }
     
     addRadioClickEvents(){
+    
         const iter = this.displayManager.taskElements.values();
         for(const taskElement of iter)
             this.addRadioClickEvent(taskElement);       
     }
 
     switch(key){
+        
         const activeTask = this.getActiveTask();
-            if (activeTask)
-                activeTask.timer.pause()   
+        if (activeTask)
+        {
+            if (activeTask.timer.running)
+                this.toggleState(activeTask);
+        }     
         this.projectManager.switchProject(key);
+        const switchedTask = this.getActiveTask();
+        if(switchedTask)
+        {
+            this.updateTask();
+            this.updateTime();
+        }
+        else
+        {
+            this.timeElement.textContent = "00:00";
+            this.taskNameElement.textContent = "No Task Selected";
+        }
         console.log("New Project:", this.getActiveProject());
         this.render();
     }
@@ -133,8 +178,6 @@ export class AppController{
             console.warn("No activbe task");
             return
         }  
-
-        // return this.projectManager.getActiveProject()?.getActiveTask();
         return task;
     }
 
@@ -156,16 +199,28 @@ export class AppController{
         this.displayManager.render(this.projectManager.getActiveProject());
         this.addRadioClickEvents();
     }
+
+    toggleState(activeTask){
+
+        activeTask.timer.toggle();
+        this.startBtn.textContent = activeTask.timer.running? "Pause." : "Start.";
+    }
+
     updateTime(){
-        let time = this.getActiveTask().timer.getTime()
+        const activeTask = this.getActiveTask();
+
+        let time = activeTask.timer.getTime();
         this.timeElement.textContent = time;
         this.title.textContent = time;
-        // add update
-        console.log("Is this where its called?")
-        const activeTask = this.getActiveTask();
+        console.log("I was called")
         if (activeTask)            
             this.displayManager.updateTask(activeTask.key);
+    }
 
+    
+    updateNumber(){       
+        //Task is always current and starts from 0. We show user the task number he is working towards
+        this.taskNumberElement.textContent = `#${this.getActiveTask().current + 1}`;
     }
 
     updateTask(){
