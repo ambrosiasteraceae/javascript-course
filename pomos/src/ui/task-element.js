@@ -9,7 +9,7 @@ export class TaskElement extends BaseElement{
         this.el.dataset.key = task.key;
         this.elements = {};
         this.build();
-
+        this.attached = false;
     }
     
     build(){
@@ -49,7 +49,9 @@ export class TaskElement extends BaseElement{
         
         Object.values(this.elements).forEach((taskEntry) => this.el.append(taskEntry.el));
 
+        this.addAttribute("draggable", "true");
         this.addClass("task");
+        this.addClass("draggable");
     }
 
     getTaskEntries(){

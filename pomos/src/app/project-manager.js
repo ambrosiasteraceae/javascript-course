@@ -28,6 +28,7 @@ export class ProjectManager{
     }
 
     switchProject(newKey){
+        // console.log(this.getActiveProject().ordering)
         this.activeKey  = newKey;
         return this.getActiveProject();
     }
