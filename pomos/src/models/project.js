@@ -11,7 +11,7 @@ export class Project{
         this.#id = ++Project.lastID;
         this.name = name;
         this.tasks = new Map();
-        // this.ordering = [];
+        this.ordering = [];
     }
 
 
@@ -49,7 +49,7 @@ export class Project{
  
     addTask(task){
         this.tasks.set(task.key, task);
-        // this.ordering.push(task.key);
+        this.ordering.push(task.key);
     }
 
     removeTask(taskIndex){

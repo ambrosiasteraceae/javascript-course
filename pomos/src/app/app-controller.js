@@ -137,13 +137,14 @@ export class AppController{
     }
 
     switch(key){
-        
+        console.log(this)
         const activeTask = this.getActiveTask();
         if (activeTask)
         {
             if (activeTask.timer.running)
                 this.toggleState(activeTask);
-        }     
+        }
+        this.displayManager.getOrder(this.projectManager.getActiveProject());     
         this.projectManager.switchProject(key);
         const switchedTask = this.getActiveTask();
         if(switchedTask)

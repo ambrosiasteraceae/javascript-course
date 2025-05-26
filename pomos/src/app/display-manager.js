@@ -88,47 +88,47 @@ export class DisplayManager{
         // from the last active project.
         // it was because the callback function of this.container for the draggable logic was only defined once?
         
-        // console.log(project.ordering)
-        // if (project.ordering.length==0)
-        // {
-        //     console.warn("Project Ordering is equal to 0")
-        //     return
-        // }
-
-
-        // this.clear();
-        
-        // const iter = project.tasks.values();
-        // for (const task of iter)
-        //     this.createTaskElement(task);
-        
-        // // console.log("newOrderis:", project.ordering);
-        
-        // for (const index of project.ordering)
-        // {
-        //     console.log("Index is:", index);
-        //     let taskElement = this.taskElements.get(index);
-        //     this.renderTask(taskElement);
-        //     this.attachDragEvents(taskElement);
-        // }
-
-        // if(!this.attached)
-        //     this.attachDragOverEvent(project);
-
+        console.log(project.ordering)
+        if (project.ordering.length==0)
+        {
+            console.warn("Project Ordering is equal to 0")
+            return
+        }
 
 
         this.clear();
+        
         const iter = project.tasks.values();
         for (const task of iter)
-        {
             this.createTaskElement(task);
-            let taskElement = this.taskElements.get(task.key);
+        
+        // console.log("newOrderis:", project.ordering);
+        
+        for (const index of project.ordering)
+        {
+            console.log("Index is:", index);
+            let taskElement = this.taskElements.get(index);
             this.renderTask(taskElement);
             this.attachDragEvents(taskElement);
         }
 
         if(!this.attached)
             this.attachDragOverEvent(project);
+
+
+
+        // this.clear();
+        // const iter = project.tasks.values();
+        // for (const task of iter)
+        // {
+        //     this.createTaskElement(task);
+        //     let taskElement = this.taskElements.get(task.key);
+        //     this.renderTask(taskElement);
+        //     this.attachDragEvents(taskElement);
+        // }
+
+        // if(!this.attached)
+        //     this.attachDragOverEvent(project);
     
     }
 
@@ -156,9 +156,10 @@ export class DisplayManager{
                 this.container.append(draggable);
             else
             {   
-                // project.ordering = this.getOrder(project);
+                
                 this.container.insertBefore(draggable, afterElement);
             };
+            // project.ordering = this.getOrder(project);
         
     }
 
