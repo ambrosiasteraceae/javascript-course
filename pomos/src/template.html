@@ -43,6 +43,50 @@
             <div></div>
         </div>
         <div class="projects"></div>
+        <div class="before-form">Add a task
+            <button class="add-task"> +++ </button>
+        </div>
+        <div class="form hidden">
+            <form action="http://localhost:8080/" method="POST">
+                <p>
+                    <!-- <label for="task-name"></label> -->
+                    <input type="text" id="task-name" name = "name", placeholder="Enter a Task Title">
+                </p>
+                <div class = "pomodoro area">
+                    <div class = "pomodoro creation">
+                        <div>
+                            <!-- <label for="pomodoro"></label> -->
+                            <input type="number" id="pomodoro" name = "pomodoros", placeholder="#Pomodoros">
+                        </div>
+                       
+                            <div class="increase">+</div>
+                            <div class="decrease">-</div>
+                        
+                    </div>
+                    <div class="project-select">
+                        <!-- <label for="project-select">Project:</label> -->
+                        <select name="projects" id="project-select">
+                            <!-- <option value=""></option> -->
+                            <option value="0">Foo</option>
+                            <option value="1">Bar</option>
+                        </select>
+                    </div> 
+                </div>                
+                <div class="notes-expansion">
+                    <button type ="button" class="expansion">+ Add Notes</button>
+                </div>
+                <div class="notes hidden">
+                    <!-- <label for="notes">Add Notes:</label> -->
+                    <textarea name="notes" id="notes", placeholder="Lorem Ipsum"></textarea>
+                </div>
+
+            <div>
+                <button type = "button" class="cancel">Cancel</button>
+                <button class="submit" type="submit">Add Task</button>
+            </div>
+            </form>
+            
+        </div>
     </div>
 </div>
 </body>

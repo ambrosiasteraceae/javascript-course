@@ -12,14 +12,14 @@
     #current;
     #key;
 
-    constructor({name, pomodoros}, timer)
+    constructor({name, pomodoros, notes =""}, timer)
     {
         this.#key = ++Task.lastKey;
         this.#current = 0;
         
         this.name = name;
         this.pomodoros = pomodoros;
-        // this.notes = notes;
+        this.notes = notes;
         
         this.isActive = false;
         this.isFinished = false;

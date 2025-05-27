@@ -31,7 +31,27 @@ export class AppController{
 
         this.start = false;
 
+        this.form = document.querySelector("form");
+        this.form.addEventListener("submit", (event)=>{
+            event.preventDefault();
+            this.sendData();
+        })
+
+
+
     }
+
+    sendData() 
+    {    
+        const formData = new FormData(this.form);    
+        const data = Object.fromEntries(formData.entries());
+        const timers  = new Timer(15000);
+        const task = new Task(data, timers)
+        this.addTask(task);
+    }
+
+
+
     attachEventListeners(){
         this.timeElement.addEventListener("timechange", (e) => 
         {    
