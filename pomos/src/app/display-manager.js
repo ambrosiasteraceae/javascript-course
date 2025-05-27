@@ -10,8 +10,8 @@ export class DisplayManager{
 
         this.displayBtn = document.querySelector(".display");
         this.displayBtn.addEventListener("click",() =>{this.updateAll();})
-        
-        
+        this.notes = document.querySelector(".notes");
+        this.initializeForm();
  
     }
 
@@ -182,6 +182,42 @@ export class DisplayManager{
         }
     }, {offset: Number.NEGATIVE_INFINITY}).element}
 
+
+    initializeForm(){
+        const formDiv = document.querySelector(".form");
+        const taskDiv = document.querySelector(".before-form");
+      
+
+        this.addNotesBtn = document.querySelector(".expansion");
+        this.cancelTaskBtn =document.querySelector(".cancel");
+        this.initTaskFormBtn = document.querySelector(".add-task")
+        this.submitTaskBtn = document.querySelector(".submit");      
+
+        this.addNotesBtn.addEventListener("click",() =>{
+                this.notes.classList.remove("hidden");
+            })
+        this.initTaskFormBtn.addEventListener("click", () =>{
+                formDiv.classList.remove("hidden");
+                taskDiv.classList.add("hidden");
+
+            })
+
+        this.cancelTaskBtn.addEventListener("click",() =>{
+
+                formDiv.classList.add("hidden");
+                taskDiv.classList.remove("hidden");
+            })
+        document.addEventListener("keydown", (event)=>{
+                if(event.key=="Escape")
+                {
+                    formDiv.classList.add("hidden");
+                    taskDiv.classList.remove("hidden");
+                }
+            })
+
+
+
+    }
 
 }
  

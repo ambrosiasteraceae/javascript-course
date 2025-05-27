@@ -23,7 +23,7 @@ app.projectManager.addProject(bar);
 const title = document.querySelector("title");
 console.log(title)
 console.log(title.textContent)
-title.textContent = "pula";
+title.textContent = "nothying";
 
 app.render();
 

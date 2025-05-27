@@ -62,3 +62,44 @@ button{
     background-color: rgba(130, 130, 130, 0.355);
     opacity: .04;
 }
+
+.before-form{
+    display: flex;
+    margin-top: 19px;
+    gap:19px;
+    border:1px solid blue;
+    padding:19px;
+}
+
+.pomodoro.creation{
+    display: flex;
+    gap: 15px;
+}
+
+.hidden{
+    display: none;
+}
+
+form{
+    /* display: none; */
+    border:1px solid green;
+   
+}
+
+textarea{
+    width:280px;
+    max-width: max(280px);
+    min-height: 5em;
+}
+/* .notes{
+    display:none;
+} */
+
+.shown{
+    display:block
+}
+
+button{
+    width: 100px;
+    height:2em;
+}
