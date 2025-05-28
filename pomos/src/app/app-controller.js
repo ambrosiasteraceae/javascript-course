@@ -37,7 +37,7 @@ export class AppController{
             this.sendData();
         })
 
-
+        
 
     }
 

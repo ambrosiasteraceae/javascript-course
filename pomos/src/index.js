@@ -26,5 +26,6 @@ console.log(title.textContent)
 title.textContent = "nothying";
 
 app.render();
+// app.displayManager.handleOpenSettings();
 
 

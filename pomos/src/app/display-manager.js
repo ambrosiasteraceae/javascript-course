@@ -10,9 +10,79 @@ export class DisplayManager{
 
         this.displayBtn = document.querySelector(".display");
         this.displayBtn.addEventListener("click",() =>{this.updateAll();})
-        this.notes = document.querySelector(".notes");
+        
         this.initializeForm();
- 
+        this.hasEnterClick = false;
+
+
+        this.handleClickOutside();
+
+     
+    }
+
+    handleOpenSettings(){
+        // console.log("I wascalled")
+        // console.log(this.settingsBtns)
+        this.settingsBtns.forEach((ele) => ele.addEventListener("click", (e) => {
+            // console.log("i was cliecked");
+            const ele = document.createElement("button");
+            const child = e.target.parentNode;
+            console.log(child)
+            const parent = child.parentNode;
+            console.log(parent)
+            // parent.append(this.formDiv)
+            parent.insertBefore(this.formDiv, child);
+            this.formDiv.classList.remove("hidden");
+            console.log(this.formDiv.children);
+
+            document.getElementById("task-name").value = "";
+            document.getElementById("pomodoro").value = "";
+            document.getElementById("")
+            // console.log(e.target.parentNode.previousSibling.dataset.key)
+        
+        
+        }));
+        
+        
+        /* 
+        - on click intialize a form.
+        - can we simply copy the old form and put it there?
+        - first lets open the form.
+        - second populate the form with the task variables
+        - on submit, edit the task and make sure we update it in the task manager 
+        - and project maanger,. and rerender the task eleemnt
+        - we can query the form and append it to the node just above it.
+
+        
+        */
+    }
+
+    handleClickOutside(){
+        document.body.addEventListener("click",  (e) => {
+            // console.log(this.hasEnterClick); 
+            if(!this.hasEnterClick)
+            {
+                this.hasEnterClick = true;
+                return
+
+            }
+            // const mform = document.querySelector(".form");
+            if(!this.formDiv.classList.contains("hidden"))
+            {
+                if(this.formDiv.contains(e.target))
+                    console.log("I was inside");            
+                else
+                {
+                    console.log("I was clicked outside");
+                    this.formDiv.classList.add("hidden")
+                    this.taskDiv.classList.remove("hidden");
+                    this.hasEnterClick = false;
+                }
+            }
+
+            });
+        
+
     }
 
     createTaskElement(task){
@@ -115,7 +185,8 @@ export class DisplayManager{
         if(!this.attached)
             this.attachDragOverEvent(project);
 
-
+        this.settingsBtns = document.querySelectorAll(".settings");
+        this.handleOpenSettings();   
 
         // this.clear();
         // const iter = project.tasks.values();
@@ -184,9 +255,9 @@ export class DisplayManager{
 
 
     initializeForm(){
-        const formDiv = document.querySelector(".form");
-        const taskDiv = document.querySelector(".before-form");
-      
+        this.formDiv = document.querySelector(".form");
+        this.taskDiv = document.querySelector(".before-form");
+        this.notes = document.querySelector(".notes");
 
         this.addNotesBtn = document.querySelector(".expansion");
         this.cancelTaskBtn =document.querySelector(".cancel");
@@ -197,21 +268,22 @@ export class DisplayManager{
                 this.notes.classList.remove("hidden");
             })
         this.initTaskFormBtn.addEventListener("click", () =>{
-                formDiv.classList.remove("hidden");
-                taskDiv.classList.add("hidden");
+                this.formDiv.classList.remove("hidden");
+                this.taskDiv.classList.add("hidden");
 
             })
 
         this.cancelTaskBtn.addEventListener("click",() =>{
-
-                formDiv.classList.add("hidden");
-                taskDiv.classList.remove("hidden");
+                console.log("Cancel was pressed")
+                this.formDiv.classList.add("hidden");
+                this.taskDiv.classList.remove("hidden");
+                this.hasEnterClick = !this.hasEnterClick;
             })
         document.addEventListener("keydown", (event)=>{
                 if(event.key=="Escape")
                 {
-                    formDiv.classList.add("hidden");
-                    taskDiv.classList.remove("hidden");
+                    this.formDiv.classList.add("hidden");
+                    this.taskDiv.classList.remove("hidden");
                 }
             })
 

@@ -12,7 +12,7 @@
     #current;
     #key;
 
-    constructor({name, pomodoros, notes =""}, timer)
+    constructor({name, pomodoros, notes = ""}, timer)
     {
         this.#key = ++Task.lastKey;
         this.#current = 0;
