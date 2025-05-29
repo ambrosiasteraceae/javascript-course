@@ -7,55 +7,21 @@ export class DisplayManager{
         this.attached = false;
         this.taskElements = new Map();
        
-
         this.displayBtn = document.querySelector(".display");
         this.displayBtn.addEventListener("click",() =>{this.updateAll();})
         
         this.initializeForm();
         this.hasEnterClick = false;
 
-
         this.handleClickOutside();
 
      
     }
 
-    handleOpenSettings(){
-        // console.log("I wascalled")
-        // console.log(this.settingsBtns)
-        this.settingsBtns.forEach((ele) => ele.addEventListener("click", (e) => {
-            // console.log("i was cliecked");
-            const ele = document.createElement("button");
-            const child = e.target.parentNode;
-            console.log(child)
-            const parent = child.parentNode;
-            console.log(parent)
-            // parent.append(this.formDiv)
-            parent.insertBefore(this.formDiv, child);
-            this.formDiv.classList.remove("hidden");
-            console.log(this.formDiv.children);
-
-            document.getElementById("task-name").value = "";
-            document.getElementById("pomodoro").value = "";
-            document.getElementById("")
-            // console.log(e.target.parentNode.previousSibling.dataset.key)
-        
-        
-        }));
-        
-        
-        /* 
-        - on click intialize a form.
-        - can we simply copy the old form and put it there?
-        - first lets open the form.
-        - second populate the form with the task variables
-        - on submit, edit the task and make sure we update it in the task manager 
-        - and project maanger,. and rerender the task eleemnt
-        - we can query the form and append it to the node just above it.
-
-        
-        */
+    getTaskElement(key){
+        return this.taskElements.get(key);
     }
+    
 
     handleClickOutside(){
         document.body.addEventListener("click",  (e) => {
@@ -157,26 +123,22 @@ export class DisplayManager{
         // when a switch is performed, the new project tries to access indeces
         // from the last active project.
         // it was because the callback function of this.container for the draggable logic was only defined once?
-        
+        console.log(" BeforeRender:")
+        console.log(project.ordering);
         console.log(project.ordering)
         if (project.ordering.length==0)
         {
             console.warn("Project Ordering is equal to 0")
             return
         }
-
-
-        this.clear();
-        
+        this.clear();        
         const iter = project.tasks.values();
         for (const task of iter)
             this.createTaskElement(task);
         
-        // console.log("newOrderis:", project.ordering);
-        
         for (const index of project.ordering)
         {
-            console.log("Index is:", index);
+            // console.log("Index is:", index);
             let taskElement = this.taskElements.get(index);
             this.renderTask(taskElement);
             this.attachDragEvents(taskElement);
@@ -185,8 +147,8 @@ export class DisplayManager{
         if(!this.attached)
             this.attachDragOverEvent(project);
 
-        this.settingsBtns = document.querySelectorAll(".settings");
-        this.handleOpenSettings();   
+  
+        // this.handleOpenSettings();   
 
         // this.clear();
         // const iter = project.tasks.values();

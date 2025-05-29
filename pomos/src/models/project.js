@@ -14,6 +14,10 @@ export class Project{
         this.ordering = [];
     }
 
+    getTask(key){
+        return this.tasks.get(key);
+    }
+
 
     get id () {return this.#id;}
 
