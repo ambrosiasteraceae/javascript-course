@@ -60,7 +60,8 @@ export class TaskElement extends BaseElement{
 
     update(){
         // this.elements.taskActive.activate(this.task.isActive || false);
-        // this.elements.taskName.setText(this.task.name);
+        this.elements.taskStatus.setText(`${this.task.current}/${this.task.pomodoros}`)
+        this.elements.taskName.setText(this.task.name);
         this.elements.taskStatus.setText(`${this.task.current}/${this.task.pomodoros}`)
         this.elements.taskTime.setText(this.task.timer.getTime());
     }

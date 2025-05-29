@@ -30,21 +30,51 @@ export class AppController{
         this.title = document.querySelector("title");
 
         this.start = false;
-
+        this.editMode = false;
+        this.taskEditKey = null;
         this.form = document.querySelector("form");
-        this.form.addEventListener("submit", (event)=>{
+        this.form.addEventListener("submit", (event) => {
             event.preventDefault();
+            // =if(this.editMode == true)
+            //     {
+            //         console.log("submit was prevented due to edit mode")
+            //         this.editMode = false;
+            //         return
+            //     }
             this.sendData();
         })
-
-        
-
     }
+
+    editTask(editTask){
+
+        this.projectManager.getActiveProject().tasks[editTask.key] = editTask;
+        const taskElement = this.displayManager.getTaskElement(editTask.key);
+        taskElement.task = editTask;
+        taskElement.update();
+        console.log("New Tas element is:");
+        console.log(taskElement);
+        // this.displayManager.renderTask(taskElement);
+    
+    }   
 
     sendData() 
     {    
         const formData = new FormData(this.form);    
         const data = Object.fromEntries(formData.entries());
+
+        if(this.editMode == true)
+        {
+            const editTask =  this.getActiveProject().getTask(this.taskEditKey)
+            editTask.name = data.name;
+            editTask.pomodoros = data.pomodoros;
+            editTask.notes = data.notes;
+            console.log("submit was prevented due to edit mode")
+            this.editMode = false;
+            this.editTask(editTask);
+            console.log(this.getActiveProject());
+            console.log(this.displayManager);
+            return
+        }
         const timers  = new Timer(15000);
         const task = new Task(data, timers)
         this.addTask(task);
@@ -111,11 +141,8 @@ export class AppController{
         })
 
         this.removeBtn.addEventListener("click", (event) => {
-            //Possible time for error if we will want to remove tasks while other task is running?
             const activeTask = this.getActiveTask();
             if(activeTask == undefined) return;
-            // console.log("Hey");
-            // console.log(activeTask)
             if(activeTask.timer.running) this.toggleState(activeTask);
             const index = this.getActiveTask().key;
             console.log(`Removing task with id: ${index}`);
@@ -140,9 +167,6 @@ export class AppController{
                     this.toggleState(activeTask);
             }     
             this.getActiveProject().switchTask(id);
-            // console.log("right before")            
-            console.log(this.getActiveProject().getActiveTask());
-            // console.log("after")
             this.updateTime(); 
             this.updateTask();   
             this.updateNumber();
@@ -157,7 +181,7 @@ export class AppController{
     }
 
     switch(key){
-        console.log(this)
+
         const activeTask = this.getActiveTask();
         if (activeTask)
         {
@@ -177,16 +201,15 @@ export class AppController{
             this.timeElement.textContent = "00:00";
             this.taskNameElement.textContent = "No Task Selected";
         }
-        // console.log(this.getActiveProject().ordering)
-        console.log("New Project:", this.getActiveProject());
+        console.log(this);
         this.render();
+        
     }
     
     addTask(task){
         this.projectManager.getActiveProject().addTask(task)
         this.displayManager.createTaskElement(task);
         const taskElement = this.getTaskElement(task.key);
-        // console.log(taskElement)
         this.displayManager.renderTask(taskElement);
         this.displayManager.attachDragEvents(taskElement);
         this.addRadioClickEvent(taskElement);        
@@ -220,9 +243,10 @@ export class AppController{
     }
 
     render(){
-        // this.displayManager.removeDragOverListener();
+
         this.displayManager.render(this.projectManager.getActiveProject());
         this.addRadioClickEvents();
+        this.handleTaskEdit();
     }
 
     toggleState(activeTask){
@@ -237,7 +261,6 @@ export class AppController{
         let time = activeTask.timer.getTime();
         this.timeElement.textContent = time;
         this.title.textContent = time;
-        // console.log("I was called")
         if (activeTask)            
             this.displayManager.updateTask(activeTask.key);
     }
@@ -251,4 +274,46 @@ export class AppController{
     updateTask(){
         let t = this.getActiveTask();
         this.taskNameElement.textContent = `${t.name}${t.current}/${t.pomodoros}`;}
-}
+
+    handleTaskEdit(){
+        /* 
+        - on click intialize a form.
+        - can we simply copy the old form and put it there?
+        - first lets open the form.
+        - second populate the form with the task variables
+        - on submit, edit the task and make sure we update it in the task manager 
+        - and project maanger,. and rerender the task eleemnt
+        - we can query the form and append it to the node just above it.
+
+        
+        */
+        this.formDiv = document.querySelector(".form");
+        this.settingsBtns = document.querySelectorAll(".settings");
+        this.settingsBtns.forEach((ele) => ele.addEventListener("click", (e) => {
+            // console.log("i was cliecked");
+            const child = e.target.parentNode;
+            // console.log(child)
+            const parent = child.parentNode;
+            // console.log(parent)
+            
+            parent.insertBefore(this.formDiv, child);
+            this.formDiv.classList.remove("hidden");
+            // console.log(this.formDiv.children);
+            this.editMode = true;
+
+            const key = Number(child.dataset.key);
+            const proj = this.getActiveProject();
+            const task = proj.getTask(key);
+
+            
+            document.getElementById("task-name").value = task.name;
+            document.getElementById("pomodoro").value = task.pomodoros;
+            document.getElementById("notes").value = task.notes;
+            this.taskEditKey = task.key;
+
+            })
+        );
+        
+    }
+
+    }
