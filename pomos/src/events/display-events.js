@@ -1,10 +1,4 @@
-function hide(elem){
-    elem.classList.add("hidden");
-}
-
-function show(elem){
-    elem.classList.add("show");
-}
+import { show, hide } from "./index.js";
 
 export function bindFormInitEvents(dm){
         
@@ -84,7 +78,6 @@ export function handleDragState(taskElement){
 
         taskElement.addEventListener("dragstart", () => {   
             console.log("drag start");
-            console.log("what the fuck")
             taskElement.addClass("dragging");
         });
 
@@ -93,8 +86,6 @@ export function handleDragState(taskElement){
             taskElement.removeClass("dragging");
         });
     }
-
-
 
 function handleClickOutside(dm){
     document.body.addEventListener("click",  (e) => {    

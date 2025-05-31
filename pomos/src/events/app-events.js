@@ -1,0 +1,97 @@
+import {Task, Timer} from "../models";
+
+export function addRadioClickEvent(app, taskElement){
+        
+        taskElement.addEventListener("change", (e) => {
+    
+            const task = e.target.parentNode;
+            const id = task.dataset.key;
+            const activeTask = app.getActiveTask();
+            if (activeTask)
+            {
+                if (activeTask.timer.running)
+                    app.toggleState(activeTask);
+            }     
+            app.getActiveProject().switchTask(id);
+            app.updateTime(); 
+            app.updateTask();   
+            app.updateNumber();
+        });
+    }
+export function  addRadioClickEvents(app){
+    
+        const iter = app.displayManager.taskElements.values();
+        for(const taskElement of iter)
+            addRadioClickEvent(app, taskElement)
+            // this.addRadioClickEvent(taskElement);       
+    }
+export function attachEventListeners(app){
+        app.timeElement.addEventListener("timechange", (e) => 
+        {    
+            const activeTask = app.getActiveTask();
+            app.updateTime();
+            if (activeTask.timer.duration == 0)
+            {
+                activeTask.increment(1);
+                app.updateTask();
+                app.updateNumber();
+                app.toggleState(activeTask);
+            }
+        });
+        
+        app.timeElement.addEventListener("onrefresh",  () => app.updateTime())
+
+        app.startBtn.addEventListener("click", () => {
+
+            const activeTask = app.getActiveTask();
+            if(!activeTask){
+                console.warn("There is no active task to start")
+                return
+            }
+            if(activeTask.isFinished) {
+                console.warn("Cannot start a finished task. Increase the number of pomodoros");
+                return;
+            }
+            if (!activeTask) return;
+            app.toggleState(activeTask);
+        });
+        
+        app.resetBtn.addEventListener("click", () => {
+
+            const activeTask = app.getActiveTask();
+            if (!activeTask) return;
+            activeTask.timer.refresh();
+        });
+
+        app.logBtn.addEventListener("click", () => {
+
+            const activeTask = app.getActiveTask();
+            if (!activeTask) return;
+            activeTask.print();
+        });
+        
+        app.switchBtn.addEventListener("click", (event) =>  {
+
+            const project = app.getActiveProject();
+            app.switch(project.id == 1? 0 : 1);
+            });
+        
+        app.addBtn.addEventListener("click", (event) => {
+            
+            const options = {name: "Pomo App", pomodoros:2};
+            const timer = new Timer(5000);
+            const task  = new Task(options, timer);
+            console.log("New task with click eventListener is being created")
+            app.addTask(task);
+        })
+
+        app.removeBtn.addEventListener("click", (event) => {
+            const activeTask = app.getActiveTask();
+            if(activeTask == undefined) return;
+            if(activeTask.timer.running) app.toggleState(activeTask);
+            const index = app.getActiveTask().key;
+            console.log(`Removing task with id: ${index}`);
+            app.deleteTask(index);
+        });
+    }
+    

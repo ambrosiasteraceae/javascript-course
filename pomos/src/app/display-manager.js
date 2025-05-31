@@ -1,5 +1,8 @@
 import { BaseElement, TaskElement } from "../ui/index.js";
-import {  bindFormInitEvents, attachDragOverEvent, removeDragOverEvent, handleDragState } from "../events/display-events.js";
+import {  bindFormInitEvents, 
+     attachDragOverEvent,
+     removeDragOverEvent,
+     handleDragState } from "../events/display-events.js";
 export class DisplayManager{
     constructor()
     {
@@ -11,7 +14,6 @@ export class DisplayManager{
         this.initializeForm();
      
     }
-    
     initializeForm(){
         this.formDiv = document.querySelector(".form");
         this.taskDiv = document.querySelector(".before-form");
@@ -51,6 +53,7 @@ export class DisplayManager{
 
     renderTask(taskElement){
         this.container.append(taskElement);
+        handleDragState(taskElement);
     }
 
     getOrder(project){
@@ -88,7 +91,7 @@ export class DisplayManager{
         {
             let taskElement = this.taskElements.get(index);
             this.renderTask(taskElement);
-            handleDragState(taskElement);
+            // handleDragState(taskElement);
         }
 
         if(!this.attached)
