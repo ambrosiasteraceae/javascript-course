@@ -13,7 +13,7 @@ foo.generateExamples(3);
 bar.generateExamples(3);
 
 const app = new AppController();
-app.attachEventListeners();
+// app.attachEventListeners();
 
 
 app.projectManager.addProject(foo);
