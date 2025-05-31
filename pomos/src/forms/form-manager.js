@@ -1,6 +1,6 @@
 import {Task, Timer } from "../models";
 import {sendDataEvent} from "../events"
-  
+import { show, hide } from "../events";  
 export class FormManager{
     constructor(app){
         
@@ -11,42 +11,54 @@ export class FormManager{
         this.formDiv = document.querySelector(".form");
 
         sendDataEvent(this, app)
-
+        console.log("taskidiv is:", this.app.displayManager.taskDiv)
     }
 
-  editFromForm(data){
+    editFromForm(data){
 
-    const editTask =  this.app.getActiveProject().getTask(this.taskEditKey)
-    editTask.name = data.name;
-    editTask.pomodoros = data.pomodoros;
-    editTask.notes = data.notes;
-    console.log("submit was prevented due to edit mode")
-    this.editMode = false;
-    this.app.editTask(editTask);
-
-  }
+        const editTask =  this.app.getActiveProject().getTask(this.taskEditKey)
+        editTask.name = data.name;
+        editTask.pomodoros = data.pomodoros;
+        editTask.notes = data.notes;
+        console.log("submit was prevented due to edit mode")
+        this.editMode = false;
+        this.app.editTask(editTask);
 
 
-  createFromForm(data){
-    const timers  = new Timer(15000);
-    const task = new Task(data, timers)
-    this.app.addTask(task);
-  }
 
 
-  
-  sendData() 
+        if(editTask.isActive)
+            this.app.updateTask();
+        //Move back the div so we do not have non-task elements in the container
+        this.app.displayManager.taskDiv.after(this.formDiv); 
+        hide(this.formDiv);
+    }
+
+    createFromForm(data){
+        const timers  = new Timer(15000);
+        const task = new Task(data, timers)
+        this.app.addTask(task);
+        this.app.displayManager.hasEnterClick = false;
+        hide(this.formDiv);
+        show(this.app.displayManager.taskDiv)
+        
+    }
+
+    sendData() 
     {    
+        console.log("EditMode:", this.editMode)
         const formData = new FormData(this.form);    
         const data = Object.fromEntries(formData.entries());
         if(this.editMode == true)
         {   
             this.editFromForm(data, this.app);
+            this.app.displayManager.hasEnterClick = false;
             return
         }
         this.createFromForm(data, this.app);
-    }
 
+
+    }
 
     editTaskCallback(e) {
 
@@ -54,7 +66,8 @@ export class FormManager{
         const parent = child.parentNode;
         
         parent.insertBefore(this.formDiv, child);
-        this.formDiv.classList.remove("hidden");
+        // this.formDiv.classList.remove("hidden");
+        show(this.formDiv);
         this.editMode = true;
 
         const key = Number(child.dataset.key);

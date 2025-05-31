@@ -5,6 +5,7 @@ export  {
     handleDragState } from "./display-events.js"
 
 export {
+    handleClickOutside,
     addRadioClickEvent,
     addRadioClickEvents,
     attachEventListeners

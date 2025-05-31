@@ -57,7 +57,8 @@ export class DisplayManager{
     }
 
     getOrder(project){
-        
+        // console.log("children are:")
+        // console.log(this.container.el.children)
         if(this.container.el.children == 0)
             return project.ordering
         else

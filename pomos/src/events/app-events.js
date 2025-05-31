@@ -95,3 +95,31 @@ export function attachEventListeners(app){
         });
     }
     
+
+    //add isFormOpen?
+export function handleClickOutside(app){
+    document.body.addEventListener("click",  (e) => {    
+        // console.log(app.displayManager.hasEnterClick)    
+        if(app.displayManager.formDiv.classList.contains("hidden"))
+            return
+        if(!app.displayManager.hasEnterClick)
+        {
+                app.displayManager.hasEnterClick = true;
+                return
+        }
+        if(!app.displayManager.formDiv.classList.contains("hidden"))
+        {
+            if(!app.displayManager.formDiv.contains(e.target))
+            {
+                console.log("I was clicked outside");
+                app.displayManager.formDiv.classList.add("hidden")
+                app.displayManager.taskDiv.classList.remove("hidden");
+                app.displayManager.hasEnterClick = false;
+                app.displayManager.taskDiv.after(app.displayManager.formDiv);
+                app.formManager.editMode = false;
+            }
+        }
+        
+
+        });
+    }

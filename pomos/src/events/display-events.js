@@ -16,6 +16,7 @@ export function bindFormInitEvents(dm){
                 hide(dm.formDiv);
                 show(dm.taskDiv);
                 dm.hasEnterClick = !dm.hasEnterClick;
+                dm.taskDiv.after(dm.formDiv);
             });
         document.addEventListener("keydown", (event)=>{
                 if(event.key=="Escape")
@@ -23,12 +24,13 @@ export function bindFormInitEvents(dm){
                     hide(dm.formDiv);
                     show(dm.taskDiv);
                     dm.hasEnterClick = !dm.hasEnterClick;
+                    dm.taskDiv.after(dm.formDiv);
                 }
             });
 
         dm.displayBtn.addEventListener("click",() =>{dm.updateAll();})
         
-        handleClickOutside(dm);
+        // handleClickOutside(dm);
 }
 
 
@@ -77,33 +79,41 @@ export function handleDragState(taskElement){
         taskElement.attached = true;
 
         taskElement.addEventListener("dragstart", () => {   
-            console.log("drag start");
+            //console.log("drag start");
             taskElement.addClass("dragging");
         });
 
         taskElement.addEventListener("dragend", () => {
-            console.log("dragend");
+            //console.log("dragend");
             taskElement.removeClass("dragging");
         });
     }
-
-function handleClickOutside(dm){
-    document.body.addEventListener("click",  (e) => {    
-            if(!dm.hasEnterClick)
-            {
-                    dm.hasEnterClick = true;
-                    return
-            }
-            if(!dm.formDiv.classList.contains("hidden"))
-            {
-                    if(dm.formDiv.contains(e.target))
-                        console.log("I was inside");            
-                    else
-                    {
-                        console.log("I was clicked outside");
-                        dm.formDiv.classList.add("hidden")
-                        dm.taskDiv.classList.remove("hidden");
-                        dm.hasEnterClick = false;
-                    }
-            }});
-        }
+// //add isFormOpen?
+// function handleClickOutside(dm){
+//     document.body.addEventListener("click",  (e) => {    
+//         // console.log(dm.hasEnterClick)    
+//         if(dm.formDiv.classList.contains("hidden"))
+//             return
+//         if(!dm.hasEnterClick)
+//             {
+//                     dm.hasEnterClick = true;
+//                     return
+//             }
+//             if(!dm.formDiv.classList.contains("hidden"))
+//             {
+//                 if(dm.formDiv.contains(e.target))
+//                     // console.log("I was inside");            
+//                     console.log()
+//                 else
+//                 {
+//                     console.log("I was clicked outside");
+//                     dm.formDiv.classList.add("hidden")
+//                     dm.taskDiv.classList.remove("hidden");
+//                     dm.hasEnterClick = false;
+//                     dm.taskDiv.after(dm.formDiv);
+//                 }
+//             }
+           
+        
+//         });
+        // }

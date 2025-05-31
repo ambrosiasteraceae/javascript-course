@@ -3,7 +3,12 @@
 import {DisplayManager} from "./display-manager.js";
 import {ProjectManager} from "./project-manager.js";
 import { FormManager } from "../forms/form-manager.js";
-import { attachEventListeners, addRadioClickEvent, addRadioClickEvents } from "../events/app-events.js";
+import {
+    handleClickOutside,
+    addRadioClickEvent,
+    addRadioClickEvents,
+    attachEventListeners, 
+     } from "../events";
 
 const onSecondTick = new Event("timechange");
 const onRefreshUpdate = new Event("onrefresh");
@@ -22,6 +27,7 @@ export class AppController{
         this.formManager = new FormManager(this);
 
         this.init();
+        handleClickOutside(this)
         attachEventListeners(this);
     }
 
@@ -55,31 +61,31 @@ export class AppController{
         return this.displayManager.taskElements.get(key);
     }
 
-    addRadioClickEvent(taskElement){
+    // addRadioClickEvent(taskElement){
         
-        taskElement.addEventListener("change", (e) => {
+    //     taskElement.addEventListener("change", (e) => {
     
-            const task = e.target.parentNode;
-            const id = task.dataset.key;
-            const activeTask = this.getActiveTask();
-            if (activeTask)
-            {
-                if (activeTask.timer.running)
-                    this.toggleState(activeTask);
-            }     
-            this.getActiveProject().switchTask(id);
-            this.updateTime(); 
-            this.updateTask();   
-            this.updateNumber();
-        });
-    }
+    //         const task = e.target.parentNode;
+    //         const id = task.dataset.key;
+    //         const activeTask = this.getActiveTask();
+    //         if (activeTask)
+    //         {
+    //             if (activeTask.timer.running)
+    //                 this.toggleState(activeTask);
+    //         }     
+    //         this.getActiveProject().switchTask(id);
+    //         this.updateTime(); 
+    //         this.updateTask();   
+    //         this.updateNumber();
+    //     });
+    // }
     
-    addRadioClickEvents(){
+    // addRadioClickEvents(){
     
-        const iter = this.displayManager.taskElements.values();
-        for(const taskElement of iter)
-            this.addRadioClickEvent(taskElement);       
-    }
+    //     const iter = this.displayManager.taskElements.values();
+    //     for(const taskElement of iter)
+    //         this.addRadioClickEvent(taskElement);       
+    // }
 
     switch(key){
 
@@ -111,7 +117,10 @@ export class AppController{
         this.projectManager.getActiveProject().addTask(task)
         this.displayManager.createTaskElement(task);
         const taskElement = this.getTaskElement(task.key);
+        
         this.displayManager.renderTask(taskElement);
+        console.log(taskElement);
+        this.formManager.handleTaskEdit(taskElement.elements.taskSettings);
         // this.displayManager.attachDragEvents(taskElement);
         addRadioClickEvent(this, taskElement);        
     }

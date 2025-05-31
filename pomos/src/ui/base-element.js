@@ -3,7 +3,6 @@ export class BaseElement {
         if(htmlElement.startsWith("."))
         {
             const selection = document.querySelector(htmlElement);
-            // console.log(selection)
             if(selection)
                 this.el = selection;
         }
@@ -12,11 +11,7 @@ export class BaseElement {
     }
 
     append(child){
-        // console.log("Child of:" , child, typeof child)
-        // console.log(child instanceof Node? true: false);
-        // console.log(child)
-        // if( typeof(child) == Node)
-        //     console.warn("Null created")
+ 
         const childElement = child instanceof BaseElement? child.el : child;
         this.el.appendChild(childElement);
     }
@@ -26,7 +21,7 @@ export class BaseElement {
     }
 
     addClass(className){
-        // classNames.forEach((className) => this.el.addClass(className));
+ 
         this.el.classList.add(className);
     }
     removeClass(className){
