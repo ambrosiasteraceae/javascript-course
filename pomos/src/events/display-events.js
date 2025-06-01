@@ -1,36 +1,9 @@
 import { show, hide } from "./index.js";
 
-export function bindFormInitEvents(dm){
-        
 
-       dm.addNotesBtn.addEventListener("click",() =>{
-                show(dm.notes);
-            });
-        dm.initTaskFormBtn.addEventListener("click", () =>{
-                
-                show(dm.formDiv);
-                hide(dm.taskDiv);
-            });
-
-        dm.cancelTaskBtn.addEventListener("click",() =>{
-                hide(dm.formDiv);
-                show(dm.taskDiv);
-                dm.hasEnterClick = !dm.hasEnterClick;
-                dm.taskDiv.after(dm.formDiv);
-            });
-        document.addEventListener("keydown", (event)=>{
-                if(event.key=="Escape")
-                {
-                    hide(dm.formDiv);
-                    show(dm.taskDiv);
-                    dm.hasEnterClick = !dm.hasEnterClick;
-                    dm.taskDiv.after(dm.formDiv);
-                }
-            });
-
-        dm.displayBtn.addEventListener("click",() =>{dm.updateAll();})
-        
-        // handleClickOutside(dm);
+export function bindDisplayEvents(dm){
+  
+    dm.displayBtn.addEventListener("click",() =>{dm.updateAll();})
 }
 
 
@@ -42,7 +15,6 @@ function dragOver(dm, e, project){
                 dm.container.append(draggable);
             else        
                 dm.container.insertBefore(draggable, afterElement);
-
     }
 
 function  getDragAfterElement(dm, y)  {
@@ -88,32 +60,3 @@ export function handleDragState(taskElement){
             taskElement.removeClass("dragging");
         });
     }
-// //add isFormOpen?
-// function handleClickOutside(dm){
-//     document.body.addEventListener("click",  (e) => {    
-//         // console.log(dm.hasEnterClick)    
-//         if(dm.formDiv.classList.contains("hidden"))
-//             return
-//         if(!dm.hasEnterClick)
-//             {
-//                     dm.hasEnterClick = true;
-//                     return
-//             }
-//             if(!dm.formDiv.classList.contains("hidden"))
-//             {
-//                 if(dm.formDiv.contains(e.target))
-//                     // console.log("I was inside");            
-//                     console.log()
-//                 else
-//                 {
-//                     console.log("I was clicked outside");
-//                     dm.formDiv.classList.add("hidden")
-//                     dm.taskDiv.classList.remove("hidden");
-//                     dm.hasEnterClick = false;
-//                     dm.taskDiv.after(dm.formDiv);
-//                 }
-//             }
-           
-        
-//         });
-        // }

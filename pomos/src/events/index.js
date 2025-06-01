@@ -1,11 +1,11 @@
 export  {
-    bindFormInitEvents, 
+    bindDisplayEvents, 
     attachDragOverEvent, 
     removeDragOverEvent, 
-    handleDragState } from "./display-events.js"
+    handleDragState,
+ } from "./display-events.js"
 
 export {
-    handleClickOutside,
     addRadioClickEvent,
     addRadioClickEvents,
     attachEventListeners
@@ -14,7 +14,7 @@ export {
 
 export{
     sendDataEvent,
-    
+    bindFormEvents,
 } from "./form-events.js"
 
 

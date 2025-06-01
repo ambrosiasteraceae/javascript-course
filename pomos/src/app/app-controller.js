@@ -4,7 +4,6 @@ import {DisplayManager} from "./display-manager.js";
 import {ProjectManager} from "./project-manager.js";
 import { FormManager } from "../forms/form-manager.js";
 import {
-    handleClickOutside,
     addRadioClickEvent,
     addRadioClickEvents,
     attachEventListeners, 
@@ -27,7 +26,6 @@ export class AppController{
         this.formManager = new FormManager(this);
 
         this.init();
-        handleClickOutside(this)
         attachEventListeners(this);
     }
 
@@ -46,46 +44,18 @@ export class AppController{
     }
 
     editTask(editTask){
-
+        console.log("Hey@as I ever called?")
         this.projectManager.getActiveProject().tasks[editTask.key] = editTask;
         const taskElement = this.displayManager.getTaskElement(editTask.key);
         taskElement.task = editTask;
         taskElement.update();
-        
-        // console.log("New Tas element is:");
-        // console.log(taskElement);
+
  
     }   
 
     getTaskElement(key){
         return this.displayManager.taskElements.get(key);
     }
-
-    // addRadioClickEvent(taskElement){
-        
-    //     taskElement.addEventListener("change", (e) => {
-    
-    //         const task = e.target.parentNode;
-    //         const id = task.dataset.key;
-    //         const activeTask = this.getActiveTask();
-    //         if (activeTask)
-    //         {
-    //             if (activeTask.timer.running)
-    //                 this.toggleState(activeTask);
-    //         }     
-    //         this.getActiveProject().switchTask(id);
-    //         this.updateTime(); 
-    //         this.updateTask();   
-    //         this.updateNumber();
-    //     });
-    // }
-    
-    // addRadioClickEvents(){
-    
-    //     const iter = this.displayManager.taskElements.values();
-    //     for(const taskElement of iter)
-    //         this.addRadioClickEvent(taskElement);       
-    // }
 
     switch(key){
 
@@ -121,7 +91,6 @@ export class AppController{
         this.displayManager.renderTask(taskElement);
         console.log(taskElement);
         this.formManager.handleTaskEdit(taskElement.elements.taskSettings);
-        // this.displayManager.attachDragEvents(taskElement);
         addRadioClickEvent(this, taskElement);        
     }
 
@@ -158,7 +127,7 @@ export class AppController{
 
         this.displayManager.render(this.projectManager.getActiveProject());
         addRadioClickEvents(this);
-        this.formManager.handleTaskEditAll(); ///)**6*** handle task edit
+        this.formManager.handleTaskEditAll(); 
     }
 
     toggleState(activeTask){
@@ -185,5 +154,4 @@ export class AppController{
     updateTask(){
         let t = this.getActiveTask();
         this.taskNameElement.textContent = `${t.name}${t.current}/${t.pomodoros}`;}
-
     }

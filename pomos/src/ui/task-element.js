@@ -10,6 +10,7 @@ export class TaskElement extends BaseElement{
         this.elements = {};
         this.build();
         this.attached = false;
+        this.isEdited = false;
     }
     
     build(){
@@ -24,10 +25,6 @@ export class TaskElement extends BaseElement{
         this.elements.taskActive.addClass("radio");
         this.elements.taskActive.setChecked(this.task.isActive);
 
-        //  console.log(this.task.isActive);
-        //  console.log(this.elements.taskActive);
-        // console.log(this.taskActive);
-        // console.log();
         
         this.elements.taskName = new BaseElement("div");
         this.elements.taskName.setText(this.task.name);
@@ -59,7 +56,7 @@ export class TaskElement extends BaseElement{
     }
 
     update(){
-        // this.elements.taskActive.activate(this.task.isActive || false);
+        
         this.elements.taskStatus.setText(`${this.task.current}/${this.task.pomodoros}`)
         this.elements.taskName.setText(this.task.name);
         this.elements.taskStatus.setText(`${this.task.current}/${this.task.pomodoros}`)
