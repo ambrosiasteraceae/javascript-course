@@ -100,6 +100,7 @@ export class FormManager{
         document.getElementById("task-name").value = task.name;
         document.getElementById("pomodoro").value = task.pomodoros;
         document.getElementById("notes").value = task.notes;
+        document.getElementById("task-name").focus();
         this.taskEditKey = task.key;
         this.currentTaskElement = this.app.getTaskElement(this.taskEditKey);
         this.currentTaskElement.isEdited = true;
@@ -118,4 +119,7 @@ export class FormManager{
     handleTaskEdit(elem){
         elem.addEventListener("click", (e) => this.editTaskCallback(e));
     }
+
+    clearInner(el){}
 }
+

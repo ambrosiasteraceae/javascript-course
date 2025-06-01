@@ -2,23 +2,26 @@ import { show, hide} from "../events";
 
 export function handleTaskEditCancellation(fm){
 
-    fm.currentTaskElement.isEdited = false;
     fm.isOpen = false;
     hide(fm.formDiv);
     show(fm.taskDiv);
     fm.taskDiv.after(fm.formDiv);
     if(fm.editMode)
     {
+        fm.currentTaskElement.isEdited = false;
         fm.editMode = false;
         show(fm.currentTaskElement.el);
         fm.submitTaskBtn.textContent = "Add Task";       
     }
+    console.log(fm.formDiv)
+    clearForm();
 }
 
 export function sendDataEvent(fm, app){
     fm.form.addEventListener("submit", (event) => {
     event.preventDefault();
     fm.sendData(app);
+    clearForm();
 })}
 
 
@@ -27,6 +30,7 @@ export function bindFormEvents(fm){
             
             show(fm.formDiv);
             hide(fm.taskDiv);
+            document.getElementById("task-name").focus(); //repeated in edit mode as well.
         });
 
     fm.cancelTaskBtn.addEventListener("click",() => {
@@ -60,3 +64,10 @@ function onOutsideClick(fm)
         if(!fm.form.contains(e.target))
             handleTaskEditCancellation(fm);});
     }
+
+
+function clearForm(){
+    document.getElementById("task-name").value = "";
+    document.getElementById("pomodoro").value = "";
+    document.getElementById("notes").value = "";
+}
