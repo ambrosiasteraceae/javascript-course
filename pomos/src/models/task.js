@@ -1,7 +1,14 @@
  
 //@TODO: Check the task functionality as the lastkey has been updated to start at 0 
 //in order to index more naturally into the tasks array.
- 
+
+class Tuple extends Array{
+    constructor(...args){
+        super();
+        this.push(...args);
+        Object.seal(this);
+    }
+}
  export class Task {
     static lastKey = -1;
     
@@ -15,19 +22,52 @@
     constructor({name, pomodoros, notes =""}, timer)
     {
         this.#key = ++Task.lastKey;
-        this.#current = 0;
-        
+        this.#current = 0;   
         this.name = name;
         this.pomodoros = pomodoros;
-        this.notes = notes;
-        
+        this.notes = notes;        
         this.isActive = false;
-        this.isFinished = false;
-        
+        this.isFinished = false;        
         this.timer = timer;
-        
+        this.timestamps = this.generateTimeStampArr(this.pomodoros);
+
     };
 
+    startTimer(){
+        this.timer.start();
+        this.assignStartDate();
+    }
+
+    generateTimeStampArr(length){
+        const timestamps = [];
+        for(let i = 0; i < length; i++)
+        {
+            let ts = new Tuple(null,null);
+            timestamps.push(ts);
+        }
+        return timestamps;
+    }
+
+    // initTimestamp(){
+        
+        
+        // this.timestamps = [];
+        // for(let i = 0; i < this.pomodoros; i++)
+        // {
+        //     let ts = new Tuple(null,null);
+        //     this.timestamps.push(ts);
+        // }
+
+    // }
+
+    assignStartDate(){
+        this.timestamps[this.#current][0] = this.timer.startedAt;
+    }
+
+    assignEndDate(){
+        console.log("I was called")
+        this.timestamps[this.#current][1] = this.timer.finishedAt;
+    }
 
     isPomodoroFinished(){
         if (this.timer == 0)
@@ -45,23 +85,25 @@
 
         if (this.isFinished)
         {
+            
             console.log(`Cannot add more it is full, ${this.#current}:${this.pomodoros}`)
             return
         }
         
-        if (this.timer.duration = 0)
-        {
+        if (!this.timer.duration == 0)
+        {   
+            // console.log(this.timer.duration);
             console.log("Timer is not yet finished. cannot assign")
             return
         }
         
         console.log("Incrementing Task since time is finished")
+        this.assignEndDate()
         ++this.#current;
-
         if(this.#current >= this.pomodoros)
         {
             this.isFinished = true; 
-            // this.tim
+            // this.assignEndDate()
         }
     }
 
@@ -77,8 +119,19 @@
         //you should not be able to substract below the current task number;
         if (change >= this.#current + 1) 
         {
+
             this.pomodoros = change;
-            
+            if (val > 0)
+            {
+                const tArray = this.generateTimeStampArr(val);
+                this.timestamps = this.timestamps.concat(tArray);
+            }
+            else
+            {
+                console.log("hey i was ihns")
+                this.timestamps = this.timestamps.toSpliced(this.#current+1, -val)
+            }
+
             if (this.pomodoros == this.#current + 1)
                 this.isFinished = true;
             else

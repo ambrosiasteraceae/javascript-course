@@ -1,5 +1,5 @@
 import {getUnixTime, format} from "date-fns";
-import { AppController} from "../app/index.js";
+// import { AppController} from "../app/index.js";
 
 
 
@@ -21,6 +21,9 @@ export class Timer{
         //I need to dig about this issue deeper to understand why it works
         this.parseTime = this.parseTime.bind(this);
         this.running = false;
+
+        this.startedAt = null;
+        this.finishedAt = null;
         
     }
 
@@ -32,7 +35,7 @@ export class Timer{
     refresh(){ 
     
         this.duration = this.original;
-        AppController.refreshTime();
+        // AppController.refreshTime();
         console.log("Refresh was callled:", this.getTime())
     }
 
@@ -40,6 +43,8 @@ export class Timer{
         this.running = true;
         if (this.duration == 0)
             return
+        if(this.duration == this.original)
+            this.startedAt = new Date();
         console.log("Started at:", this.getTime())
         if(!this.intervalId)
         {
@@ -58,11 +63,12 @@ export class Timer{
     parseTime(){
         
         this.decrement();
-        AppController.adjustTime();
+        // AppController.adjustTime();
         console.log(this.getTime());
         if (this.duration == 0)
         {
             this.pause()
+            this.finishedAt = new Date ();
             setTimeout(() => this.refresh(), 1000);
         }
     }

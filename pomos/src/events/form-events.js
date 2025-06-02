@@ -47,7 +47,7 @@ export function bindFormEvents(fm){
         show(fm.notes);
     });
 
-    onOutsideClick(fm);
+    //onOutsideClick(fm);
 }
 
 function onOutsideClick(fm)
