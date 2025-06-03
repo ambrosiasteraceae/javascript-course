@@ -55,7 +55,7 @@ export function attachEventListeners(app){
                 return;
             }
             if (!activeTask) return;
-            if(activeTask.timer.duration = activeTask.timer.original)
+            if(activeTask.timer.duration == activeTask.timer.original)
                 activeTask.assignStartDate();
             app.toggleState(activeTask);
         });
