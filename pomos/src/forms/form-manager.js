@@ -38,9 +38,10 @@ export class FormManager{
 
         const editTask =  this.app.getActiveProject().getTask(this.taskEditKey)
         editTask.name = data.name;
-        editTask.pomodoros = data.pomodoros;
+        const delta = data.pomodoros - editTask.pomodoros;
+        editTask.addPomodoros(delta);
         editTask.notes = data.notes;
-        console.log("submit was prevented due to edit mode")
+        console.log("Your are now in task edit mode")
         this.editMode = false;
         this.currentTaskElement.isEdited = false;
         this.app.editTask(editTask);

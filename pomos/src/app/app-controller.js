@@ -2,7 +2,7 @@
 
 import {DisplayManager} from "./display-manager.js";
 import {ProjectManager} from "./project-manager.js";
-import { FormManager } from "../forms/form-manager.js";
+import {FormManager} from "../forms/form-manager.js";
 import {
     addRadioClickEvent,
     addRadioClickEvents,
@@ -44,7 +44,9 @@ export class AppController{
     }
 
     editTask(editTask){
+        //cure
         console.log("Hey@as I ever called?")
+        
         this.projectManager.getActiveProject().tasks[editTask.key] = editTask;
         const taskElement = this.displayManager.getTaskElement(editTask.key);
         taskElement.task = editTask;
@@ -88,7 +90,7 @@ export class AppController{
         this.displayManager.createTaskElement(task);
         const taskElement = this.getTaskElement(task.key);
         
-        this.displayManager.renderTask(taskElement);
+        this.displayManager.renderTask(taskElement);        
         console.log(taskElement);
         this.formManager.handleTaskEdit(taskElement.elements.taskSettings);
         addRadioClickEvent(this, taskElement);        
@@ -100,8 +102,9 @@ export class AppController{
     
     getActiveTask(){
         const task = this.projectManager.getActiveProject()?.getActiveTask();
-        if (task == undefined){
-            console.warn("No active task");
+        // console.log(task);
+        if (task == undefined) {
+            // console.warn("No active task");
             return;
         }  
         return task;
@@ -139,7 +142,7 @@ export class AppController{
     updateTime(){
         
         const activeTask = this.getActiveTask();
-        console.log(activeTask);
+        // console.log(activeTask);
         let time = activeTask.timer.getTime();
         this.timeElement.textContent = time;
         this.title.textContent = time;

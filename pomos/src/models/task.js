@@ -53,7 +53,10 @@ class Tuple extends Array{
     }
 
     assignEndDate(){
-        console.log("I was called")
+        // console.log(this.timer.finishedAt)
+        // if(this.timer.finishedAt)
+        //     console.warn("this timer does not have a finished date")
+        // console.log(1);
         this.timestamps[this.#current][1] = this.timer.finishedAt;
     }
 
@@ -86,13 +89,11 @@ class Tuple extends Array{
         }
         
         console.log("Incrementing Task since time is finished")
-        // this.assignEndDate()
+        console.log(this);
         ++this.#current;
         if(this.#current >= this.pomodoros)
-        {
             this.isFinished = true; 
-            // this.assignEndDate()
-        }
+
     }
 
     addPomodoros(val)
@@ -103,9 +104,11 @@ class Tuple extends Array{
         2. User estimated more pomodoros than actual. He should be able to remove pomodoros and set task to finished.  
         */
         const change = this.pomodoros + val;
+        console.log(change)
+        console.log(this.#current)
         
         //you should not be able to substract below the current task number;
-        if (change >= this.#current + 1) 
+        if (change >= this.#current) 
         {
 
             this.pomodoros = change;
@@ -115,12 +118,9 @@ class Tuple extends Array{
                 this.timestamps = this.timestamps.concat(tArray);
             }
             else
-            {
-                console.log("hey i was ihns")
-                this.timestamps = this.timestamps.toSpliced(this.#current+1, -val)
-            }
+                this.timestamps = this.timestamps.toSpliced(this.#current+1, -val);
 
-            if (this.pomodoros == this.#current + 1)
+            if (this.pomodoros == this.#current)
                 this.isFinished = true;
             else
                 this.isFinished = false;    

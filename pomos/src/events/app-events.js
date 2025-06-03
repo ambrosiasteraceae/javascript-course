@@ -7,6 +7,7 @@ export function addRadioClickEvent(app, taskElement){
             const task = e.target.parentNode;
             const id = task.dataset.key;
             const activeTask = app.getActiveTask();
+   
             if (activeTask)
             {
                 if (activeTask.timer.running)
@@ -16,6 +17,8 @@ export function addRadioClickEvent(app, taskElement){
             app.updateTime(); 
             app.updateTask();   
             app.updateNumber();
+            console.log(app.getActiveTask());
+
         });
     }
 export function  addRadioClickEvents(app){
@@ -29,12 +32,14 @@ export function attachEventListeners(app){
         app.timeElement.addEventListener("timechange", (e) => 
         {    
             const activeTask = app.getActiveTask();
-            // console.log(activeTask.timer.duration)
+            
             app.updateTime();
             if (activeTask.timer.duration == 0)
             {
+                // console.log(1);
                 activeTask.assignEndDate()
-                activeTask.increment(1);
+                activeTask.increment();
+                // console.log(activeTask);
                 app.updateTask();
                 app.updateNumber();
                 app.toggleState(activeTask);
@@ -55,9 +60,10 @@ export function attachEventListeners(app){
                 return;
             }
             if (!activeTask) return;
+  
+            app.toggleState(activeTask);
             if(activeTask.timer.duration == activeTask.timer.original)
                 activeTask.assignStartDate();
-            app.toggleState(activeTask);
         });
         
         app.resetBtn.addEventListener("click", () => {
@@ -85,7 +91,7 @@ export function attachEventListeners(app){
             const options = {name: "Pomo App", pomodoros:2};
             const timer = new Timer(5000);
             const task  = new Task(options, timer);
-            console.log("New task with click eventListener is being created")
+            // console.log("New task is being created:")
             app.addTask(task);
         })
 

@@ -24,23 +24,23 @@ export class Timer{
 
     toggle(){
         this.running ? this.pause() : this.start();
-        console.log(`Time status:${this.running? "on" : "off"}`)
+        // console.log(`Time status:${this.running? "on" : "off"}`)
     }
 
     refresh(){ 
     
         this.duration = this.original;
         AppController.refreshTime();
-        console.log("Refresh was callled:", this.getTime())
+        // console.log("Refresh was callled:", this.getTime())
     }
 
     start(){
+
         this.running = true;
         if (this.duration == 0)
             return
         if(this.duration == this.original)
             this.startedAt = new Date();
-        // console.log("Started at:", this.getTime())
         
         if(!this.intervalId)
         {
@@ -56,26 +56,28 @@ export class Timer{
             this.duration = result;
     }
    
-    parseTime(){
-        
+    parseTime(){    
         this.decrement();
-        AppController.adjustTime();
-        // console.log(this.getTime());
-        console.log(this.duration)
+        console.log(this.getTime());
         if (this.duration == 0)
         {
-            this.pause()
+            // console.log(0)
             this.finishedAt = new Date ();
+            AppController.adjustTime();
+            // this.pause()
             setTimeout(() => this.refresh(), 1000);
         }
+        else
+            AppController.adjustTime();
+        
     }
         
     pause(){
-        console.log("My duration is at the pause moment is:")
-        // console.log(parseTime)
-        console.log(this.duration)
         this.running = false;
-        console.log("Paused at:", this.getTime());
+        if(this.duration == 0)
+            console.log("task  finished at:", this.getTime())
+        else
+            console.log("Paused at:", this.getTime());
         clearInterval(this.intervalId);
         this.intervalId = null;
     }
