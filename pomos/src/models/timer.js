@@ -1,9 +1,5 @@
 import {getUnixTime, format} from "date-fns";
-// import { AppController} from "../app/index.js";
-
-
-
-
+import { AppController} from "../app/index.js";
 /*
     Rule of Thumb
     Whenever you pass a class method as a callback, 
@@ -11,8 +7,7 @@ import {getUnixTime, format} from "date-fns";
     doesn't automatically carry this along for the ride.
 */
 
-export class Timer{
-    
+export class Timer{    
     //A timer is assigned to each task, but this does not mean the timer starts when it is instantiated
     constructor(timeInMiliseconds){
         
@@ -35,7 +30,7 @@ export class Timer{
     refresh(){ 
     
         this.duration = this.original;
-        // AppController.refreshTime();
+        AppController.refreshTime();
         console.log("Refresh was callled:", this.getTime())
     }
 
@@ -45,7 +40,8 @@ export class Timer{
             return
         if(this.duration == this.original)
             this.startedAt = new Date();
-        console.log("Started at:", this.getTime())
+        // console.log("Started at:", this.getTime())
+        
         if(!this.intervalId)
         {
             this.intervalId = setInterval(this.parseTime, 1000);
@@ -63,8 +59,9 @@ export class Timer{
     parseTime(){
         
         this.decrement();
-        // AppController.adjustTime();
-        console.log(this.getTime());
+        AppController.adjustTime();
+        // console.log(this.getTime());
+        console.log(this.duration)
         if (this.duration == 0)
         {
             this.pause()
@@ -74,7 +71,9 @@ export class Timer{
     }
         
     pause(){
-
+        console.log("My duration is at the pause moment is:")
+        // console.log(parseTime)
+        console.log(this.duration)
         this.running = false;
         console.log("Paused at:", this.getTime());
         clearInterval(this.intervalId);

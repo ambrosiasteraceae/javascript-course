@@ -48,18 +48,6 @@ class Tuple extends Array{
         return timestamps;
     }
 
-    // initTimestamp(){
-        
-        
-        // this.timestamps = [];
-        // for(let i = 0; i < this.pomodoros; i++)
-        // {
-        //     let ts = new Tuple(null,null);
-        //     this.timestamps.push(ts);
-        // }
-
-    // }
-
     assignStartDate(){
         this.timestamps[this.#current][0] = this.timer.startedAt;
     }
@@ -98,7 +86,7 @@ class Tuple extends Array{
         }
         
         console.log("Incrementing Task since time is finished")
-        this.assignEndDate()
+        // this.assignEndDate()
         ++this.#current;
         if(this.#current >= this.pomodoros)
         {

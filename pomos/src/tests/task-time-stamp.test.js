@@ -23,8 +23,6 @@ describe("Task Time Stamp", () => {
         const task = new Task( {name:"test",pomodoros:2,} , timer);
         task.timer.toggle();
         task.assignStartDate();
-        // task.startTimer()
-        // jest.advanceTimersByTime(timer.original);
         expect(task.timestamps[task.current][0]).not.toBeNull();
     });
     it("a timestamp is added when a task is finished", () =>  {
@@ -32,8 +30,8 @@ describe("Task Time Stamp", () => {
         const task = new Task( {name:"test",pomodoros:2,} , timer);
         task.timer.toggle();
         task.assignStartDate();
-        
         jest.advanceTimersByTime(timer.original);
+        task.assignEndDate();
         task.increment();
         expect(task.timestamps[0][1]).not.toBeNull();
     });

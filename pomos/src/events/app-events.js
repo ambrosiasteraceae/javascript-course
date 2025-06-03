@@ -29,9 +29,11 @@ export function attachEventListeners(app){
         app.timeElement.addEventListener("timechange", (e) => 
         {    
             const activeTask = app.getActiveTask();
+            // console.log(activeTask.timer.duration)
             app.updateTime();
             if (activeTask.timer.duration == 0)
             {
+                activeTask.assignEndDate()
                 activeTask.increment(1);
                 app.updateTask();
                 app.updateNumber();
@@ -53,6 +55,8 @@ export function attachEventListeners(app){
                 return;
             }
             if (!activeTask) return;
+            if(activeTask.timer.duration = activeTask.timer.original)
+                activeTask.assignStartDate();
             app.toggleState(activeTask);
         });
         
@@ -67,7 +71,7 @@ export function attachEventListeners(app){
 
             const activeTask = app.getActiveTask();
             if (!activeTask) return;
-            activeTask.print();
+           console.log(activeTask);
         });
         
         app.switchBtn.addEventListener("click", (event) =>  {

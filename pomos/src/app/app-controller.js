@@ -139,6 +139,7 @@ export class AppController{
     updateTime(){
         
         const activeTask = this.getActiveTask();
+        console.log(activeTask);
         let time = activeTask.timer.getTime();
         this.timeElement.textContent = time;
         this.title.textContent = time;
