@@ -1,5 +1,5 @@
 
-
+import { StorageManager } from "./storage-manager.js";
 import {DisplayManager} from "./display-manager.js";
 import {ProjectManager} from "./project-manager.js";
 import {FormManager} from "../forms/form-manager.js";
@@ -24,6 +24,7 @@ export class AppController{
         this.displayManager = new DisplayManager(); 
         this.projectManager = new ProjectManager();
         this.formManager = new FormManager(this);
+        this.storageManager = new StorageManager(this);
 
         this.init();
         attachEventListeners(this);
@@ -40,6 +41,7 @@ export class AppController{
         this.switchBtn = document.querySelector(".switch"); 
         this.addBtn = document.querySelector(".add");
         this.removeBtn = document.querySelector(".remove");
+        this.saveBtn = document.querySelector(".save")
         this.title = document.querySelector("title");
     }
 
@@ -60,7 +62,8 @@ export class AppController{
     }
 
     switch(key){
-
+        //idk if it works for 1 project and what happens when a switch is pressed. lets eee
+        console.log("KEY IS:", key)
         const activeTask = this.getActiveTask();
         if (activeTask)
         {
@@ -93,7 +96,8 @@ export class AppController{
         this.displayManager.renderTask(taskElement);        
         console.log(taskElement);
         this.formManager.handleTaskEdit(taskElement.elements.taskSettings);
-        addRadioClickEvent(this, taskElement);        
+        addRadioClickEvent(this, taskElement); 
+        this.storageManager.storeProject(this.projectManager.getActiveProject());       
     }
 
     fillTemplates(numTasks){
@@ -124,6 +128,7 @@ export class AppController{
         
         this.displayManager.removeTaskElement(index);
         this.projectManager.removeTask(index);
+        this.storageManager.removeItem(this.getActiveProject());
     }
 
     render(){
@@ -141,13 +146,19 @@ export class AppController{
 
     updateTime(){
         
+        //Updates the local storage every minute.
+        //Should add a project id to a task so it would be easier....
         const activeTask = this.getActiveTask();
         // console.log(activeTask);
         let time = activeTask.timer.getTime();
+        
         this.timeElement.textContent = time;
         this.title.textContent = time;
         if (activeTask)            
             this.displayManager.updateTask(activeTask.key);
+        if(activeTask.timer % 30000 == 0 )
+            this.storageManager.storeProject(this.projectManager.getActiveProject());       
+
     }
     
     updateNumber(){       

@@ -9,10 +9,14 @@ import { AppController} from "../app/index.js";
 
 export class Timer{    
     //A timer is assigned to each task, but this does not mean the timer starts when it is instantiated
-    constructor(timeInMiliseconds){
+    constructor(timeInMiliseconds, timeInMilisecondsOriginal = null){
         
-        this.original = timeInMiliseconds;
         this.duration = timeInMiliseconds;
+        
+        if(!timeInMilisecondsOriginal)
+            this.original = timeInMiliseconds;
+        else
+            this.original = timeInMilisecondsOriginal;
         //I need to dig about this issue deeper to understand why it works
         this.parseTime = this.parseTime.bind(this);
         this.running = false;

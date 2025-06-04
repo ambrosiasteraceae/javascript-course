@@ -80,9 +80,11 @@ export function attachEventListeners(app){
            console.log(activeTask);
         });
         
+        //for now we will cancel the switch project functinality.
         app.switchBtn.addEventListener("click", (event) =>  {
 
             const project = app.getActiveProject();
+            console.log(project);
             app.switch(project.id == 1? 0 : 1);
             });
         

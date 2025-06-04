@@ -4,11 +4,11 @@ import  {Timer,HALFHOUR, FIFTEEN} from "./timer.js"
 export class Project{
     static lastID = -1;
 
-    current;
-    #id;
+    // current;
+    // _id;
     constructor(name)
     {
-        this.#id = ++Project.lastID;
+        this._id = ++Project.lastID;
         this.name = name;
         this.tasks = new Map();
         this.ordering = [];
@@ -19,7 +19,7 @@ export class Project{
     }
 
 
-    get id () {return this.#id;}
+    get id () {return this._id;}
 
     switchTask(index){
         if (!index)
@@ -63,7 +63,7 @@ export class Project{
 
     listTasks(){
         for (let t of this.tasks.values())
-            t.print()
+            console.log(t);
     }
 
     generateExamples(num)
@@ -74,7 +74,7 @@ export class Project{
             // const pomodoros = Math.round(10*Math.random());
             const pomodoros = i+1;
             const taskConfig = {name, pomodoros};
-            const timer = new Timer(HALFHOUR);
+            const timer = new Timer(HALFHOUR-i*600000);
             const task = new Task(taskConfig, timer);
 
             this.addTask(task);

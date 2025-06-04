@@ -10,19 +10,32 @@ class Tuple extends Array{
     }
 }
  export class Task {
+
+    static clone(jsonObj, timer, cloned = true){
+        const task = new Task(jsonObj, timer, cloned);
+        task._key = jsonObj._key
+        task._current = jsonObj._current;   
+        task.isActive = jsonObj.isActive;
+        task.isFinished = jsonObj.isFinished;        
+        task.timestamps = jsonObj.timestamps;
+        return task;
+    }
+
     static lastKey = -1;
     
     static printKey(){
         return Task.lastKey;
     }
     
-    #current;
-    #key;
+    // #current;
+    // #key;
 
-    constructor({name, pomodoros, notes =""}, timer)
+    constructor({name, pomodoros, notes =""}, timer, cloned = false)
     {
-        this.#key = ++Task.lastKey;
-        this.#current = 0;   
+        if(!cloned)
+            this._key = ++Task.lastKey;
+
+        this._current = 0;   
         this.name = name;
         this.pomodoros = pomodoros;
         this.notes = notes;        
@@ -49,7 +62,7 @@ class Tuple extends Array{
     }
 
     assignStartDate(){
-        this.timestamps[this.#current][0] = this.timer.startedAt;
+        this.timestamps[this._current][0] = this.timer.startedAt;
     }
 
     assignEndDate(){
@@ -57,7 +70,7 @@ class Tuple extends Array{
         // if(this.timer.finishedAt)
         //     console.warn("this timer does not have a finished date")
         // console.log(1);
-        this.timestamps[this.#current][1] = this.timer.finishedAt;
+        this.timestamps[this._current][1] = this.timer.finishedAt;
     }
 
     isPomodoroFinished(){
@@ -67,17 +80,17 @@ class Tuple extends Array{
 
 
     get key(){
-        return this.#key;
+        return this._key;
     }
 
-    get current() { return this.#current}
+    get current() { return this._current}
 
     increment(){
 
         if (this.isFinished)
         {
             
-            console.log(`Cannot add more it is full, ${this.#current}:${this.pomodoros}`)
+            console.log(`Cannot add more it is full, ${this._current}:${this.pomodoros}`)
             return
         }
         
@@ -90,8 +103,8 @@ class Tuple extends Array{
         
         console.log("Incrementing Task since time is finished")
         console.log(this);
-        ++this.#current;
-        if(this.#current >= this.pomodoros)
+        ++this._current;
+        if(this._current >= this.pomodoros)
             this.isFinished = true; 
 
     }
@@ -105,10 +118,10 @@ class Tuple extends Array{
         */
         const change = this.pomodoros + val;
         console.log(change)
-        console.log(this.#current)
+        console.log(this._current)
         
         //you should not be able to substract below the current task number;
-        if (change >= this.#current) 
+        if (change >= this._current) 
         {
 
             this.pomodoros = change;
@@ -118,9 +131,9 @@ class Tuple extends Array{
                 this.timestamps = this.timestamps.concat(tArray);
             }
             else
-                this.timestamps = this.timestamps.toSpliced(this.#current+1, -val);
+                this.timestamps = this.timestamps.toSpliced(this._current+1, -val);
 
-            if (this.pomodoros == this.#current)
+            if (this.pomodoros == this._current)
                 this.isFinished = true;
             else
                 this.isFinished = false;    
@@ -130,8 +143,11 @@ class Tuple extends Array{
         
     };   
 
-    print(){
-        console.log(`#${this.#key}:${this.name} ${this.#current}/${this.pomodoros} Active:${this.isActive} Finished:${this.isFinished}, Time:${this.timer.getTime()}`)        
+    clone(){
+        
+        const myobj = Object.entries(this);
+        // myobj[]
+        console.log();
     }
 
 }

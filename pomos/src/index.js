@@ -1,31 +1,39 @@
 import "./styles.css";
-// import {Task} from "./models/task.js";
-// import {Project} from "./models/project.js";
-// import Timer, {HALFHOUR, FIFTEEN,FIVE} from "./timer.js"
-// import  {AppController, DisplayManager,  ProjectManager} from "./app/display.js";
 
 import {Task, Project, Timer} from "./models/index.js";
-import {AppController} from "./app/index.js";
+import {AppController, load} from "./app/index.js";
 
-const foo = new Project("foo");
-const bar = new Project("bar");
-foo.generateExamples(3);
-bar.generateExamples(3);
+console.log(Object.keys(localStorage).length == 0)
+    
+console.log("Storage is :", Object.keys(localStorage).length == 0 ? "empty" : "populated")
 
+function hasLocalStorage () {
+    return Object.keys(localStorage).length == 0
+}
+
+function populate(app){
+    
+    const work = new Project("Project X");
+    const top = new Project("Web Development Journey");
+    // work.generateExamples(3);
+    top.generateExamples(3);
+    app.projectManager.addProject(top);
+    // app.projectManager.addProject(work);
+    // return app
+}
+// localStorage.clear();
 const app = new AppController();
-// app.attachEventListeners();
-
-
-app.projectManager.addProject(foo);
-app.projectManager.addProject(bar);
-
-
-const title = document.querySelector("title");
-console.log(title)
-console.log(title.textContent)
-title.textContent = "nothying";
+if(Object.keys(localStorage).length != 0)
+    load(app);
+else
+    populate(app);
 
 app.render();
-// app.displayManager.handleOpenSettings();
 
+// if(Object.keys(localStorage).length == 0 ? )
+
+// localStorage.clear();
+// const sm = new StorageManager();
+// const data = sm.save(app);
+// sm.load(app);
 
