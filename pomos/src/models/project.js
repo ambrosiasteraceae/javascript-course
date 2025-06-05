@@ -57,7 +57,13 @@ export class Project{
     }
 
     removeTask(taskIndex){
-        this.tasks.delete(taskIndex)
+        // console.log("after deletion")
+        // console.log(this.ordering);
+        const idx = this.ordering.indexOf(taskIndex);
+        this.ordering.splice(idx, 1);
+        this.tasks.delete(taskIndex);
+        // console.log("before deletion")
+        // console.log(this.ordering)
 
     }
 

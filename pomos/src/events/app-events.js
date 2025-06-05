@@ -43,6 +43,7 @@ export function attachEventListeners(app){
                 app.updateTask();
                 app.updateNumber();
                 app.toggleState(activeTask);
+                app.storageManager.storeProject(app.projectManager.getActiveProject());       
             }
         });
         
@@ -80,18 +81,19 @@ export function attachEventListeners(app){
            console.log(activeTask);
         });
         
-        //for now we will cancel the switch project functinality.
+        //for now we will disable the switch project functionality.
         app.switchBtn.addEventListener("click", (event) =>  {
-
+            
+            return
             const project = app.getActiveProject();
-            console.log(project);
             app.switch(project.id == 1? 0 : 1);
-            });
+          
+        });
         
         app.addBtn.addEventListener("click", (event) => {
             
-            const options = {name: "Pomo App", pomodoros:2};
-            const timer = new Timer(5000);
+            const options = {name: "Test", pomodoros:2};
+            const timer = new Timer(Timer.ALMOSTONEHOUR);
             const task  = new Task(options, timer);
             // console.log("New task is being created:")
             app.addTask(task);

@@ -39,6 +39,8 @@ export class FormManager{
         const editTask =  this.app.getActiveProject().getTask(this.taskEditKey)
         editTask.name = data.name;
         const delta = data.pomodoros - editTask.pomodoros;
+        console.log("delta is")
+        console.log(delta)
         editTask.addPomodoros(delta);
         editTask.notes = data.notes;
         console.log("Your are now in task edit mode")
@@ -53,20 +55,20 @@ export class FormManager{
         //This was the  major cause for the ordering bug.
         this.taskDiv.after(this.formDiv); 
         hide(this.formDiv);
-        // this.isOpen = false;
+        
         show(this.currentTaskElement.el);
         show(this.taskDiv);
         this.submitTaskBtn.textContent = "Add Task";
     }
 
     createFromForm(data){
-        const timers  = new Timer(15000);
+        const timers  = new Timer(Timer.ALMOSTONEHOUR);
         const task = new Task(data, timers);
         this.app.addTask(task);
-        // this.isOpen = false;
+        
         hide(this.formDiv);
         show(this.taskDiv);
-        // show(this.currentTaskElement.el);        
+        
     
     }
 
@@ -77,13 +79,14 @@ export class FormManager{
         if(this.editMode == true)
         {   
             this.editFromForm(data, this.app);
+            this.app.storageManager.storeProject(this.app.getActiveProject());
             return
         }
         this.createFromForm(data, this.app);
     }
 
     editTaskCallback(e) {
-        console.log("I was called");
+        // console.log("I was called");
         const child = e.target.parentNode;
         const parent = child.parentNode;
         

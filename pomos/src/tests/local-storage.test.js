@@ -30,7 +30,7 @@ describe("Local Storage Output", () => {
         expect(newTask.timestamps.length).toEqual(7);
         console.log(newTask)// newTask.timer.toggle();
         console.log(newTask.timer.running)
-        newTask.timer.toggle();
+        // newTask.timer.toggle();
         expect(newTask.timer.running).toBe(true);
         
     });

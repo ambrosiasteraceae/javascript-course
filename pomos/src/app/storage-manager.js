@@ -1,37 +1,34 @@
 import { Task, Timer, Project } from "../models";
-import { AppController } from "./app-controller";
+
 
 export function load(app){
-    console.log("load project was called")
-    console.log(Object.values(localStorage))
+
+    let max = 0;
     for (let loadedProj of Object.values(localStorage))
     {
         let parsed = JSON.parse(loadedProj);
-        console.log(parsed)
-        // // console.log("loadedProj is")
-        // console.log("this is what is parsed:")
-        // console.log(parsed)
-        let lproj = new Project(`${parsed.name}+load`);
-        lproj._id = Number(parsed._id);
-
-        // console.log("the retrun ordering is:")
-        // console.log(parsed.ordering);
+        let lproj = new Project(`${parsed.name}`);
         const tts = parsed.tasks;
-        for (let t of [...Object.values(tts)]) 
-            lproj.addTask(StorageManager.populateItem(t));
-        lproj.ordering = parsed.ordering;
+        lproj._id = Number(parsed._id);
         
-        // console.log(lproj)
+        for (let t of [...Object.values(tts)]) 
+        {
+            
+            if (t._key>max)
+                max = t._key
+            console.log(max);
+            lproj.addTask(StorageManager.populateItem(t));
+        }
+        lproj.ordering = parsed.ordering;
         app.projectManager.addProject(lproj);
-        // console.log(app);
     }
-    // return app 
+    Task.lastKey = max;
+
 }
 
 export class StorageManager{
 static  populateItem(jsonTask){
         
-        // const jsonTask = JSON.parse(jsonString);
         
         const ti = new Timer(jsonTask.timer.duration, jsonTask.timer.original)
         
@@ -44,9 +41,15 @@ static  populateItem(jsonTask){
 
     constructor(app){
         
-        // this.app = app;
         this.saveBtn = document.querySelector(".save");
         this.saveBtn.addEventListener("click", ()=>{this.save(app)});
+        this.clearBtn = document.querySelector(".clear");
+        this.clearBtn.addEventListener("click", ()=>{
+            
+            //Prevent user from clearing progress. Future me will say thanks.
+            return
+            localStorage.clear()
+        });
     }
 
 
@@ -58,12 +61,10 @@ static  populateItem(jsonTask){
     */
 
     removeItem(project){
-        localStorage.removeItem(project._id);
         this.storeProject(project)
     }
 
-    storeProject(project){
-        console.log("storeproject was called")
+    storeProject(project){       
         const proj = {};
         const tasks =  {};
         for(let [tKey, tValue] of project.tasks)
@@ -80,8 +81,10 @@ static  populateItem(jsonTask){
 
         const projects = [...app.projectManager.projects.values()];
         const data = {};
-        for (let project of projects)
+        for (let project of projects){
+            console.log(project);
             this.storeProject(project);
+        }
         console.log(localStorage);
     }
  

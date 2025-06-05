@@ -8,6 +8,8 @@ import { AppController} from "../app/index.js";
 */
 
 export class Timer{    
+
+    static ALMOSTONEHOUR = 50 * 60 * 1000;
     //A timer is assigned to each task, but this does not mean the timer starts when it is instantiated
     constructor(timeInMiliseconds, timeInMilisecondsOriginal = null){
         
@@ -27,6 +29,8 @@ export class Timer{
     }
 
     toggle(){
+        if(this.duration == 0)
+            this.refresh()
         this.running ? this.pause() : this.start();
         // console.log(`Time status:${this.running? "on" : "off"}`)
     }

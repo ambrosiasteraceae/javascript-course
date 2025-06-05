@@ -63,7 +63,7 @@ export class AppController{
 
     switch(key){
         //idk if it works for 1 project and what happens when a switch is pressed. lets eee
-        console.log("KEY IS:", key)
+
         const activeTask = this.getActiveTask();
         if (activeTask)
         {
@@ -72,6 +72,7 @@ export class AppController{
         }
         this.displayManager.getOrder(this.projectManager.getActiveProject());     
         this.projectManager.switchProject(key);
+        console.log(this.getActiveProject());
         const switchedTask = this.getActiveTask();
         if(switchedTask)
         {
@@ -128,6 +129,8 @@ export class AppController{
         
         this.displayManager.removeTaskElement(index);
         this.projectManager.removeTask(index);
+        console.log()
+        console.log(this.getActiveProject().ordering)
         this.storageManager.removeItem(this.getActiveProject());
     }
 
@@ -156,8 +159,9 @@ export class AppController{
         this.title.textContent = time;
         if (activeTask)            
             this.displayManager.updateTask(activeTask.key);
-        if(activeTask.timer % 30000 == 0 )
-            this.storageManager.storeProject(this.projectManager.getActiveProject());       
+
+        // if(activeTask.timer.duration % 300000 == 0 )
+        //     this.storageManager.storeProject(this.projectManager.getActiveProject());       
 
     }
     

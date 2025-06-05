@@ -37,7 +37,7 @@ class Tuple extends Array{
 
         this._current = 0;   
         this.name = name;
-        this.pomodoros = pomodoros;
+        this.pomodoros = Number(pomodoros);
         this.notes = notes;        
         this.isActive = false;
         this.isFinished = false;        
@@ -116,9 +116,8 @@ class Tuple extends Array{
         1. User adds more pomodoros after a task is finished say 5/5. When added, isFinished should be set to false
         2. User estimated more pomodoros than actual. He should be able to remove pomodoros and set task to finished.  
         */
+
         const change = this.pomodoros + val;
-        console.log(change)
-        console.log(this._current)
         
         //you should not be able to substract below the current task number;
         if (change >= this._current) 
