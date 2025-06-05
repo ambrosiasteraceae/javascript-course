@@ -64,7 +64,8 @@ static  populateItem(jsonTask){
         this.storeProject(project)
     }
 
-    storeProject(project){       
+    storeProject(project){     
+        console.log("local storage  updated")  
         const proj = {};
         const tasks =  {};
         for(let [tKey, tValue] of project.tasks)

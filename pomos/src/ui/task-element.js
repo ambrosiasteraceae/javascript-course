@@ -14,9 +14,7 @@ export class TaskElement extends BaseElement{
     }
     
     build(){
-        this.elements.taskId = new BaseElement("div");
-        this.elements.taskId.setText(this.task.key);
-        this.elements.taskId.addClass("id");
+  
 
 
         this.elements.taskActive = new RadioElement("input");
@@ -25,10 +23,14 @@ export class TaskElement extends BaseElement{
         this.elements.taskActive.addClass("radio");
         this.elements.taskActive.setChecked(this.task.isActive);
 
-        
+        this.elements.taskId = new BaseElement("div");
+        // this.elements.taskId.setText(this.task.key);
+        this.elements.taskId.addClass("id");
+
         this.elements.taskName = new BaseElement("div");
         this.elements.taskName.setText(this.task.name);
         this.elements.taskName.addClass("text");
+        this.elements.taskName.addClass("title");
 
 
         this.elements.taskStatus = new BaseElement("div");
@@ -36,14 +38,28 @@ export class TaskElement extends BaseElement{
         this.elements.taskStatus.addClass("text");
     
 
-        this.elements.taskSettings = new BaseElement("div");
-        this.elements.taskSettings.setText(":");
-        this.elements.taskSettings.addClass("settings");
+
 
         this.elements.taskTime = new BaseElement("div");
         this.elements.taskTime.setText(this.task.timer.getTime());
-
+        this.elements.taskTime.addClass("duration");
         
+        this.elements.delete = new BaseElement("div");
+        this.elements.delete.setText("")
+        this.elements.delete.addClass("delete")
+
+        this.elements.taskSettings = new BaseElement("div");
+        this.elements.taskSettings.setText("");
+        this.elements.taskSettings.addClass("settings");
+        // this.elements.taskSettings.addClass("icon");
+        
+      
+        
+        
+        
+     
+        // this.elements.delete.addClass("icon")
+
         Object.values(this.elements).forEach((taskEntry) => this.el.append(taskEntry.el));
 
         this.addAttribute("draggable", "true");

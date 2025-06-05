@@ -144,7 +144,9 @@ export class AppController{
     toggleState(activeTask){
 
         activeTask.timer.toggle();
-        this.startBtn.textContent = activeTask.timer.running? "Pause." : "Start.";
+        this.displayManager.toggleOnOff(activeTask.timer.running)
+        // this.startBtn.textContent = activeTask.timer.running? "Pause." : "Start.";
+
     }
 
     updateTime(){
@@ -160,8 +162,8 @@ export class AppController{
         if (activeTask)            
             this.displayManager.updateTask(activeTask.key);
 
-        // if(activeTask.timer.duration % 300000 == 0 )
-        //     this.storageManager.storeProject(this.projectManager.getActiveProject());       
+        if(activeTask.timer.duration % 60000 == 0 )
+            this.storageManager.storeProject(this.projectManager.getActiveProject());       
 
     }
     
@@ -172,5 +174,5 @@ export class AppController{
 
     updateTask(){
         let t = this.getActiveTask();
-        this.taskNameElement.textContent = `${t.name}${t.current}/${t.pomodoros}`;}
+        this.taskNameElement.textContent = `${t.name}`;}
     }

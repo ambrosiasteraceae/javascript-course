@@ -3,6 +3,9 @@ import {  bindDisplayEvents,
      attachDragOverEvent,
      removeDragOverEvent,
      handleDragState } from "../events/display-events.js";
+
+import { show, hide } from "../events/index.js";
+
 export class DisplayManager{
     constructor()
     {
@@ -15,6 +18,8 @@ export class DisplayManager{
     }
     initializeForm(){  
         this.displayBtn = document.querySelector(".display");
+        this.pauseIcon = document.querySelector(".pause.icon")
+        this.playIcon = document.querySelector(".play.icon")
         bindDisplayEvents(this);
     }
 
@@ -91,6 +96,21 @@ export class DisplayManager{
         this.taskElements.clear();
         this.activeProject = null;
         this.container.innerHTML = "";
+    }
+
+
+    toggleOnOff(running){
+        if(running)
+            {
+                show(this.pauseIcon)
+                hide(this.playIcon)
+            }  
+            else{
+            hide(this.pauseIcon);
+            show(this.playIcon);
+        }
+                
+
     }
 
 }

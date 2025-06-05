@@ -10,32 +10,40 @@
     <div class="header">
         <div class="logo">Logo</div>
         <div class="report">Report</div>
-        <div class="settings">Settings</div>
+        <div class="">Settings</div>
     </div>
     <div class="timer">
         <div class="container">
-            <div class="pomodoros">
-                <div class="pomodoro">Pomodoro</div>
-                <div class="short-break">short-break</div>
-                <div class="long-break">Long Break</div>
-            </div>
             <div class="time">
-                    <div class="timing">00:00</div>
-                    <div class = "group actives">
-                        <div class="active name">Pomos 0/n</div>
-                        <div class="active number">#</div>
-                    </div>
-                    <button class="start">Start</button>
-                    <button class="reset">Reset</button>
-                    <button class="logtask">logtask</button>
-                    <button class="switch">SwitchProject</button>
-                    <button class="display">Display</button>
-                    <button class="add">AddTask</button>
-                    <button class="remove">RemoveTask</button>
-                    <button class="save">SaveToLocal</button>
-                    <button class="clear">ClearStorage</button>
-            </div>
-            <div class="pause"></div>
+                <div class="timing">00:00</div>
+                <div class="active name">Pomos 0/n</div>
+                <div class="active number">#</div>
+                <div>
+                                    <button class="start">
+                <svg class = "play icon" width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M7.5 4.59863L18.6021 12L7.5 19.4014V4.59863ZM9 7.40141V16.5986L15.8979 12L9 7.40141Z" fill="black"/>
+                </svg>
+                <svg class ="pause icon hidden" width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="24" height="24" fill="white"/>
+<path d="M8.5 18H9.5C10.0523 18 10.5 17.5523 10.5 17V7C10.5 6.44772 10.0523 6 9.5 6H8.5C7.94772 6 7.5 6.44772 7.5 7V17C7.5 17.5523 7.94772 18 8.5 18Z" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14.5 18H15.5C16.0523 18 16.5 17.5523 16.5 17V7C16.5 6.44772 16.0523 6 15.5 6H14.5C13.9477 6 13.5 6.44772 13.5 7V17C13.5 17.5523 13.9477 18 14.5 18Z" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+            </button>
+                <button class="reset">
+            <svg class = "refresh icon " width="19px" height="19px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 3V8M3 8H8M3 8L6 5.29168C7.59227 3.86656 9.69494 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.71683 21 4.13247 18.008 3.22302 14" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></button>
+                </div>
+            </div>        
+        </div>
+        <div class ="utility buttons">
+            <button class="logtask">logtask</button>
+            <button class="switch">SwitchProject</button>
+            <button class="display">Display</button>
+            <button class="add">AddTask</button>
+            <button class="remove">RemoveTask</button>
+            <button class="save">SaveToLocal</button>
+            <button class="clear">ClearStorage</button>
         </div>
         <div class="spacer"></div>    
     </div>
