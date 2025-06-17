@@ -1,95 +1,87 @@
 import { BaseElement } from "./base-element.js";
 import { RadioElement } from "./radio-element.js";
 
-export class TaskElement extends BaseElement{  
-    constructor(task){
-        
-        super("div");
-        this.task = task;
-        this.el.dataset.key = task.key;
-        this.elements = {};
-        this.build();
-        this.attached = false;
-        this.isEdited = false;
-    }
-    
-    build(){
-  
+export class TaskElement extends BaseElement {
+  constructor(task) {
+    super("div");
+    this.task = task;
+    this.el.dataset.key = task.key;
+    this.elements = {};
+    this.build();
+    this.attached = false;
+    this.isEdited = false;
+  }
 
+  build() {
+    this.elements.taskActive = new RadioElement("input");
+    this.elements.taskActive.addName("task");
+    this.elements.taskActive.addClass("disabled");
+    this.elements.taskActive.addClass("radio");
+    this.elements.taskActive.setChecked(this.task.isActive);
 
-        this.elements.taskActive = new RadioElement("input");
-        this.elements.taskActive.addName("task");
-        this.elements.taskActive.addClass("disabled");
-        this.elements.taskActive.addClass("radio");
-        this.elements.taskActive.setChecked(this.task.isActive);
+    this.elements.taskId = new BaseElement("div");
+    // this.elements.taskId.setText(this.task.key);
+    this.elements.taskId.addClass("id");
 
-        this.elements.taskId = new BaseElement("div");
-        // this.elements.taskId.setText(this.task.key);
-        this.elements.taskId.addClass("id");
+    this.elements.taskName = new BaseElement("div");
+    this.elements.taskName.setText(this.task.name);
+    this.elements.taskName.addClass("text");
+    this.elements.taskName.addClass("title");
 
-        this.elements.taskName = new BaseElement("div");
-        this.elements.taskName.setText(this.task.name);
-        this.elements.taskName.addClass("text");
-        this.elements.taskName.addClass("title");
+    this.elements.taskStatus = new BaseElement("div");
+    this.elements.taskStatus.setText(
+      `${this.task.current}/${this.task.pomodoros}`,
+    );
+    this.elements.taskStatus.addClass("text");
 
+    this.elements.taskTime = new BaseElement("div");
+    this.elements.taskTime.setText(this.task.timer.getTime());
+    this.elements.taskTime.addClass("duration");
 
-        this.elements.taskStatus = new BaseElement("div");
-        this.elements.taskStatus.setText(`${this.task.current}/${this.task.pomodoros}`)
-        this.elements.taskStatus.addClass("text");
-    
+    this.elements.delete = new BaseElement("div");
+    this.elements.delete.setText("");
+    this.elements.delete.addClass("delete");
+    // this.elements.delete.el.backgroundImage =
 
+    this.elements.taskSettings = new BaseElement("div");
+    this.elements.taskSettings.setText("");
+    this.elements.taskSettings.addClass("settings");
+    // this.elements.taskSettings.addClass("icon");
 
+    // this.elements.delete.addClass("icon")
 
-        this.elements.taskTime = new BaseElement("div");
-        this.elements.taskTime.setText(this.task.timer.getTime());
-        this.elements.taskTime.addClass("duration");
-        
-        this.elements.delete = new BaseElement("div");
-        this.elements.delete.setText("")
-        this.elements.delete.addClass("delete")
+    Object.values(this.elements).forEach((taskEntry) =>
+      this.el.append(taskEntry.el),
+    );
 
-        this.elements.taskSettings = new BaseElement("div");
-        this.elements.taskSettings.setText("");
-        this.elements.taskSettings.addClass("settings");
-        // this.elements.taskSettings.addClass("icon");
-        
-      
-        
-        
-        
-     
-        // this.elements.delete.addClass("icon")
+    this.addAttribute("draggable", "true");
+    this.addClass("task");
+    this.addClass("draggable");
+  }
 
-        Object.values(this.elements).forEach((taskEntry) => this.el.append(taskEntry.el));
+  getTaskEntries() {
+    return this.elements();
+  }
 
-        this.addAttribute("draggable", "true");
-        this.addClass("task");
-        this.addClass("draggable");
-    }
+  update() {
+    this.elements.taskStatus.setText(
+      `${this.task.current}/${this.task.pomodoros}`,
+    );
+    this.elements.taskName.setText(this.task.name);
+    this.elements.taskStatus.setText(
+      `${this.task.current}/${this.task.pomodoros}`,
+    );
+    this.elements.taskTime.setText(this.task.timer.getTime());
+  }
 
-    getTaskEntries(){
-        return this.elements();
-    }
+  setActive() {
+    this.elements.taskActive.activate(this.task.isActive || false); //we might not even need it;
 
-    update(){
-        
-        this.elements.taskStatus.setText(`${this.task.current}/${this.task.pomodoros}`)
-        this.elements.taskName.setText(this.task.name);
-        this.elements.taskStatus.setText(`${this.task.current}/${this.task.pomodoros}`)
-        this.elements.taskTime.setText(this.task.timer.getTime());
-    }
+    if (this.classList.includes("active")) this.remove("active");
+    else this.addClass("active");
+  }
 
-    setActive(){
-        
-        this.elements.taskActive.activate(this.task.isActive || false); //we might not even need it;
-
-        if(this.classList.includes("active"))
-            this.remove("active")
-        else
-            this.addClass("active")
-    }
-
-    destroy(){
-        this.el.remove();
-        }
+  destroy() {
+    this.el.remove();
+  }
 }

@@ -1,6 +1,6 @@
 node_modules
 dist
-assets
+futures
 src/tests.js
 src/thoughts.md
 draggable

@@ -1,62 +1,62 @@
 import { show, hide } from "./index.js";
 
-
-export function bindDisplayEvents(dm){
-  
-    dm.displayBtn.addEventListener("click",() =>{dm.updateAll();})
+export function bindDisplayEvents(dm) {
+  dm.displayBtn.addEventListener("click", () => {
+    dm.updateAll();
+  });
 }
 
+function dragOver(dm, e, project) {
+  e.preventDefault();
+  const afterElement = getDragAfterElement(dm, e.clientY);
+  const draggable = document.querySelector(".dragging");
+  if (afterElement == null) dm.container.append(draggable);
+  else dm.container.insertBefore(draggable, afterElement);
+}
 
-function dragOver(dm, e, project){
-        e.preventDefault();
-            const afterElement = getDragAfterElement(dm, e.clientY);
-            const draggable = document.querySelector(".dragging");
-            if(afterElement == null)
-                dm.container.append(draggable);
-            else        
-                dm.container.insertBefore(draggable, afterElement);
-    }
+function getDragAfterElement(dm, y) {
+  const draggableElements = [
+    ...dm.container.el.querySelectorAll(".draggable:not(.dragging)"),
+  ];
+  return draggableElements.reduce(
+    (closest, child) => {
+      const box = child.getBoundingClientRect();
+      const offset = y - box.top - box.height / 2;
 
-function  getDragAfterElement(dm, y)  {
-    const draggableElements = [...dm.container.el.querySelectorAll(".draggable:not(.dragging)")];
-    return draggableElements.reduce((closest, child) =>{
-        const box = child.getBoundingClientRect();        
-        const offset = y - box.top - box.height/2;
+      if (offset < 0 && offset > closest.offset)
+        return { offset: offset, element: child };
+      else {
+        return closest;
+      }
+    },
+    { offset: Number.NEGATIVE_INFINITY },
+  ).element;
+}
 
-        if(offset < 0 && offset> closest.offset)
-            return  {offset:offset, element:child}
-        else{
-            return closest
-        }
-    }, {offset: Number.NEGATIVE_INFINITY}).element}
+export function attachDragOverEvent(dm, project) {
+  dm.attached = true;
+  dm.container.addEventListener("dragover", (e) => dragOver(dm, e, project));
+}
 
+export function removeDragOverEvent(dm) {
+  dm.attached = false;
+  dm.container.removeEventListener("dragover", dragOver);
+  console.log("Removeing");
+}
 
-export function attachDragOverEvent(dm, project){
-        
-        dm.attached = true;
-        dm.container.addEventListener("dragover", (e) => dragOver(dm, e, project)) ;
-    }
+export function handleDragState(taskElement) {
+  //Set flag to true so we will no longer attach listeners
+  if (taskElement.attached) return;
 
-export function removeDragOverEvent(dm){
-        dm.attached = false;
-        dm.container.removeEventListener("dragover", dragOver);
-        console.log("Removeing")
-    }
+  taskElement.attached = true;
 
-export function handleDragState(taskElement){  
-        //Set flag to true so we will no longer attach listeners
-        if (taskElement.attached)
-            return    
-        
-        taskElement.attached = true;
+  taskElement.addEventListener("dragstart", () => {
+    //console.log("drag start");
+    taskElement.addClass("dragging");
+  });
 
-        taskElement.addEventListener("dragstart", () => {   
-            //console.log("drag start");
-            taskElement.addClass("dragging");
-        });
-
-        taskElement.addEventListener("dragend", () => {
-            //console.log("dragend");
-            taskElement.removeClass("dragging");
-        });
-    }
+  taskElement.addEventListener("dragend", () => {
+    //console.log("dragend");
+    taskElement.removeClass("dragging");
+  });
+}

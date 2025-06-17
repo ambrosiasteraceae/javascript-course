@@ -1,178 +1,162 @@
-
 import { StorageManager } from "./storage-manager.js";
-import {DisplayManager} from "./display-manager.js";
-import {ProjectManager} from "./project-manager.js";
-import {FormManager} from "../forms/form-manager.js";
+import { DisplayManager } from "./display-manager.js";
+import { ProjectManager } from "./project-manager.js";
+import { FormManager } from "../forms/form-manager.js";
 import {
-    addRadioClickEvent,
-    addRadioClickEvents,
-    attachEventListeners, 
-     } from "../events";
+  addRadioClickEvent,
+  addRadioClickEvents,
+  attachEventListeners,
+} from "../events";
 
 const onSecondTick = new Event("timechange");
 const onRefreshUpdate = new Event("onrefresh");
 
+export class AppController {
+  static timeElement = document.querySelector(".timing");
+  static adjustTime() {
+    AppController.timeElement.dispatchEvent(onSecondTick);
+  }
+  static refreshTime() {
+    AppController.timeElement.dispatchEvent(onRefreshUpdate);
+  }
 
-export class AppController{
+  constructor() {
+    this.displayManager = new DisplayManager();
+    this.projectManager = new ProjectManager();
+    this.formManager = new FormManager(this);
+    this.storageManager = new StorageManager(this);
 
+    this.init();
+    attachEventListeners(this);
+  }
 
-    static timeElement = document.querySelector(".timing");
-    static adjustTime(){AppController.timeElement.dispatchEvent(onSecondTick);}
-    static refreshTime(){AppController.timeElement.dispatchEvent(onRefreshUpdate);}
-    
-    constructor(){
-        this.displayManager = new DisplayManager(); 
-        this.projectManager = new ProjectManager();
-        this.formManager = new FormManager(this);
-        this.storageManager = new StorageManager(this);
+  init() {
+    this.timeElement = document.querySelector(".timing");
+    this.taskNameElement = document.querySelector(".name");
+    this.taskNumberElement = document.querySelector(".number");
+    this.startBtn = document.querySelector(".start");
+    this.resetBtn = document.querySelector(".reset");
+    this.logBtn = document.querySelector(".logtask");
+    this.switchBtn = document.querySelector(".switch");
+    this.addBtn = document.querySelector(".add");
+    this.removeBtn = document.querySelector(".remove");
+    this.saveBtn = document.querySelector(".save");
+    this.title = document.querySelector("title");
+  }
 
-        this.init();
-        attachEventListeners(this);
+  editTask(editTask) {
+    //cure
+    console.log("Hey@as I ever called?");
+
+    this.projectManager.getActiveProject().tasks[editTask.key] = editTask;
+    const taskElement = this.displayManager.getTaskElement(editTask.key);
+    taskElement.task = editTask;
+    taskElement.update();
+  }
+
+  getTaskElement(key) {
+    return this.displayManager.taskElements.get(key);
+  }
+
+  switch(key) {
+    //idk if it works for 1 project and what happens when a switch is pressed. lets eee
+
+    const activeTask = this.getActiveTask();
+    if (activeTask) {
+      if (activeTask.timer.running) this.toggleState(activeTask);
+    }
+    this.displayManager.getOrder(this.projectManager.getActiveProject());
+    this.projectManager.switchProject(key);
+    console.log(this.getActiveProject());
+    const switchedTask = this.getActiveTask();
+    if (switchedTask) {
+      this.updateTask();
+      this.updateTime();
+    } else {
+      this.timeElement.textContent = "00:00";
+      this.taskNameElement.textContent = "No Task Selected";
     }
 
-    init(){
+    this.render();
+  }
 
-        this.timeElement = document.querySelector(".timing");
-        this.taskNameElement = document.querySelector(".name");
-        this.taskNumberElement = document.querySelector(".number");
-        this.startBtn = document.querySelector(".start");
-        this.resetBtn = document.querySelector(".reset");
-        this.logBtn = document.querySelector(".logtask");
-        this.switchBtn = document.querySelector(".switch"); 
-        this.addBtn = document.querySelector(".add");
-        this.removeBtn = document.querySelector(".remove");
-        this.saveBtn = document.querySelector(".save")
-        this.title = document.querySelector("title");
+  addTask(task) {
+    this.projectManager.getActiveProject().addTask(task);
+    this.displayManager.createTaskElement(task);
+    const taskElement = this.getTaskElement(task.key);
+
+    this.displayManager.renderTask(taskElement);
+    console.log(taskElement);
+    this.formManager.handleTaskEdit(taskElement.elements.taskSettings);
+    addRadioClickEvent(this, taskElement);
+    this.storageManager.storeProject(this.projectManager.getActiveProject());
+  }
+
+  fillTemplates(numTasks) {
+    this.projectManager.getActiveProject().generateExamples();
+  }
+
+  getActiveTask() {
+    const task = this.projectManager.getActiveProject()?.getActiveTask();
+    // console.log(task);
+    if (task == undefined) {
+      // console.warn("No active task");
+      return;
     }
+    return task;
+  }
 
-    editTask(editTask){
-        //cure
-        console.log("Hey@as I ever called?")
-        
-        this.projectManager.getActiveProject().tasks[editTask.key] = editTask;
-        const taskElement = this.displayManager.getTaskElement(editTask.key);
-        taskElement.task = editTask;
-        taskElement.update();
+  getActiveProject() {
+    return this.projectManager.getActiveProject();
+  }
 
- 
-    }   
+  addProject(projectName) {
+    this.projectManager.addProject(projectName);
+    this.displayManager.render(this.projectManager.getActiveProject());
+  }
 
-    getTaskElement(key){
-        return this.displayManager.taskElements.get(key);
-    }
+  deleteTask(index) {
+    this.displayManager.removeTaskElement(index);
+    this.projectManager.removeTask(index);
+    console.log();
+    console.log(this.getActiveProject().ordering);
+    this.storageManager.removeItem(this.getActiveProject());
+  }
 
-    switch(key){
-        //idk if it works for 1 project and what happens when a switch is pressed. lets eee
+  render() {
+    this.displayManager.render(this.projectManager.getActiveProject());
+    addRadioClickEvents(this);
+    this.formManager.handleTaskEditAll();
+  }
 
-        const activeTask = this.getActiveTask();
-        if (activeTask)
-        {
-            if (activeTask.timer.running)
-                this.toggleState(activeTask);
-        }
-        this.displayManager.getOrder(this.projectManager.getActiveProject());     
-        this.projectManager.switchProject(key);
-        console.log(this.getActiveProject());
-        const switchedTask = this.getActiveTask();
-        if(switchedTask)
-        {
-            this.updateTask();
-            this.updateTime();
-        }
-        else
-        {
-            this.timeElement.textContent = "00:00";
-            this.taskNameElement.textContent = "No Task Selected";
-        }
-        
-        this.render();
-        
-    }
-    
-    addTask(task){
-        this.projectManager.getActiveProject().addTask(task)
-        this.displayManager.createTaskElement(task);
-        const taskElement = this.getTaskElement(task.key);
-        
-        this.displayManager.renderTask(taskElement);        
-        console.log(taskElement);
-        this.formManager.handleTaskEdit(taskElement.elements.taskSettings);
-        addRadioClickEvent(this, taskElement); 
-        this.storageManager.storeProject(this.projectManager.getActiveProject());       
-    }
+  toggleState(activeTask) {
+    activeTask.timer.toggle();
+    this.displayManager.toggleOnOff(activeTask.timer.running);
+    // this.startBtn.textContent = activeTask.timer.running? "Pause." : "Start.";
+  }
 
-    fillTemplates(numTasks){
-        this.projectManager.getActiveProject().generateExamples();
-    }
-    
-    getActiveTask(){
-        const task = this.projectManager.getActiveProject()?.getActiveTask();
-        // console.log(task);
-        if (task == undefined) {
-            // console.warn("No active task");
-            return;
-        }  
-        return task;
-    }
+  updateTime() {
+    //Updates the local storage every minute.
+    //Should add a project id to a task so it would be easier....
+    const activeTask = this.getActiveTask();
+    // console.log(activeTask);
+    let time = activeTask.timer.getTime();
 
-    getActiveProject(){
-        return this.projectManager.getActiveProject();
-    }
-    
-    addProject(projectName){
-        
-        this.projectManager.addProject(projectName);
-        this.displayManager.render(this.projectManager.getActiveProject());
-    }
-    
-    deleteTask(index){
-        
-        this.displayManager.removeTaskElement(index);
-        this.projectManager.removeTask(index);
-        console.log()
-        console.log(this.getActiveProject().ordering)
-        this.storageManager.removeItem(this.getActiveProject());
-    }
+    this.timeElement.textContent = time;
+    this.title.textContent = time;
+    if (activeTask) this.displayManager.updateTask(activeTask.key);
 
-    render(){
+    if (activeTask.timer.duration % 60000 == 0)
+      this.storageManager.storeProject(this.projectManager.getActiveProject());
+  }
 
-        this.displayManager.render(this.projectManager.getActiveProject());
-        addRadioClickEvents(this);
-        this.formManager.handleTaskEditAll(); 
-    }
+  updateNumber() {
+    //Task is always current and starts from 0. We show user the task number he is working towards
+    this.taskNumberElement.textContent = `#${this.getActiveTask().current + 1}`;
+  }
 
-    toggleState(activeTask){
-
-        activeTask.timer.toggle();
-        this.displayManager.toggleOnOff(activeTask.timer.running)
-        // this.startBtn.textContent = activeTask.timer.running? "Pause." : "Start.";
-
-    }
-
-    updateTime(){
-        
-        //Updates the local storage every minute.
-        //Should add a project id to a task so it would be easier....
-        const activeTask = this.getActiveTask();
-        // console.log(activeTask);
-        let time = activeTask.timer.getTime();
-        
-        this.timeElement.textContent = time;
-        this.title.textContent = time;
-        if (activeTask)            
-            this.displayManager.updateTask(activeTask.key);
-
-        if(activeTask.timer.duration % 60000 == 0 )
-            this.storageManager.storeProject(this.projectManager.getActiveProject());       
-
-    }
-    
-    updateNumber(){       
-        //Task is always current and starts from 0. We show user the task number he is working towards
-        this.taskNumberElement.textContent = `#${this.getActiveTask().current + 1}`;
-    }
-
-    updateTask(){
-        let t = this.getActiveTask();
-        this.taskNameElement.textContent = `${t.name}`;}
-    }
+  updateTask() {
+    let t = this.getActiveTask();
+    this.taskNameElement.textContent = `${t.name}`;
+  }
+}

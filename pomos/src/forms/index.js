@@ -1,1 +1,1 @@
-export {FormManager} from "./form-manager"
+export { FormManager } from "./form-manager";
