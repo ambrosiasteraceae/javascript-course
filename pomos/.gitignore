@@ -1,5 +1,4 @@
 node_modules
-dist
 futures
 src/tests.js
 src/thoughts.md
