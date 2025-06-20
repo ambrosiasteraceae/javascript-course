@@ -40,6 +40,8 @@ function show(){
 function hide(){
     navigation.children[currentIndex].classList.remove("active");
 }
+
+
 img.className = "slide";
 img.src = images[currentIndex];
 
@@ -48,40 +50,23 @@ div.appendChild(img);
 
 
 function arrowMove(orientation){
-
-    if(orientation < 0)
-    {
-        if (currentIndex == 0)
-            currentIndex = images.length - 1;          
-        else
-            currentIndex -=1;
-    }
-    else{
-
-        if(currentIndex == images.length - 1)
-            currentIndex = 0;
-        else 
-            currentIndex +=1;
-    }
-
-    return currentIndex
+    hide()
+    const total = images.length;
+    currentIndex  = (orientation + currentIndex + total) % total;
+    show()
+    img.src = images[currentIndex];
 }
 
 
 left.addEventListener("click",()=>{
-    hide()
-    const active = arrowMove(-1);
-    img.src = images[active];
-    show()
+    arrowMove(-1);
 })
 
 right.addEventListener("click",  ()=>{
-    hide()
-    const active = arrowMove(1);
-    img.src = images[active];
-    show()
+    arrowMove(1);
 })
 
 
 
+setInterval(()=>arrowMove(1), 5000);
 
