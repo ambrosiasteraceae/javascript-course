@@ -3,11 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style src="styles.css"></style>
+    <title>WeatherApp</title>
+ <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div>Hi</div>
+
+    <form action="" method="POST">
+        <input type="text" placeholder="Enter a city here" name = "city" id = "city">
+        <button type="submit">Search</button>
+    </form>
+    <div class="data">
+        <div class="address">Universe</div>
+        <table>
+            <caption>
+                Weather App Data
+            </caption>
+            <thead>
+                <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Max Temp</th>
+                <th scope="col">Min Temp</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+
+    </div>
 <script src="index.js"></script>   
 </body>
 </html>
