@@ -1,7 +1,7 @@
-input = [3, 2, 1, 13, 8, 5, 0, 1]
+// input = [3, 2, 1, 13, 8, 5, 0, 1]
 // output = [0, 1, 1, 2, 3, 5, 8, 13]
 
-function mergeSort(array){
+export function mergeSort(array){
 
     //base case
     if (array.length == 1)
@@ -53,4 +53,4 @@ function merge(left, right){
 }
 // merge([3], [21])sdas
 
-console.log(mergeSort([3, 2, 1, 13, 8, 5, 0, 1]))
+// console.log(mergeSort([3, 2, 1, 13, 8, 5, 0, 1]))

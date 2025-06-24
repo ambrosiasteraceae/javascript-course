@@ -1,10 +1,5 @@
-class Node{
- constructor(value){
-   this.value = value;
-   this.left = null;
-   this.right = null;
-  }
-}
+import { prettyPrint } from "./index.js";
+import { Node } from "./index.js";
 
 
 class BinarySearchTree{
@@ -57,22 +52,10 @@ class BinarySearchTree{
 }
 }
 
-const tree = new Tree([2, -1, 1,0,3,4,-7, 8,5, 6, -2,  ])
+const tree = new BinarySearchTree([2, -1, 1,0,3,4,-7, 8,5, 6, -2,  ])
 // console.log("Root node is:", tree)
 // tree.print()
 
-const prettyPrint = (node, prefix = '', isLeft = true) => {
-  if (node === null) {
-    return;
-  }
-  if (node.right !== null) {
-    prettyPrint(node.right, `${prefix}${isLeft ? '│   ' : '    '}`, false);
-  }
-  console.log(`${prefix}${isLeft ? '└── ' : '┌── '}${node.value}`);
-  if (node.left !== null) {
-    prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
-  }
-};
 
 prettyPrint(tree.root)
 
@@ -89,4 +72,4 @@ prettyPrint(tree.root)
 - how do you ensure the recursion navigation?
 - how do we ensure we always recurse from the rootNode everytime a new index from numberList is being read?
 -
-*/2
+*/

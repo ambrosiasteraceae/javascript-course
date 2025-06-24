@@ -1,1 +1,1 @@
-export {mergeSort} from "./merge-sort"
+export {mergeSort} from "./merge-sort.js"
