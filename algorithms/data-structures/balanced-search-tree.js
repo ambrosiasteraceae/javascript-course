@@ -102,6 +102,7 @@ class BalancedSearchTree{
 
         
         const node = this.find(value);
+        console.log("thisdeleted node is:", node.value)
         const parent = this.getParent(value);
         if(node == -1)
             return 
@@ -127,12 +128,21 @@ class BalancedSearchTree{
                     parent.left = node.left  ? node.left : node.right
                 break;
             case 3:
-                throw new Error("Not Implemenetd")
+                const replacement = this.getMaxRight(node);
+                const replacementParent = this.getParent(replacement.value);
+                node.value = replacement.value;
+
+                if(replacement.value < replacementParent.value)
+                    replacementParent.left = null;
+                else
+                    replacementParent.right = null;
+
+                console.log("the replacement node is ", this.getMaxRight(node).value)
+
+                // throw new Error("Not Implemenetd")
                 
             }
 
-
-        
         
         //case3
         //a node with more than 1 child
@@ -140,6 +150,19 @@ class BalancedSearchTree{
         // -> traverse this tree for the one which is immediately higher
         // -> you do this by going firrst right and then traversing its left counterpart.
         // -> you move that value to be the one inside that tree
+    }
+
+    getMaxRight(node, idx = 0){
+        //doesn"t work for a node with two simple children....
+        
+        node = idx == 0 ? node.right : node
+        
+        if (node?.left)
+            return this.getMaxRight(node.left, ++idx)
+        return node
+//IMMEDIATELY TO THE RIGHT FOR A NODE WITH JUST A CHILD LEFT AND A CHILD RIGHT NO SUBSCVH
+
+
     }
 
 
@@ -153,7 +176,7 @@ class BalancedSearchTree{
     rebalance(){}
 }
 const input0 = [1,2,3,4,5,6,7]
-const input1 = [50, 30, 20, 40, 32, 34, 36, 70, 60 ,65, 80, 75, 85]
+const input1 = [50, 30, 20, 40, 32, 34,36, 70, 60 ,65, 80, 75, 85]
 const mm = new BalancedSearchTree(input1)
 
 
@@ -178,7 +201,7 @@ const mm = new BalancedSearchTree(input1)
 console.log(prettyPrint(mm.root))
 
 //DELETION case 1
-// console.log("Parent is: ", mm.getParent(70)?.value)
+// console.log  ("Parent is: ", mm.getParent(70)?.value)
 // mm.deleteItem(70)
 // mm.deleteItem(20)
 // mm.deleteItem(36)
@@ -193,15 +216,26 @@ console.log(prettyPrint(mm.root))
 // mm.deleteItem(85)
 // mm.deleteItem(65)
 
-mm.deleteItem(85)
+// mm.deleteItem(85)
+// // console.log(mm.getParent(75))
+// console.log("After Deletion")
+// console.log(prettyPrint(mm.root))
+
+mm.deleteItem(34)
+console.log("After Deletion")
+console.log(prettyPrint(mm.root))
+
+
+mm.deleteItem(75)
 // console.log(mm.getParent(75))
 console.log("After Deletion")
 console.log(prettyPrint(mm.root))
 
-mm.deleteItem(40)
-// console.log(mm.getParent(75))
-console.log("After Deletion")
-console.log(prettyPrint(mm.root))
+
+// mm.deleteItem(65)
+// // console.log(mm.getParent(75))
+// console.log("After Deletion")
+// console.log(prettyPrint(mm.root))
 // mm.insert(41)
 // mm.insert(42)
 // mm.insert(19)
