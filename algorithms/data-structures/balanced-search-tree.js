@@ -1,3 +1,4 @@
+
 import {Node, prettyPrint } from "./index.js";
 
 
@@ -13,6 +14,7 @@ class BalancedSearchTree{
         return sorted
     }
     buildTree(array, node = null,){
+        //TODO: we need a better method rather than slicing.
         
         let mid = Math.floor(array.length/2)
         let value = array[mid]
@@ -45,7 +47,6 @@ class BalancedSearchTree{
     }
 
     find(value, node = this.root){
-        //the problem with this is that it only checks left side only  
 
         //returns the node 
         if(!node)
@@ -59,25 +60,33 @@ class BalancedSearchTree{
         //search right
         else 
             return this.find(value, node.left)
-        // if all fails and we parsed all tree we return -1
+        
     }
 
     getParent(value, node = this.root){
-        if(!node)
-            return -1
-        // if(!node.left)
-        //     return this.getParent(value, node.right)
-        // if(!node.right)
-        //     return this.getParent(value, node.left)
-        console.log("Node left value with value", node.left.value, value)
-        if (value == node.left.value || value == node.right.value)
-            return node
-        if (node.left.value >= value)
-            return this.getParent(value, node.left)
-        else
-            return this.getParent(value, node.right)
+        //TODO: handle non node.value inputs. 
+
+        if(value == this.root.value)
+            return null
+
+        // if(!node)
+        //     return -1
         
-        // return this.getParent(child, node.left/node.right)
+        // console.log("Node left value with value", node.left.value, value)
+        // if (value == node.left.value || value == node.right.value)
+        //     return node
+        
+        if( value == node?.right?.value)
+            return node
+        if (value == node?.left?.value )
+            return node
+
+        if (node.value > value)
+            return this.getParent(value, node.left)
+        else if(node.value < value)
+            return this.getParent(value, node.right)
+        else
+            return -1
     }
     
     deleteItem(value){
@@ -91,35 +100,38 @@ class BalancedSearchTree{
         
         */
 
-        let expr;
+        
         const node = this.find(value);
-
+        const parent = this.getParent(value);
         if(node == -1)
             return 
 
-        if(node.left && node.right)
-            expr = 3
-        else if (node.left || node.right)
-            expr = 2
-        else
-            expr = 1
-        
-    
+        const expr = (!!node.left + !!node.right) + 1
+        console.log("Case is:" , expr)
         switch(expr){
-        case 1:
-            if(value < parent.value)
-                parent.left = null;
-            parent.right = null;
-            break;
-        }
+            case 1:
+                if(value < parent.value)
+                    parent.left = null;
+                else
+                    parent.right = null;
+                break;
+            //case2
+            //a node with 1 child -> make the child point to the deleted node parent
+            case 2:
+                //first check to see which  side of the parent node should we do.
+                
+                // we play on right side of parent
+                if(node.value > parent.value)
+                    parent.right = node.left ? node.left : node.right
+                else
+                    parent.left = node.left  ? node.left : node.right
+                break;
+            case 3:
+                throw new Error("Not Implemenetd")
+                
+            }
 
 
-        //case 1
-        //a leaf node -> nothing happens
-
-
-        //case2
-        //a node with 1 child -> make the child point to the deleted node parent
         
         
         //case3
@@ -163,9 +175,33 @@ const mm = new BalancedSearchTree(input1)
 
 // console.log(mm.find(20))
 // mm.deleteItem(20)
+console.log(prettyPrint(mm.root))
+
+//DELETION case 1
+// console.log("Parent is: ", mm.getParent(70)?.value)
+// mm.deleteItem(70)
+// mm.deleteItem(20)
+// mm.deleteItem(36)
+// mm.deleteItem(60)
+// console.log("****************")
+// mm.deleteItem(80)
 // console.log(prettyPrint(mm.root))
-console.log("Parent is: ", mm.getParent(30).value)
- 
+// console.log("****************")
+// mm.deleteItem(32)
+// mm.deleteItem(30)
+// mm.deleteItem(40)
+// mm.deleteItem(85)
+// mm.deleteItem(65)
+
+mm.deleteItem(85)
+// console.log(mm.getParent(75))
+console.log("After Deletion")
+console.log(prettyPrint(mm.root))
+
+mm.deleteItem(40)
+// console.log(mm.getParent(75))
+console.log("After Deletion")
+console.log(prettyPrint(mm.root))
 // mm.insert(41)
 // mm.insert(42)
 // mm.insert(19)
