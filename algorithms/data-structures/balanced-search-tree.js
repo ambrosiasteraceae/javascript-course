@@ -128,7 +128,7 @@ class BalancedSearchTree{
                     parent.left = node.left  ? node.left : node.right
                 break;
             case 3:
-                const replacement = this.getMaxRight(node);
+                const replacement = this.getMaxRight(node.right);
                 const replacementParent = this.getParent(replacement.value);
                 node.value = replacement.value;
 
@@ -137,7 +137,7 @@ class BalancedSearchTree{
                 else
                     replacementParent.right = null;
 
-                console.log("the replacement node is ", this.getMaxRight(node).value)
+                // console.log("the replacement node is ", this.getMaxRight(node.right).value)
 
                 // throw new Error("Not Implemenetd")
                 
@@ -152,14 +152,19 @@ class BalancedSearchTree{
         // -> you move that value to be the one inside that tree
     }
 
-    getMaxRight(node, idx = 0){
+    getMaxRight(node){
         //doesn"t work for a node with two simple children....
-        
-        node = idx == 0 ? node.right : node
-        
-        if (node?.left)
-            return this.getMaxRight(node.left, ++idx)
+        // console.log("we start with")
+        // console.log(node.value)
+        // node = idx == 0 ? node.right : node
+        // console.log("node?.left is ", node?.left == null, node, node.left, )
+        if (node?.left != null)
+            // console.log("1st return")
+            return this.getMaxRight(node.left)
         return node
+        
+        // console.log("2nd return")
+        
 //IMMEDIATELY TO THE RIGHT FOR A NODE WITH JUST A CHILD LEFT AND A CHILD RIGHT NO SUBSCVH
 
 
@@ -232,10 +237,26 @@ console.log("After Deletion")
 console.log(prettyPrint(mm.root))
 
 
-// mm.deleteItem(65)
-// // console.log(mm.getParent(75))
-// console.log("After Deletion")
-// console.log(prettyPrint(mm.root))
+mm.deleteItem(65)
+// console.log(mm.getParent(75))
+console.log("After Deletion")
+console.log(prettyPrint(mm.root))
+
+mm.deleteItem(36)
+// console.log(mm.getParent(75))
+console.log("After Deletion")
+console.log(prettyPrint(mm.root))
+
+mm.deleteItem(40)
+// console.log(mm.getParent(75))
+console.log("After Deletion")
+console.log(prettyPrint(mm.root))
+
+mm.deleteItem(50)
+// console.log(mm.getParent(75))
+console.log("After Deletion")
+console.log(prettyPrint(mm.root))
+
 // mm.insert(41)
 // mm.insert(42)
 // mm.insert(19)
