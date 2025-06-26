@@ -68,14 +68,6 @@ class BalancedSearchTree{
 
         if(value == this.root.value)
             return null
-
-        // if(!node)
-        //     return -1
-        
-        // console.log("Node left value with value", node.left.value, value)
-        // if (value == node.left.value || value == node.right.value)
-        //     return node
-        
         if( value == node?.right?.value)
             return node
         if (value == node?.left?.value )
@@ -90,16 +82,6 @@ class BalancedSearchTree{
     }
     
     deleteItem(value){
-
-        /*
-
-        -> find node
-        -> check for left/right and return 1-3 case;
-        -> get maximum of leftSubTrree fn();
-        -> get minimum of rrightSubTree fn();
-        
-        */
-
         
         const node = this.find(value);
         console.log("thisdeleted node is:", node.value)
@@ -136,42 +118,69 @@ class BalancedSearchTree{
                     replacementParent.left = null;
                 else
                     replacementParent.right = null;
-
-                // console.log("the replacement node is ", this.getMaxRight(node.right).value)
-
-                // throw new Error("Not Implemenetd")
-                
             }
-
-        
-        //case3
-        //a node with more than 1 child
-        // -> so find the node that you want to delete.
-        // -> traverse this tree for the one which is immediately higher
-        // -> you do this by going firrst right and then traversing its left counterpart.
-        // -> you move that value to be the one inside that tree
     }
 
     getMaxRight(node){
-        //doesn"t work for a node with two simple children....
-        // console.log("we start with")
-        // console.log(node.value)
-        // node = idx == 0 ? node.right : node
-        // console.log("node?.left is ", node?.left == null, node, node.left, )
-        if (node?.left != null)
-            // console.log("1st return")
+        if (node.left != null)
             return this.getMaxRight(node.left)
-        return node
-        
-        // console.log("2nd return")
-        
-//IMMEDIATELY TO THE RIGHT FOR A NODE WITH JUST A CHILD LEFT AND A CHILD RIGHT NO SUBSCVH
+        return node    
+        //IMMEDIATELY TO THE RIGHT FOR A NODE WITH JUST A CHILD LEFT AND A CHILD RIGHT NO SUBSCVH
 
 
     }
 
 
-    levelOrder(){}
+    levelOrder(node = this.root, depth = 0, current = 0){
+
+        /*
+        ┌── 85
+│       │   
+│   ┌── 75
+│   │   │   
+│   │   └── 65
+│   │      
+└── 50
+    │   ┌── 40
+    │   │   
+    └── 34
+        │  
+        └── 30
+            
+
+        pseudocode:
+            -> if we start, just push the root value
+            -> traverse root.left and root.right but dont go deeper
+            -> add the root.left, right values to the array. [root.left, root.right]
+            -> forEachItem in the array go node.left, node.right and add them to the array
+            -> 
+            ->
+            ->
+            ->
+            ->
+            ->
+        */
+        //root node
+        
+        if(depth == 0)
+            console.log(node.value)
+        
+        if(!node?.left)
+            return
+        this.levelOrder(node.left, depth)
+        this.levelOrder(node.right, depth)
+        
+        
+        
+        return this.levelOrder(node, ++depth)
+
+        
+        //if the tree has only one root node case. can also work when we reach a leaf node
+        if(node.left == null && node.right == null)
+            return nodesVisited
+        
+    }
+
     inOrder(){}
     preOrder(){}
     postOrder(){}
@@ -182,7 +191,7 @@ class BalancedSearchTree{
 }
 const input0 = [1,2,3,4,5,6,7]
 const input1 = [50, 30, 20, 40, 32, 34,36, 70, 60 ,65, 80, 75, 85]
-const mm = new BalancedSearchTree(input1)
+const mm = new BalancedSearchTree([50,34,30])
 
 
 /*
@@ -204,6 +213,7 @@ const mm = new BalancedSearchTree(input1)
 // console.log(mm.find(20))
 // mm.deleteItem(20)
 console.log(prettyPrint(mm.root))
+console.log("level order is: " , mm.levelOrder());
 
 //DELETION case 1
 // console.log  ("Parent is: ", mm.getParent(70)?.value)
@@ -226,36 +236,41 @@ console.log(prettyPrint(mm.root))
 // console.log("After Deletion")
 // console.log(prettyPrint(mm.root))
 
-mm.deleteItem(34)
-console.log("After Deletion")
-console.log(prettyPrint(mm.root))
+// mm.deleteItem(34)
+// console.log("After Deletion")
+// console.log(prettyPrint(mm.root))
 
 
-mm.deleteItem(75)
-// console.log(mm.getParent(75))
-console.log("After Deletion")
-console.log(prettyPrint(mm.root))
+// mm.deleteItem(75)
+// // console.log(mm.getParent(75))
+// console.log("After Deletion")
+// console.log(prettyPrint(mm.root))
 
 
-mm.deleteItem(65)
-// console.log(mm.getParent(75))
-console.log("After Deletion")
-console.log(prettyPrint(mm.root))
+// mm.deleteItem(65)
+// // console.log(mm.getParent(75))
+// console.log("After Deletion")
+// console.log(prettyPrint(mm.root))
 
-mm.deleteItem(36)
-// console.log(mm.getParent(75))
-console.log("After Deletion")
-console.log(prettyPrint(mm.root))
+// mm.deleteItem(36)
+// // console.log(mm.getParent(75))
+// console.log("After Deletion")
+// console.log(prettyPrint(mm.root))
 
-mm.deleteItem(40)
-// console.log(mm.getParent(75))
-console.log("After Deletion")
-console.log(prettyPrint(mm.root))
+// mm.deleteItem(40)
+// // console.log(mm.getParent(75))
+// console.log("After Deletion")
+// console.log(prettyPrint(mm.root))
 
-mm.deleteItem(50)
-// console.log(mm.getParent(75))
-console.log("After Deletion")
-console.log(prettyPrint(mm.root))
+// mm.deleteItem(50)
+// // console.log(mm.getParent(75))
+// console.log("After Deletion")
+// console.log(prettyPrint(mm.root))
+
+// mm.deleteItem(4)
+// // console.log(mm.getParent(75))
+// console.log("After Deletion")
+// console.log(prettyPrint(mm.root))
 
 // mm.insert(41)
 // mm.insert(42)
