@@ -152,28 +152,54 @@ class BalancedSearchTree{
         const traversal = []
 
         queue.enque(this.root)
-        
+
         while(queue.list.length != 0)
         {
-
-            const node = queue.deque()
-            
+            const node = queue.deque() 
             if(!node) continue;
 
             callbackFn(node)
             traversal.push(node.value)
 
             if(node.left) queue.enque(node.left)
-            if(node.right) queue.enque(node.right)
-            
+            if(node.right) queue.enque(node.right)            
         }
         
     return traversal
     }
 
-    inOrder(){}
-    preOrder(){}
-    postOrder(){}
+    preOrder(node = this.root, values = []){
+        values.push(node.value)
+        if(node.left) this.preOrder(node.left, values)
+        if(node.right) this.preOrder(node.right, values)
+        return values
+    }
+
+    postOrder(node = this.root, values = []){
+        if(node.left){
+            this.postOrder(node.left,values)
+            this.postOrder(node.right, values)
+        }
+        values.push(node.value)
+        return values        
+    }
+
+
+
+
+
+    inOrder(node = this.root, values=[]){
+        if (node.left) this.inOrder(node.left, values)
+
+        console.log(node.value)   // Or: values.push(node.value)
+        values.push(node.value)
+
+        if (node.right) this.inOrder(node.right, values)
+        return values
+        
+    }
+
+
     get height(){}
     get depth(){}
     isBalanced(){}
@@ -181,12 +207,24 @@ class BalancedSearchTree{
 }
 const input0 = [1,2,3,4,5,6,7]
 const input1 = [50, 30, 20, 40, 32, 34,36, 70, 60 ,65, 80, 75, 85]
-const mm = new BalancedSearchTree([50,34,30,45,51])
+const mm = new BalancedSearchTree(input0)
 
 const add5 = function(node){node.value += 5}
+// console.log("***********LEVELORDER**********")
+// console.log(prettyPrint(mm.root))
+// console.log("level order is: " , mm.levelOrderI(add5));
+
 
 console.log(prettyPrint(mm.root))
-console.log("level order is: " , mm.levelOrderI(add5));
+// console.log("***********DEPTH FIRST TRAVERSAL*********")
+console.log("\n\n***********PREORDER**********\n\n")
+console.log("preOrder is:", mm.preOrder())
+// const k = 
+console.log("\n\n***********INORDER**********\n\n")
+console.log("inOrder is:", mm.inOrder() )
+console.log("\n\n***********POSTORDER**********\n\n")
+console.log("postOrder is:", mm.postOrder())
+
 
 /*
 │       ┌── 85
