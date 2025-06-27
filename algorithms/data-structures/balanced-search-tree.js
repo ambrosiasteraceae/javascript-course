@@ -225,31 +225,46 @@ class BalancedSearchTree{
         
     }
 
+    height(value, node = 1, vertical = 0){
+        if(vertical == 0 ) 
+            node = this.find(value)
+        if(!node) return -1
+        if(node.left)
+             vertical = this.height(value, node.left, ++vertical)
+        return vertical
 
-    height(value){
-        return 
     }
 
 
-    depth(value){
-
-
-        
-        return
+    depth(value, node = this.root, count = -1, found = null){
+        if(!node) return null
+        if(value == node.value) return ++count
+        if(value > node.value){
+            let found = this.depth(value, node.right, ++count)
+            if (found) return found
+        }
+        else
+            found = this.depth(value, node.left, ++count, found)
+        return found
     }
     isBalanced(){}
     rebalance(){}
 }
-const input0 = [1,2,3,4,5,6,7]
+
+const input0 = [1,2,3,4,5,6,7,9,10]
 const input1 = [50, 30, 20, 40, 32, 34,36, 70, 60 ,65, 80, 75, 85]
 const mm = new BalancedSearchTree(input0)
-// console.log(prettyPrint(mm.root))
+console.log(prettyPrint(mm.root))
 
 
 // console.log(mm.levelOrderI(findNode))
 
 // console.log(mm.find(6))
-console.log(mm.find(0))
+// console.log(mm.find(2))
+console.log("\n\n***********DEPTH & HEGIHT*********\n\n")
+console.log(mm.depth(5))
+console.log("\n\n")
+console.log(mm.height(5))
 
 
 
