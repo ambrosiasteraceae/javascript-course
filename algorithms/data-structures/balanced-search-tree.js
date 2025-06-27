@@ -196,28 +196,44 @@ class BalancedSearchTree{
         
     }
 
-    find(value = null, node = this.root, valueFound = null ){
-        
-        if(node.value == value)
-            valueFound = node;
+    findOld(value = null, node = this.root, valueFound = null ){
+        //I forgot to return the valueFound in the
+        if(!node) return null
+        if(node.value == value) return node;
         if(node.left){
-            // console.log("+")
-            valueFound = this.find(value, node.left, valueFound)
+            valueFound = this.findOld(value, node.left, valueFound)
+            if( valueFound) return valueFound
         }
-        if(node.right){
-            // console.log("-")
-             valueFound = this.find(value, node.right, valueFound)    
-        }
-        // console.log("here is another value bottom", valueFound)
+        if(node.right)
+            valueFound = this.findOld(value, node.right, valueFound)    
         return valueFound
-        
 
     }
+
+    find(value, node = this.root, found = null)
+    {
+        // console.log(node.value)
+        if(!node) return null
+        if(value == node.value) return node
+        if(value > node.value){
+            let found = this.find(value, node.right)
+            if (found) return found
+        }
+        else
+            found = this.find(value, node.left)
+        return found
+        
+    }
+
 
     height(value){
         return 
     }
+
+
     depth(value){
+
+
         
         return
     }
@@ -232,7 +248,8 @@ const mm = new BalancedSearchTree(input0)
 
 // console.log(mm.levelOrderI(findNode))
 
-console.log(mm.find(3))
+// console.log(mm.find(6))
+console.log(mm.find(0))
 
 
 
