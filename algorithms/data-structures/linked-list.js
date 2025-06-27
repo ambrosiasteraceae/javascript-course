@@ -56,13 +56,7 @@ export class LinkedList{
         this.node = newNode;
     }
 
-    // getSize(node = this.node, count = 1){
-    //     if(this.node.value == null)
-    //         return count
-    //     if(node.nextNode != null)
-    //         return this.getSize(node.nextNode, ++count)
-    //     return count
-    // }
+
 
     get head(){
         return this.node
@@ -92,8 +86,12 @@ export class LinkedList{
     }
 
 
-    contains(value, node = this.node){    
-        if(node.value == value)
+    contains(value, node = this.node){
+        
+        if(this.node?.value == null)
+            return false  
+         
+        if(node.value.key == value)
             return true
         else if(node.nextNode != null)
             return this.contains(value, node.nextNode) 
@@ -102,10 +100,20 @@ export class LinkedList{
     }
     
     find(value, node = this.node,  index = 0){
-        if(node.value == value)
-            return index
+        if(node.value.key == value)
+            return node
         else if(node.nextNode != null)
             return this.find(value, node.nextNode, ++index)
+        else
+            return null
+    }
+
+    findIndex(key, node = this.node,  index = 0){
+        if(node.value.key == key){
+            return index
+        }
+        else if(node.nextNode != null)
+            return this.findIndex(key, node.nextNode, ++index)
         else
             return null
     }
@@ -137,6 +145,18 @@ export class LinkedList{
     }
     
     removeAt(index){
+        //what is there is no left side?
+        //what if there is only the root?
+        //what if we remove from index  == 0?
+
+        if(index == 0)
+        {
+            const rightSide = this.getNodeAtIndex(index+1)
+            this.node = rightSide
+            return
+        }
+
+        console.log("index is :", index)
         const leftSide = this.getNodeAtIndex(index-1)
         const rightSide = this.getNodeAtIndex(index+1)
         leftSide.nextNode = rightSide;
@@ -150,12 +170,41 @@ export class LinkedList{
             return -1
         if(node.nextNode != null)
             return this.traverse(node.nextNode)
+        // console.log(node.value)
         return node
-
     }
 
+    getProperty(property = null, node = this.node, container = [], )
+        {
+            if(!node)
+                return null
+            if(node.nextNode != null){
+                 container.push(node.value[property])
+                 return this.getProperty(property, node.nextNode, container, )
+            }
+            container.push(node.value[property])
+            return container
+        }
+
+    getEntries(node = this.node, container = []){     
+           {
+            if(!node)
+                return null
+            if(node.nextNode != null){
+                 container.push(node.value)
+                 return this.getEntries( node.nextNode, container, )
+            }
+            container.push(node.value)
+            return container
+        }}
+
+    
+
     toString(node = this.node, string = ""){
-        let s = string + `( ${node.value} ) -> `; 
+
+        if(this.node?.value == null)
+            return "(null) -> null"
+        let s = string + `( ${node.value.key} : ${node.value.value}  ) -> `; 
         if(node.nextNode != null){ 
             return this.toString(node.nextNode, s)}
         else
@@ -164,27 +213,27 @@ export class LinkedList{
     }
 }
 
-const ll = new LinkedList()
-console.log(ll.count)
-ll.append(11)
-console.log(ll.toString())
-console.log(ll.count)
-ll.pop()
-console.log(ll.count)
-console.log(ll.toString())
-ll.append(12)
-ll.append(13)
-console.log(ll.count)
-console.log(ll.tail)
-console.log(ll.toString())
-ll.pop()
-ll.pop()
-console.log(ll.count)
-console.log(ll)
-ll.append(1)
-console.log(ll.count)
-console.log(ll.toString())
-console.log(ll.tail)
+// const ll = new LinkedList()
+// console.log(ll.count)
+// ll.append(11)
+// console.log(ll.toString())
+// console.log(ll.count)
+// ll.pop()
+// console.log(ll.count)
+// console.log(ll.toString())
+// ll.append(12)
+// ll.append(13)
+// console.log(ll.count)
+// console.log(ll.tail)
+// console.log(ll.toString())
+// ll.pop()
+// ll.pop()
+// console.log(ll.count)
+// console.log(ll)
+// ll.append(1)
+// console.log(ll.count)
+// console.log(ll.toString())
+// console.log(ll.tail)
 
 // CONTAINS TESTS
 // console.log(ll.contains(1))
