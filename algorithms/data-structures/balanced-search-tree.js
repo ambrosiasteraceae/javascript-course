@@ -185,9 +185,6 @@ class BalancedSearchTree{
     }
 
 
-
-
-
     inOrder(node = this.root, values=[]){
         if (node.left) this.inOrder(node.left, values)
 
@@ -199,31 +196,61 @@ class BalancedSearchTree{
         
     }
 
+    find(value = null, node = this.root, valueFound = null ){
+        
+        if(node.value == value)
+            valueFound = node;
+        if(node.left){
+            // console.log("+")
+            valueFound = this.find(value, node.left, valueFound)
+        }
+        if(node.right){
+            // console.log("-")
+             valueFound = this.find(value, node.right, valueFound)    
+        }
+        // console.log("here is another value bottom", valueFound)
+        return valueFound
+        
 
-    get height(){}
-    get depth(){}
+    }
+
+    height(value){
+        return 
+    }
+    depth(value){
+        
+        return
+    }
     isBalanced(){}
     rebalance(){}
 }
 const input0 = [1,2,3,4,5,6,7]
 const input1 = [50, 30, 20, 40, 32, 34,36, 70, 60 ,65, 80, 75, 85]
 const mm = new BalancedSearchTree(input0)
+// console.log(prettyPrint(mm.root))
 
-const add5 = function(node){node.value += 5}
+
+// console.log(mm.levelOrderI(findNode))
+
+console.log(mm.find(3))
+
+
+
+
 // console.log("***********LEVELORDER**********")
 // console.log(prettyPrint(mm.root))
 // console.log("level order is: " , mm.levelOrderI(add5));
+// const add5 = function(node){node.value += 5}
 
 
-console.log(prettyPrint(mm.root))
 // console.log("***********DEPTH FIRST TRAVERSAL*********")
-console.log("\n\n***********PREORDER**********\n\n")
-console.log("preOrder is:", mm.preOrder())
-// const k = 
-console.log("\n\n***********INORDER**********\n\n")
-console.log("inOrder is:", mm.inOrder() )
-console.log("\n\n***********POSTORDER**********\n\n")
-console.log("postOrder is:", mm.postOrder())
+// console.log("\n\n***********PREORDER**********\n\n")
+// console.log("preOrder is:", mm.preOrder())
+// // const k = 
+// console.log("\n\n***********INORDER**********\n\n")
+// console.log("inOrder is:", mm.inOrder() )
+// console.log("\n\n***********POSTORDER**********\n\n")
+// console.log("postOrder is:", mm.postOrder())
 
 
 /*
