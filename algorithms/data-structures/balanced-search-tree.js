@@ -2,6 +2,21 @@
 import {Node, prettyPrint } from "./index.js";
 
 
+class Queue{
+    constructor(){
+        this.list = []
+    }
+    
+    enque(value){
+        this.list.push(value)
+    }
+    deque(){
+        return this.list.shift();
+    }
+}
+
+
+
 class BalancedSearchTree{
     constructor(array){
         this.sorted = this.initialize(array)
@@ -130,10 +145,7 @@ class BalancedSearchTree{
 
     }
 
-
-    levelOrder(node = this.root, depth = 0, current = 0){
-
-        /*
+/*
         ┌── 85
 │       │   
 │   ┌── 75
@@ -146,39 +158,44 @@ class BalancedSearchTree{
     └── 34
         │  
         └── 30
+ 
+*/
+    levelOrderI(callbackFn){
+
+        if(!callbackFn)
+            throw new Error("U have not provbided a fucntuions")
+
+        const queue = new Queue()
+        const traversal = []
+        
+        queue.enque(this.root)
+        while(queue.list.length != 0)
+        {
+            if(traversal.length == 0)
+            {   
+                var node = queue.deque()
+                callbackFn(node)
+                traversal.push(this.root.value);
+            }
+            // console.log(queue)
+            //traverse left
+            if(node?.left){
+                callbackFn(node.left)
+                queue.enque(node.left)
+            }
+            //traverse right
+            if (node?.right){
+                callbackFn(node.right)
+                queue.enque(node.right)    
+            }
             
-
-        pseudocode:
-            -> if we start, just push the root value
-            -> traverse root.left and root.right but dont go deeper
-            -> add the root.left, right values to the array. [root.left, root.right]
-            -> forEachItem in the array go node.left, node.right and add them to the array
-            -> 
-            ->
-            ->
-            ->
-            ->
-            ->
-        */
-        //root node
+            node = queue.deque()
+            traversal.push(node.value)
+            // console.log(traversal)
+            
+        }
         
-        if(depth == 0)
-            console.log(node.value)
-        
-        if(!node?.left)
-            return
-        this.levelOrder(node.left, depth)
-        this.levelOrder(node.right, depth)
-        
-        
-        
-        return this.levelOrder(node, ++depth)
-
-        
-        //if the tree has only one root node case. can also work when we reach a leaf node
-        if(node.left == null && node.right == null)
-            return nodesVisited
-        
+    return traversal
     }
 
     inOrder(){}
@@ -191,8 +208,12 @@ class BalancedSearchTree{
 }
 const input0 = [1,2,3,4,5,6,7]
 const input1 = [50, 30, 20, 40, 32, 34,36, 70, 60 ,65, 80, 75, 85]
-const mm = new BalancedSearchTree([50,34,30])
+const mm = new BalancedSearchTree([50,34,30,45,51])
 
+const add5 = function(node){node.value += 5}
+
+console.log(prettyPrint(mm.root))
+console.log("level order is: " , mm.levelOrderI(add5));
 
 /*
 │       ┌── 85
@@ -212,8 +233,6 @@ const mm = new BalancedSearchTree([50,34,30])
 
 // console.log(mm.find(20))
 // mm.deleteItem(20)
-console.log(prettyPrint(mm.root))
-console.log("level order is: " , mm.levelOrder());
 
 //DELETION case 1
 // console.log  ("Parent is: ", mm.getParent(70)?.value)
