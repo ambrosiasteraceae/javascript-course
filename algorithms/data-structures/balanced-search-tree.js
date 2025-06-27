@@ -141,25 +141,8 @@ class BalancedSearchTree{
             return this.getMaxRight(node.left)
         return node    
         //IMMEDIATELY TO THE RIGHT FOR A NODE WITH JUST A CHILD LEFT AND A CHILD RIGHT NO SUBSCVH
-
-
     }
-
-/*
-        ┌── 85
-│       │   
-│   ┌── 75
-│   │   │   
-│   │   └── 65
-│   │      
-└── 50
-    │   ┌── 40
-    │   │   
-    └── 34
-        │  
-        └── 30
- 
-*/
+    
     levelOrderI(callbackFn){
 
         if(!callbackFn)
@@ -167,31 +150,21 @@ class BalancedSearchTree{
 
         const queue = new Queue()
         const traversal = []
-        
+
         queue.enque(this.root)
+        
         while(queue.list.length != 0)
         {
-            if(traversal.length == 0)
-            {   
-                var node = queue.deque()
-                callbackFn(node)
-                traversal.push(this.root.value);
-            }
-            // console.log(queue)
-            //traverse left
-            if(node?.left){
-                callbackFn(node.left)
-                queue.enque(node.left)
-            }
-            //traverse right
-            if (node?.right){
-                callbackFn(node.right)
-                queue.enque(node.right)    
-            }
+
+            const node = queue.deque()
             
-            node = queue.deque()
+            if(!node) continue;
+
+            callbackFn(node)
             traversal.push(node.value)
-            // console.log(traversal)
+
+            if(node.left) queue.enque(node.left)
+            if(node.right) queue.enque(node.right)
             
         }
         
