@@ -1,27 +1,36 @@
 
 class Node{
-    constructor(){
-        this.value = null;
+    constructor(value){
+        this.value = value;
         this.nextNode = null;
     }
 }
+// Your size Property Is Frozen in Time
+// Your append Breaks if List is Empty
+// build() Assumes Non-Empty Array
+// pop() Breaks for 0 or 1 Node
+// General Style Could Be More Modular
+// Performance: You Re-Traverse Too Much
 
-class LinkedList{
-    constructor(list){
-        this.build(list);
-        this.size = this.getSize();
-    
+/*
+-> change node.value = value with newNode(value)
+-> allow linkedlist to initialize empty
+*/
+export class LinkedList{
+    constructor(){
+        this.node = null;
+        this.count = 0;
+        // this.tail = null;
+        // this.size = this.getSize();
     }
 
+
     build(list){
-        this.node = new Node();
-        this.node.value = list[0];
-        
+        this.node = new Node(list[0]);    
         let previous = this.node;
         for(let i = 1; i < list.length; i++)
         {
-            let current = new Node()
-            current.value = list[i];
+            let current = new Node(list[i])
             previous.nextNode = current;
             previous = current;
         }
@@ -30,23 +39,30 @@ class LinkedList{
 
     append(value){
 
-        const newNode = new Node();
-        newNode.value = value;
+        if(this.node?.value == null){
+            this.node = new Node(value)
+            ++this.count;
+            return
+        }
+        const newNode = new Node(value);  
         this.tail.nextNode = newNode;        
+        ++this.count;
     }
 
     prepend(value){
-        const newNode = new Node();
-        newNode.value = value;
+        const newNode = new Node(value);
+        // newNode.value = value;
         newNode.nextNode = this.node;
         this.node = newNode;
     }
 
-    getSize(node = this.node, count = 1){
-        if(node.nextNode != null)
-            return this.getSize(node.nextNode, ++count)
-        return count
-    }
+    // getSize(node = this.node, count = 1){
+    //     if(this.node.value == null)
+    //         return count
+    //     if(node.nextNode != null)
+    //         return this.getSize(node.nextNode, ++count)
+    //     return count
+    // }
 
     get head(){
         return this.node
@@ -57,10 +73,18 @@ class LinkedList{
     }
 
     pop(node = this.node){
+        if(node.nextNode == null)
+        {
+            this.node.value = null
+            --this.count;
+            return null
+        }
+
         if(node.nextNode.nextNode == null)
         {
             const poppedNode = node.nextNode;
             node.nextNode = null;
+            --this.count;
             return poppedNode;
         }
         return this.pop(node.nextNode)
@@ -106,8 +130,8 @@ class LinkedList{
 
         const leftSide = this.getNodeAtIndex(index-1);
         const temp = leftSide.nextNode;
-        const newNode = new Node();
-        newNode.value = value;
+        const newNode = new Node(value);
+        // newNode.value = value;
         leftSide.nextNode = newNode;
         newNode.nextNode = temp;
     }
@@ -122,6 +146,8 @@ class LinkedList{
     }
 
     traverse(node = this.node){
+        if(!node)
+            return -1
         if(node.nextNode != null)
             return this.traverse(node.nextNode)
         return node
@@ -138,8 +164,27 @@ class LinkedList{
     }
 }
 
-const ll = new LinkedList([15, 1,2 ,4, 7, 9])
-
+const ll = new LinkedList()
+console.log(ll.count)
+ll.append(11)
+console.log(ll.toString())
+console.log(ll.count)
+ll.pop()
+console.log(ll.count)
+console.log(ll.toString())
+ll.append(12)
+ll.append(13)
+console.log(ll.count)
+console.log(ll.tail)
+console.log(ll.toString())
+ll.pop()
+ll.pop()
+console.log(ll.count)
+console.log(ll)
+ll.append(1)
+console.log(ll.count)
+console.log(ll.toString())
+console.log(ll.tail)
 
 // CONTAINS TESTS
 // console.log(ll.contains(1))
@@ -154,17 +199,17 @@ const ll = new LinkedList([15, 1,2 ,4, 7, 9])
 // console.log(ll.find(5))
 // ll.pop()
 
-console.log(ll.toString())
-
-ll.insertAt(21, 5)
-console.log(ll.toString())
 
 
-ll.removeAt(2)
-console.log(ll.toString())
+// ll.insertAt(21, 5)
+// console.log(ll.toString())
 
-ll.removeAt(4)
-console.log(ll.toString())
+
+// ll.removeAt(2)
+// console.log(ll.toString())
+
+// ll.removeAt(4)
+// console.log(ll.toString())
 
 
 
