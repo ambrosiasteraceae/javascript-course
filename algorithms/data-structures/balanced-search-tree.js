@@ -157,8 +157,9 @@ class BalancedSearchTree{
         {
             const node = queue.deque() 
             if(!node) continue;
-
+            // console.log("callback fn is", callbackFn)
             callbackFn(node)
+             
             traversal.push(node.value)
 
             if(node.left) queue.enque(node.left)
@@ -176,10 +177,8 @@ class BalancedSearchTree{
     }
 
     postOrder(node = this.root, values = []){
-        if(node.left){
-            this.postOrder(node.left,values)
-            this.postOrder(node.right, values)
-        }
+        if(node.left) this.postOrder(node.left,values)
+        if(node.right) this.postOrder(node.right, values)
         values.push(node.value)
         return values        
     }
@@ -187,13 +186,9 @@ class BalancedSearchTree{
 
     inOrder(node = this.root, values=[]){
         if (node.left) this.inOrder(node.left, values)
-
-        console.log(node.value)   // Or: values.push(node.value)
         values.push(node.value)
-
         if (node.right) this.inOrder(node.right, values)
-        return values
-        
+        return values        
     }
 
     findOld(value = null, node = this.root, valueFound = null ){
@@ -225,12 +220,14 @@ class BalancedSearchTree{
         
     }
 
-    height(value, node = 1, vertical = 0){
+    height(value, node = null, vertical = 0){
+        
         if(vertical == 0 ) 
             node = this.find(value)
         if(!node) return -1
-        if(node.left)
-             vertical = this.height(value, node.left, ++vertical)
+        
+        if(node.left) return this.height(value, node.left, ++vertical)
+        if(node.right) return this.height(value,node.right,++vertical)
         return vertical
 
     }
@@ -247,32 +244,71 @@ class BalancedSearchTree{
             found = this.depth(value, node.left, ++count, found)
         return found
     }
-    isBalanced(){}
+    balancingCheck(node){
+        const left = node.left? this.height(node.left.value) : -1;
+        const right = node.right? this.height(node.right.value): -1;
+        if(Math.abs(left - right)>1)
+        {
+                // console.log("Caught the culpriht", node.value)
+            this.balanced = false;
+        }
+        // console.log("left ^ rught", left, right, )
+        // console.log()
+    }
+    
+    isBalanced(){
+        // this.levelOrderI(this.balancingCheck.bind(this))
+        this.balanced = true;
+        const queue = new Queue()
+        queue.enque(this.root)
+        while(queue.list.length != 0)
+        {
+            const node = queue.deque() 
+            if(!node) continue;
+            this.balancingCheck(node)
+            if(node.left) queue.enque(node.left)
+            if(node.right) queue.enque(node.right)            
+        }
+    return this.balanced        
+    }
+
+
     rebalance(){}
 }
 
-const input0 = [1,2,3,4,5,6,7,9,10]
+const input0 = [1,2,3,4,5,6,7,8,9,10]
 const input1 = [50, 30, 20, 40, 32, 34,36, 70, 60 ,65, 80, 75, 85]
 const mm = new BalancedSearchTree(input0)
+
 console.log(prettyPrint(mm.root))
+mm.deleteItem(9)
+console.log(prettyPrint(mm.root))
+console.log("Is tree balanced? yes/no", mm.isBalanced());
 
 
+
+
+
+
+
+// console.log(mm.inOrder(mm.root.left))
+// console.log(mm.preOrder(mm.root.left))
+// console.log(mm.postOrder(mm.root.left))
 // console.log(mm.levelOrderI(findNode))
 
 // console.log(mm.find(6))
 // console.log(mm.find(2))
-console.log("\n\n***********DEPTH & HEGIHT*********\n\n")
-console.log(mm.depth(5))
-console.log("\n\n")
-console.log(mm.height(5))
+// console.log("***********DEPTH & HEGIHT*********\n\n")
+// console.log(mm.depth(1))
+// console.log(mm.height(5))
 
 
 
 
+// const add5 = function(node){node.value += 5}
 // console.log("***********LEVELORDER**********")
 // console.log(prettyPrint(mm.root))
 // console.log("level order is: " , mm.levelOrderI(add5));
-// const add5 = function(node){node.value += 5}
 
 
 // console.log("***********DEPTH FIRST TRAVERSAL*********")
