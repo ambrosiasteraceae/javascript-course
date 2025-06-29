@@ -273,18 +273,50 @@ class BalancedSearchTree{
     }
 
 
-    rebalance(){}
+    rebalance(){
+        const items = this.postOrder();
+        const newTree = new BalancedSearchTree(items);
+        this.root = newTree.root;
+    }
 }
 
 const input0 = [1,2,3,4,5,6,7,8,9,10]
 const input1 = [50, 30, 20, 40, 32, 34,36, 70, 60 ,65, 80, 75, 85]
 const mm = new BalancedSearchTree(input0)
 
-console.log(prettyPrint(mm.root))
-mm.deleteItem(9)
-console.log(prettyPrint(mm.root))
-console.log("Is tree balanced? yes/no", mm.isBalanced());
+// console.log(prettyPrint(mm.root))
+// mm.deleteItem(9)
+// console.log(prettyPrint(mm.root))
+// console.log("Is tree balanced?", mm.isBalanced());
+// mm.rebalance(); 
+// console.log(prettyPrint(mm.root)) 
+// console.log("Is tree balanced?", mm.isBalanced());  
 
+function testSuite(){
+    const items = [];
+    for(let i=0; i<100; i++){
+        items.push(Math.floor(Math.random()*100));
+    }
+    console.log(items)
+    const newTree = new BalancedSearchTree(items)
+    console.log(prettyPrint(newTree.root))
+    console.log(newTree.isBalanced())
+    newTree.insert(120)
+    newTree.insert(150)
+    newTree.insert(130)
+    newTree.insert(121)
+    newTree.insert(180)
+    newTree.insert(250)
+    console.log("AFTER INSERTION")
+    console.log(prettyPrint(newTree.root))
+    console.log(newTree.isBalanced())
+    newTree.rebalance();
+    console.log("AFTER REBALANCE")
+    console.log(prettyPrint(newTree.root))
+    console.log(newTree.isBalanced())
+
+}
+testSuite();
 
 
 
