@@ -2,7 +2,7 @@
 import {Node, prettyPrint } from "./index.js";
 
 
-class Queue{
+export class Queue{
     constructor(){
         this.list = []
     }
@@ -316,7 +316,7 @@ function testSuite(){
     console.log(newTree.isBalanced())
 
 }
-testSuite();
+// testSuite();
 
 
 

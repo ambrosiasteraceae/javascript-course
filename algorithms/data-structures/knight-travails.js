@@ -1,3 +1,5 @@
+import { Queue } from "./balanced-search-tree.js";
+
 class KnightTravails{
     constructor(){
         
@@ -22,40 +24,51 @@ class KnightTravails{
             
     }
 
-    shortestPath(source, target, path = []){
+    shortestPath(source, target){
+        let path = [];
+        let move = source;
+        let queue = new Queue();
+        while(move[0] != target[0] || move[1]!= target[1]){
+            path.push(move);
+            let possibleMoves = this.getValidPositions(move);
+            let isContained = possibleMoves.filter((value)  =>( target[0] == value[0] && target[1] == value[1]))
+            // console.log(possibleMoves)
+            if(isContained.length == 1)
+            {
+                console.log("hey I interened")
+                path.push(isContained[0])
+                console.log(path)
+                break 
+            }
+            for(let pos of possibleMoves)
+                queue.enque(pos)
+            move = queue.deque()
+
+            //we search but seach what?
+        }
+
+        // checkAdjacencyList(value){
+            
+        // }
         
-        
-        path.push(source)
-        
-        //last indeces of the path array
+    }
+
+    getShortestPathRecursive(move,path,target ){
+        path.push(move);
         let row = path.at(-1)[0];
         let column = path.at(-1)[1];
-        possibleMoves = this.possibleMoves([row,column])
-        
+        move = this.getValidPositions()
         if(target[0] == row && target[1] == column)
             return path
-        for(let move of possibleMoves)
-            return this.shortestPath(move, target, path)
-        return -1
+        return this.shortestPath(move, target, path)
 
-        
     }
 
     getValidPositions(pos){
         let rowIndex, colIndex;
         [rowIndex, colIndex] = pos;
         let possibleMoves = []
-        // for (let i = 0; i < 2; i++)
-        //     for(let sign = 0; sign < 2; sign++)
-        //     {
-        //         console.log( (-1)**i*-2 , (-1)**sign)
-        //     }
-        
-        // for (let i = 0; i < 2; i++)
-        //     for(let sign = 0; sign < 2; sign++)
-        //     {
-        //         console.log( (-1)**i*-1 , (-1)**sign*2)
-        //     }
+
         for (let i = 0; i < 2; i++)
             for(let j = 0; j<2; j++)
                 for(let sign = 0; sign < 2; sign++)
@@ -68,8 +81,6 @@ class KnightTravails{
                         continue
                     possibleMoves.push([iMove, jMove])
 
-                    // console.log((-1)**j * (2 - (1 * i)), (-1) ** sign *(1*(i+1))) 
-                    
                 }
         return possibleMoves;
         
@@ -80,3 +91,5 @@ class KnightTravails{
 const knight = new KnightTravails()
 // console.log(knight.getValidPositions([2,1]))
 // console.log(knight.adjacencyList)
+console.log(knight.shortestPath([0,0], [7,4 ]))
+
